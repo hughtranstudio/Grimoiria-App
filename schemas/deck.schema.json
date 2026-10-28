@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grimoire/deck.schema.json",
+  "title": "Grimoire deck definition (spec §5.1)",
+  "type": "object",
+  "required": ["id", "name", "version", "system", "status", "reversalsAllowed", "attributes", "cards"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string" },
+    "version": { "type": "integer", "minimum": 0 },
+    "system": { "type": "string" },
+    "status": { "enum": ["complete", "placeholder", "template"] },
+    "reversalsAllowed": { "type": "boolean" },
+    "aliases": { "type": "array", "items": { "type": "string" }, "description": "Names the voice parser listens for." },
+    "attributes": { "type": "array", "items": { "type": "string" }, "description": "Card fields analytics can group by." },
+    "source": { "type": "string" },
+    "cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "name": { "type": "string" },
+          "aliases": { "type": "array", "items": { "type": "string" } },
+          "significations": { "type": "object" }
+        },
+        "additionalProperties": { "type": ["string", "number", "boolean"] }
+      }
+    }
+  }
+}

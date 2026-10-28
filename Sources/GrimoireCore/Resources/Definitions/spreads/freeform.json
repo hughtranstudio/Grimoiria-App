@@ -1,0 +1,14 @@
+{
+  "id": "freeform",
+  "name": "Freeform",
+  "aliases": [
+    "freeform",
+    "free form",
+    "free"
+  ],
+  "positions": [],
+  "decks": [
+    "*"
+  ],
+  "openEnded": true
+}

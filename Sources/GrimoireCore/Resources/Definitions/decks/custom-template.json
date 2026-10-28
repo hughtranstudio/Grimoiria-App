@@ -1,0 +1,15 @@
+{
+  "id": "custom-template",
+  "name": "Custom deck (template)",
+  "version": 0,
+  "system": "oracle",
+  "status": "template",
+  "reversalsAllowed": false,
+  "aliases": [],
+  "attributes": [
+    "number",
+    "theme"
+  ],
+  "source": "Copy this file, give it a new id, and add cards.",
+  "cards": []
+}

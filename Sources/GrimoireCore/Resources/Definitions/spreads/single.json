@@ -1,0 +1,19 @@
+{
+  "id": "single",
+  "name": "Single card",
+  "aliases": [
+    "single",
+    "single card",
+    "one card",
+    "daily card"
+  ],
+  "positions": [
+    {
+      "key": "card",
+      "label": "Card"
+    }
+  ],
+  "decks": [
+    "*"
+  ]
+}

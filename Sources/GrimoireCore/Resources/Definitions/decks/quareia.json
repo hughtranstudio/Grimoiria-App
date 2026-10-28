@@ -1,0 +1,21 @@
+{
+  "id": "quareia",
+  "name": "Quareia Deck",
+  "version": 0,
+  "system": "oracle",
+  "status": "placeholder",
+  "reversalsAllowed": true,
+  "aliases": [
+    "quareia",
+    "quarea",
+    "quaria",
+    "korea",
+    "chorea"
+  ],
+  "attributes": [
+    "number",
+    "group"
+  ],
+  "source": "PLACEHOLDER: card list and significations to be generated from Hugh's Quareia deck repository.",
+  "cards": []
+}

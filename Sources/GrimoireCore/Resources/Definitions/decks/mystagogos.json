@@ -1,0 +1,20 @@
+{
+  "id": "mystagogos",
+  "name": "Mystagogos Deck",
+  "version": 0,
+  "system": "oracle",
+  "status": "placeholder",
+  "reversalsAllowed": true,
+  "aliases": [
+    "mystagogos",
+    "mystagogus",
+    "mystagogue",
+    "mista gogos"
+  ],
+  "attributes": [
+    "number",
+    "group"
+  ],
+  "source": "PLACEHOLDER: card list and significations to be generated from Hugh's Mystagogos deck repository.",
+  "cards": []
+}

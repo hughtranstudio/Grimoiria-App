@@ -1,0 +1,1404 @@
+{
+  "id": "rws-tarot",
+  "name": "Rider–Waite–Smith Tarot",
+  "version": 1,
+  "system": "tarot",
+  "status": "complete",
+  "reversalsAllowed": true,
+  "aliases": [
+    "rider waite smith",
+    "rider waite",
+    "rider-waite",
+    "rws",
+    "waite",
+    "rider"
+  ],
+  "attributes": [
+    "arcana",
+    "suit",
+    "number",
+    "rank",
+    "element",
+    "attribution"
+  ],
+  "source": "Standard 78-card structure. Significations to be merged from Hugh's deck repository.",
+  "cards": [
+    {
+      "id": "maj-00",
+      "name": "The Fool",
+      "arcana": "major",
+      "number": 0,
+      "attribution": "air",
+      "aliases": [
+        "fool",
+        "major zero"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-01",
+      "name": "The Magician",
+      "arcana": "major",
+      "number": 1,
+      "attribution": "mercury",
+      "aliases": [
+        "magician",
+        "magus",
+        "major one"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-02",
+      "name": "The High Priestess",
+      "arcana": "major",
+      "number": 2,
+      "attribution": "moon",
+      "aliases": [
+        "high priestess",
+        "priestess",
+        "major two"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-03",
+      "name": "The Empress",
+      "arcana": "major",
+      "number": 3,
+      "attribution": "venus",
+      "aliases": [
+        "empress",
+        "major three"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-04",
+      "name": "The Emperor",
+      "arcana": "major",
+      "number": 4,
+      "attribution": "aries",
+      "aliases": [
+        "emperor",
+        "major four"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-05",
+      "name": "The Hierophant",
+      "arcana": "major",
+      "number": 5,
+      "attribution": "taurus",
+      "aliases": [
+        "hierophant",
+        "high priest",
+        "pope",
+        "major five"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-06",
+      "name": "The Lovers",
+      "arcana": "major",
+      "number": 6,
+      "attribution": "gemini",
+      "aliases": [
+        "lovers",
+        "lover",
+        "major six"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-07",
+      "name": "The Chariot",
+      "arcana": "major",
+      "number": 7,
+      "attribution": "cancer",
+      "aliases": [
+        "chariot",
+        "major seven"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-08",
+      "name": "Strength",
+      "arcana": "major",
+      "number": 8,
+      "attribution": "leo",
+      "aliases": [
+        "strength",
+        "major eight"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-09",
+      "name": "The Hermit",
+      "arcana": "major",
+      "number": 9,
+      "attribution": "virgo",
+      "aliases": [
+        "hermit",
+        "major nine"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-10",
+      "name": "Wheel of Fortune",
+      "arcana": "major",
+      "number": 10,
+      "attribution": "jupiter",
+      "aliases": [
+        "wheel of fortune",
+        "wheel",
+        "major ten"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-11",
+      "name": "Justice",
+      "arcana": "major",
+      "number": 11,
+      "attribution": "libra",
+      "aliases": [
+        "justice",
+        "major 11"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-12",
+      "name": "The Hanged Man",
+      "arcana": "major",
+      "number": 12,
+      "attribution": "water",
+      "aliases": [
+        "hanged man",
+        "hanging man",
+        "major 12"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-13",
+      "name": "Death",
+      "arcana": "major",
+      "number": 13,
+      "attribution": "scorpio",
+      "aliases": [
+        "death",
+        "major 13"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-14",
+      "name": "Temperance",
+      "arcana": "major",
+      "number": 14,
+      "attribution": "sagittarius",
+      "aliases": [
+        "temperance",
+        "major 14"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-15",
+      "name": "The Devil",
+      "arcana": "major",
+      "number": 15,
+      "attribution": "capricorn",
+      "aliases": [
+        "devil",
+        "major 15"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-16",
+      "name": "The Tower",
+      "arcana": "major",
+      "number": 16,
+      "attribution": "mars",
+      "aliases": [
+        "tower",
+        "major 16"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-17",
+      "name": "The Star",
+      "arcana": "major",
+      "number": 17,
+      "attribution": "aquarius",
+      "aliases": [
+        "star",
+        "major 17"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-18",
+      "name": "The Moon",
+      "arcana": "major",
+      "number": 18,
+      "attribution": "pisces",
+      "aliases": [
+        "moon",
+        "major 18"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-19",
+      "name": "The Sun",
+      "arcana": "major",
+      "number": 19,
+      "attribution": "sun",
+      "aliases": [
+        "sun",
+        "major 19"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-20",
+      "name": "Judgement",
+      "arcana": "major",
+      "number": 20,
+      "attribution": "fire",
+      "aliases": [
+        "judgement",
+        "judgment",
+        "major 20"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "maj-21",
+      "name": "The World",
+      "arcana": "major",
+      "number": 21,
+      "attribution": "saturn",
+      "aliases": [
+        "world",
+        "universe",
+        "major 21"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-01",
+      "name": "Ace of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 1,
+      "rank": "ace",
+      "element": "fire",
+      "aliases": [
+        "ace of wands",
+        "ace of wand",
+        "ace of rods",
+        "ace of staves",
+        "ace of staffs",
+        "ace of batons",
+        "one of wands",
+        "one of wand",
+        "one of rods",
+        "one of staves",
+        "one of staffs",
+        "one of batons",
+        "1 of wands",
+        "1 of wand",
+        "1 of rods",
+        "1 of staves",
+        "1 of staffs",
+        "1 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-02",
+      "name": "Two of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 2,
+      "rank": "two",
+      "element": "fire",
+      "aliases": [
+        "two of wands",
+        "two of wand",
+        "two of rods",
+        "two of staves",
+        "two of staffs",
+        "two of batons",
+        "2 of wands",
+        "2 of wand",
+        "2 of rods",
+        "2 of staves",
+        "2 of staffs",
+        "2 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-03",
+      "name": "Three of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 3,
+      "rank": "three",
+      "element": "fire",
+      "aliases": [
+        "three of wands",
+        "three of wand",
+        "three of rods",
+        "three of staves",
+        "three of staffs",
+        "three of batons",
+        "3 of wands",
+        "3 of wand",
+        "3 of rods",
+        "3 of staves",
+        "3 of staffs",
+        "3 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-04",
+      "name": "Four of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 4,
+      "rank": "four",
+      "element": "fire",
+      "aliases": [
+        "four of wands",
+        "four of wand",
+        "four of rods",
+        "four of staves",
+        "four of staffs",
+        "four of batons",
+        "4 of wands",
+        "4 of wand",
+        "4 of rods",
+        "4 of staves",
+        "4 of staffs",
+        "4 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-05",
+      "name": "Five of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 5,
+      "rank": "five",
+      "element": "fire",
+      "aliases": [
+        "five of wands",
+        "five of wand",
+        "five of rods",
+        "five of staves",
+        "five of staffs",
+        "five of batons",
+        "5 of wands",
+        "5 of wand",
+        "5 of rods",
+        "5 of staves",
+        "5 of staffs",
+        "5 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-06",
+      "name": "Six of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 6,
+      "rank": "six",
+      "element": "fire",
+      "aliases": [
+        "six of wands",
+        "six of wand",
+        "six of rods",
+        "six of staves",
+        "six of staffs",
+        "six of batons",
+        "6 of wands",
+        "6 of wand",
+        "6 of rods",
+        "6 of staves",
+        "6 of staffs",
+        "6 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-07",
+      "name": "Seven of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 7,
+      "rank": "seven",
+      "element": "fire",
+      "aliases": [
+        "seven of wands",
+        "seven of wand",
+        "seven of rods",
+        "seven of staves",
+        "seven of staffs",
+        "seven of batons",
+        "7 of wands",
+        "7 of wand",
+        "7 of rods",
+        "7 of staves",
+        "7 of staffs",
+        "7 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-08",
+      "name": "Eight of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 8,
+      "rank": "eight",
+      "element": "fire",
+      "aliases": [
+        "eight of wands",
+        "eight of wand",
+        "eight of rods",
+        "eight of staves",
+        "eight of staffs",
+        "eight of batons",
+        "8 of wands",
+        "8 of wand",
+        "8 of rods",
+        "8 of staves",
+        "8 of staffs",
+        "8 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-09",
+      "name": "Nine of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 9,
+      "rank": "nine",
+      "element": "fire",
+      "aliases": [
+        "nine of wands",
+        "nine of wand",
+        "nine of rods",
+        "nine of staves",
+        "nine of staffs",
+        "nine of batons",
+        "9 of wands",
+        "9 of wand",
+        "9 of rods",
+        "9 of staves",
+        "9 of staffs",
+        "9 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-10",
+      "name": "Ten of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 10,
+      "rank": "ten",
+      "element": "fire",
+      "aliases": [
+        "ten of wands",
+        "ten of wand",
+        "ten of rods",
+        "ten of staves",
+        "ten of staffs",
+        "ten of batons",
+        "10 of wands",
+        "10 of wand",
+        "10 of rods",
+        "10 of staves",
+        "10 of staffs",
+        "10 of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-11",
+      "name": "Page of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 11,
+      "rank": "page",
+      "element": "fire",
+      "aliases": [
+        "page of wands",
+        "page of wand",
+        "page of rods",
+        "page of staves",
+        "page of staffs",
+        "page of batons",
+        "princess of wands",
+        "princess of wand",
+        "princess of rods",
+        "princess of staves",
+        "princess of staffs",
+        "princess of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-12",
+      "name": "Knight of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 12,
+      "rank": "knight",
+      "element": "fire",
+      "aliases": [
+        "knight of wands",
+        "knight of wand",
+        "knight of rods",
+        "knight of staves",
+        "knight of staffs",
+        "knight of batons",
+        "prince of wands",
+        "prince of wand",
+        "prince of rods",
+        "prince of staves",
+        "prince of staffs",
+        "prince of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-13",
+      "name": "Queen of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 13,
+      "rank": "queen",
+      "element": "fire",
+      "aliases": [
+        "queen of wands",
+        "queen of wand",
+        "queen of rods",
+        "queen of staves",
+        "queen of staffs",
+        "queen of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "wands-14",
+      "name": "King of Wands",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 14,
+      "rank": "king",
+      "element": "fire",
+      "aliases": [
+        "king of wands",
+        "king of wand",
+        "king of rods",
+        "king of staves",
+        "king of staffs",
+        "king of batons"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-01",
+      "name": "Ace of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 1,
+      "rank": "ace",
+      "element": "water",
+      "aliases": [
+        "ace of cups",
+        "ace of cup",
+        "ace of chalices",
+        "one of cups",
+        "one of cup",
+        "one of chalices",
+        "1 of cups",
+        "1 of cup",
+        "1 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-02",
+      "name": "Two of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 2,
+      "rank": "two",
+      "element": "water",
+      "aliases": [
+        "two of cups",
+        "two of cup",
+        "two of chalices",
+        "2 of cups",
+        "2 of cup",
+        "2 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-03",
+      "name": "Three of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 3,
+      "rank": "three",
+      "element": "water",
+      "aliases": [
+        "three of cups",
+        "three of cup",
+        "three of chalices",
+        "3 of cups",
+        "3 of cup",
+        "3 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-04",
+      "name": "Four of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 4,
+      "rank": "four",
+      "element": "water",
+      "aliases": [
+        "four of cups",
+        "four of cup",
+        "four of chalices",
+        "4 of cups",
+        "4 of cup",
+        "4 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-05",
+      "name": "Five of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 5,
+      "rank": "five",
+      "element": "water",
+      "aliases": [
+        "five of cups",
+        "five of cup",
+        "five of chalices",
+        "5 of cups",
+        "5 of cup",
+        "5 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-06",
+      "name": "Six of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 6,
+      "rank": "six",
+      "element": "water",
+      "aliases": [
+        "six of cups",
+        "six of cup",
+        "six of chalices",
+        "6 of cups",
+        "6 of cup",
+        "6 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-07",
+      "name": "Seven of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 7,
+      "rank": "seven",
+      "element": "water",
+      "aliases": [
+        "seven of cups",
+        "seven of cup",
+        "seven of chalices",
+        "7 of cups",
+        "7 of cup",
+        "7 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-08",
+      "name": "Eight of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 8,
+      "rank": "eight",
+      "element": "water",
+      "aliases": [
+        "eight of cups",
+        "eight of cup",
+        "eight of chalices",
+        "8 of cups",
+        "8 of cup",
+        "8 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-09",
+      "name": "Nine of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 9,
+      "rank": "nine",
+      "element": "water",
+      "aliases": [
+        "nine of cups",
+        "nine of cup",
+        "nine of chalices",
+        "9 of cups",
+        "9 of cup",
+        "9 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-10",
+      "name": "Ten of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 10,
+      "rank": "ten",
+      "element": "water",
+      "aliases": [
+        "ten of cups",
+        "ten of cup",
+        "ten of chalices",
+        "10 of cups",
+        "10 of cup",
+        "10 of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-11",
+      "name": "Page of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 11,
+      "rank": "page",
+      "element": "water",
+      "aliases": [
+        "page of cups",
+        "page of cup",
+        "page of chalices",
+        "princess of cups",
+        "princess of cup",
+        "princess of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-12",
+      "name": "Knight of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 12,
+      "rank": "knight",
+      "element": "water",
+      "aliases": [
+        "knight of cups",
+        "knight of cup",
+        "knight of chalices",
+        "prince of cups",
+        "prince of cup",
+        "prince of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-13",
+      "name": "Queen of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 13,
+      "rank": "queen",
+      "element": "water",
+      "aliases": [
+        "queen of cups",
+        "queen of cup",
+        "queen of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "cups-14",
+      "name": "King of Cups",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 14,
+      "rank": "king",
+      "element": "water",
+      "aliases": [
+        "king of cups",
+        "king of cup",
+        "king of chalices"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-01",
+      "name": "Ace of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 1,
+      "rank": "ace",
+      "element": "air",
+      "aliases": [
+        "ace of swords",
+        "ace of sword",
+        "one of swords",
+        "one of sword",
+        "1 of swords",
+        "1 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-02",
+      "name": "Two of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 2,
+      "rank": "two",
+      "element": "air",
+      "aliases": [
+        "two of swords",
+        "two of sword",
+        "2 of swords",
+        "2 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-03",
+      "name": "Three of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 3,
+      "rank": "three",
+      "element": "air",
+      "aliases": [
+        "three of swords",
+        "three of sword",
+        "3 of swords",
+        "3 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-04",
+      "name": "Four of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 4,
+      "rank": "four",
+      "element": "air",
+      "aliases": [
+        "four of swords",
+        "four of sword",
+        "4 of swords",
+        "4 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-05",
+      "name": "Five of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 5,
+      "rank": "five",
+      "element": "air",
+      "aliases": [
+        "five of swords",
+        "five of sword",
+        "5 of swords",
+        "5 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-06",
+      "name": "Six of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 6,
+      "rank": "six",
+      "element": "air",
+      "aliases": [
+        "six of swords",
+        "six of sword",
+        "6 of swords",
+        "6 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-07",
+      "name": "Seven of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 7,
+      "rank": "seven",
+      "element": "air",
+      "aliases": [
+        "seven of swords",
+        "seven of sword",
+        "7 of swords",
+        "7 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-08",
+      "name": "Eight of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 8,
+      "rank": "eight",
+      "element": "air",
+      "aliases": [
+        "eight of swords",
+        "eight of sword",
+        "8 of swords",
+        "8 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-09",
+      "name": "Nine of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 9,
+      "rank": "nine",
+      "element": "air",
+      "aliases": [
+        "nine of swords",
+        "nine of sword",
+        "9 of swords",
+        "9 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-10",
+      "name": "Ten of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 10,
+      "rank": "ten",
+      "element": "air",
+      "aliases": [
+        "ten of swords",
+        "ten of sword",
+        "10 of swords",
+        "10 of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-11",
+      "name": "Page of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 11,
+      "rank": "page",
+      "element": "air",
+      "aliases": [
+        "page of swords",
+        "page of sword",
+        "princess of swords",
+        "princess of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-12",
+      "name": "Knight of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 12,
+      "rank": "knight",
+      "element": "air",
+      "aliases": [
+        "knight of swords",
+        "knight of sword",
+        "prince of swords",
+        "prince of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-13",
+      "name": "Queen of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 13,
+      "rank": "queen",
+      "element": "air",
+      "aliases": [
+        "queen of swords",
+        "queen of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "swords-14",
+      "name": "King of Swords",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 14,
+      "rank": "king",
+      "element": "air",
+      "aliases": [
+        "king of swords",
+        "king of sword"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-01",
+      "name": "Ace of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 1,
+      "rank": "ace",
+      "element": "earth",
+      "aliases": [
+        "ace of pentacles",
+        "ace of pentacle",
+        "ace of coins",
+        "ace of disks",
+        "ace of discs",
+        "one of pentacles",
+        "one of pentacle",
+        "one of coins",
+        "one of disks",
+        "one of discs",
+        "1 of pentacles",
+        "1 of pentacle",
+        "1 of coins",
+        "1 of disks",
+        "1 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-02",
+      "name": "Two of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 2,
+      "rank": "two",
+      "element": "earth",
+      "aliases": [
+        "two of pentacles",
+        "two of pentacle",
+        "two of coins",
+        "two of disks",
+        "two of discs",
+        "2 of pentacles",
+        "2 of pentacle",
+        "2 of coins",
+        "2 of disks",
+        "2 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-03",
+      "name": "Three of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 3,
+      "rank": "three",
+      "element": "earth",
+      "aliases": [
+        "three of pentacles",
+        "three of pentacle",
+        "three of coins",
+        "three of disks",
+        "three of discs",
+        "3 of pentacles",
+        "3 of pentacle",
+        "3 of coins",
+        "3 of disks",
+        "3 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-04",
+      "name": "Four of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 4,
+      "rank": "four",
+      "element": "earth",
+      "aliases": [
+        "four of pentacles",
+        "four of pentacle",
+        "four of coins",
+        "four of disks",
+        "four of discs",
+        "4 of pentacles",
+        "4 of pentacle",
+        "4 of coins",
+        "4 of disks",
+        "4 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-05",
+      "name": "Five of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 5,
+      "rank": "five",
+      "element": "earth",
+      "aliases": [
+        "five of pentacles",
+        "five of pentacle",
+        "five of coins",
+        "five of disks",
+        "five of discs",
+        "5 of pentacles",
+        "5 of pentacle",
+        "5 of coins",
+        "5 of disks",
+        "5 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-06",
+      "name": "Six of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 6,
+      "rank": "six",
+      "element": "earth",
+      "aliases": [
+        "six of pentacles",
+        "six of pentacle",
+        "six of coins",
+        "six of disks",
+        "six of discs",
+        "6 of pentacles",
+        "6 of pentacle",
+        "6 of coins",
+        "6 of disks",
+        "6 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-07",
+      "name": "Seven of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 7,
+      "rank": "seven",
+      "element": "earth",
+      "aliases": [
+        "seven of pentacles",
+        "seven of pentacle",
+        "seven of coins",
+        "seven of disks",
+        "seven of discs",
+        "7 of pentacles",
+        "7 of pentacle",
+        "7 of coins",
+        "7 of disks",
+        "7 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-08",
+      "name": "Eight of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 8,
+      "rank": "eight",
+      "element": "earth",
+      "aliases": [
+        "eight of pentacles",
+        "eight of pentacle",
+        "eight of coins",
+        "eight of disks",
+        "eight of discs",
+        "8 of pentacles",
+        "8 of pentacle",
+        "8 of coins",
+        "8 of disks",
+        "8 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-09",
+      "name": "Nine of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 9,
+      "rank": "nine",
+      "element": "earth",
+      "aliases": [
+        "nine of pentacles",
+        "nine of pentacle",
+        "nine of coins",
+        "nine of disks",
+        "nine of discs",
+        "9 of pentacles",
+        "9 of pentacle",
+        "9 of coins",
+        "9 of disks",
+        "9 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-10",
+      "name": "Ten of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 10,
+      "rank": "ten",
+      "element": "earth",
+      "aliases": [
+        "ten of pentacles",
+        "ten of pentacle",
+        "ten of coins",
+        "ten of disks",
+        "ten of discs",
+        "10 of pentacles",
+        "10 of pentacle",
+        "10 of coins",
+        "10 of disks",
+        "10 of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-11",
+      "name": "Page of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 11,
+      "rank": "page",
+      "element": "earth",
+      "aliases": [
+        "page of pentacles",
+        "page of pentacle",
+        "page of coins",
+        "page of disks",
+        "page of discs",
+        "princess of pentacles",
+        "princess of pentacle",
+        "princess of coins",
+        "princess of disks",
+        "princess of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-12",
+      "name": "Knight of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 12,
+      "rank": "knight",
+      "element": "earth",
+      "aliases": [
+        "knight of pentacles",
+        "knight of pentacle",
+        "knight of coins",
+        "knight of disks",
+        "knight of discs",
+        "prince of pentacles",
+        "prince of pentacle",
+        "prince of coins",
+        "prince of disks",
+        "prince of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-13",
+      "name": "Queen of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 13,
+      "rank": "queen",
+      "element": "earth",
+      "aliases": [
+        "queen of pentacles",
+        "queen of pentacle",
+        "queen of coins",
+        "queen of disks",
+        "queen of discs"
+      ],
+      "significations": {}
+    },
+    {
+      "id": "pentacles-14",
+      "name": "King of Pentacles",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 14,
+      "rank": "king",
+      "element": "earth",
+      "aliases": [
+        "king of pentacles",
+        "king of pentacle",
+        "king of coins",
+        "king of disks",
+        "king of discs"
+      ],
+      "significations": {}
+    }
+  ]
+}

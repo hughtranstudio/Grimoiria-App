@@ -1,0 +1,53 @@
+{
+  "id": "celtic-cross",
+  "name": "Celtic Cross",
+  "aliases": [
+    "celtic cross",
+    "celtic"
+  ],
+  "positions": [
+    {
+      "key": "present",
+      "label": "Present"
+    },
+    {
+      "key": "challenge",
+      "label": "Challenge"
+    },
+    {
+      "key": "foundation",
+      "label": "Foundation"
+    },
+    {
+      "key": "past",
+      "label": "Recent past"
+    },
+    {
+      "key": "crown",
+      "label": "Crown / possible outcome"
+    },
+    {
+      "key": "near-future",
+      "label": "Near future"
+    },
+    {
+      "key": "self",
+      "label": "Self"
+    },
+    {
+      "key": "environment",
+      "label": "Environment"
+    },
+    {
+      "key": "hopes-fears",
+      "label": "Hopes and fears"
+    },
+    {
+      "key": "outcome",
+      "label": "Outcome"
+    }
+  ],
+  "decks": [
+    "*"
+  ]
+}

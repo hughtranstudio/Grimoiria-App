@@ -1,0 +1,27 @@
+{
+  "id": "three-card",
+  "name": "Three card",
+  "aliases": [
+    "three card",
+    "three cards",
+    "3 card",
+    "three card spread"
+  ],
+  "positions": [
+    {
+      "key": "past",
+      "label": "Past"
+    },
+    {
+      "key": "present",
+      "label": "Present"
+    },
+    {
+      "key": "future",
+      "label": "Future"
+    }
+  ],
+  "decks": [
+    "*"
+  ]
+}

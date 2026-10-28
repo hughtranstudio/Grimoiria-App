@@ -1,0 +1,64 @@
+import Foundation
+
+/// The phone → Mac sidecar, contract v1 (spec §12). Only `contract_version`, `id` and
+/// `captured_at` are required.
+public struct CaptureSidecar: Codable, Hashable, Sendable {
+    public var contractVersion: Int
+    public var id: String
+    public var capturedAt: String
+    public var device: String?
+    public var kindHint: String?
+    public var text: String?
+    public var audio: String?
+    public var tags: [String]?
+    public var inquiryId: String?
+    public var location: Location?
+    public var draws: [SidecarDraw]?
+
+    public struct Location: Codable, Hashable, Sendable { public var lat: Double; public var lon: Double }
+    public struct SidecarDraw: Codable, Hashable, Sendable {
+        public var deck: String
+        public var card: String
+        public var orientation: Orientation?
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case contractVersion = "contract_version", id, capturedAt = "captured_at", device, kindHint = "kind_hint"
+        case text, audio, tags, inquiryId = "inquiry_id", location, draws
+    }
+
+    public static let supportedVersion = 1
+
+    public static func decode(_ data: Data) throws -> CaptureSidecar {
+        let s: CaptureSidecar
+        do { s = try JSONDecoder().decode(CaptureSidecar.self, from: data) }
+        catch { throw IngestError.badSidecar("not valid sidecar JSON: \(error)") }
+        guard s.contractVersion == supportedVersion else { throw IngestError.badSidecar("unsupported contract_version \(s.contractVersion)") }
+        guard !s.id.trimmingCharacters(in: .whitespaces).isEmpty else { throw IngestError.badSidecar("empty id") }
+        guard ZonedDate.parse(s.capturedAt) != nil else { throw IngestError.badSidecar("captured_at is not ISO 8601 with offset: \(s.capturedAt)") }
+        if let a = s.audio, a.contains("/") || a.hasPrefix(".") { throw IngestError.badSidecar("audio must be a bare file name") }
+        return s
+    }
+
+    /// Entry type from `kind_hint`; `draw`/`yijing` and unknown hints map to divination/insight.
+    public var entryType: EntryType {
+        guard let k = kindHint?.lowercased() else { return .insight }
+        if k == "draw" || k == "yijing" { return .divination }
+        return EntryType(rawValue: k) ?? .insight
+    }
+
+    public var expectsReading: Bool { ["draw", "yijing"].contains(kindHint?.lowercased() ?? "") }
+}
+
+public enum IngestError: Error, Equatable, CustomStringConvertible {
+    case badSidecar(String)
+    case transcription(String)
+    case io(String)
+    public var description: String {
+        switch self {
+        case .badSidecar(let s): return "Bad sidecar: \(s)"
+        case .transcription(let s): return "Transcription failed: \(s)"
+        case .io(let s): return "File error: \(s)"
+        }
+    }
+}

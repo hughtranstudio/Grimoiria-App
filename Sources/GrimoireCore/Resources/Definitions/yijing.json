@@ -1,0 +1,1152 @@
+{
+  "id": "yijing",
+  "name": "Yi Jing",
+  "version": 1,
+  "lineValues": {
+    "6": {
+      "name": "old yin",
+      "yang": false,
+      "changing": true
+    },
+    "7": {
+      "name": "young yang",
+      "yang": true,
+      "changing": false
+    },
+    "8": {
+      "name": "young yin",
+      "yang": false,
+      "changing": false
+    },
+    "9": {
+      "name": "old yang",
+      "yang": true,
+      "changing": true
+    }
+  },
+  "aliases": [
+    "yi jing",
+    "i ching",
+    "yijing",
+    "iching",
+    "e ching",
+    "yi ching",
+    "i jing"
+  ],
+  "trigrams": [
+    {
+      "id": "qian",
+      "name": "Qian",
+      "symbol": "☰",
+      "image": "Heaven",
+      "lines": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "dui",
+      "name": "Dui",
+      "symbol": "☱",
+      "image": "Lake",
+      "lines": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "id": "li",
+      "name": "Li",
+      "symbol": "☲",
+      "image": "Fire",
+      "lines": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "id": "zhen",
+      "name": "Zhen",
+      "symbol": "☳",
+      "image": "Thunder",
+      "lines": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "xun",
+      "name": "Xun",
+      "symbol": "☴",
+      "image": "Wind",
+      "lines": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "kan",
+      "name": "Kan",
+      "symbol": "☵",
+      "image": "Water",
+      "lines": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "id": "gen",
+      "name": "Gen",
+      "symbol": "☶",
+      "image": "Mountain",
+      "lines": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "id": "kun",
+      "name": "Kun",
+      "symbol": "☷",
+      "image": "Earth",
+      "lines": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "hexagrams": [
+    {
+      "number": 1,
+      "pinyin": "Qián",
+      "name": "The Creative",
+      "lower": "qian",
+      "upper": "qian",
+      "lines": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 2,
+      "pinyin": "Kūn",
+      "name": "The Receptive",
+      "lower": "kun",
+      "upper": "kun",
+      "lines": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 3,
+      "pinyin": "Zhūn",
+      "name": "Difficulty at the Beginning",
+      "lower": "zhen",
+      "upper": "kan",
+      "lines": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 4,
+      "pinyin": "Méng",
+      "name": "Youthful Folly",
+      "lower": "kan",
+      "upper": "gen",
+      "lines": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 5,
+      "pinyin": "Xū",
+      "name": "Waiting",
+      "lower": "qian",
+      "upper": "kan",
+      "lines": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 6,
+      "pinyin": "Sòng",
+      "name": "Conflict",
+      "lower": "kan",
+      "upper": "qian",
+      "lines": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 7,
+      "pinyin": "Shī",
+      "name": "The Army",
+      "lower": "kan",
+      "upper": "kun",
+      "lines": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 8,
+      "pinyin": "Bǐ",
+      "name": "Holding Together",
+      "lower": "kun",
+      "upper": "kan",
+      "lines": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 9,
+      "pinyin": "Xiǎo Chù",
+      "name": "The Taming Power of the Small",
+      "lower": "qian",
+      "upper": "xun",
+      "lines": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 10,
+      "pinyin": "Lǚ",
+      "name": "Treading",
+      "lower": "dui",
+      "upper": "qian",
+      "lines": [
+        1,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 11,
+      "pinyin": "Tài",
+      "name": "Peace",
+      "lower": "qian",
+      "upper": "kun",
+      "lines": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 12,
+      "pinyin": "Pǐ",
+      "name": "Standstill",
+      "lower": "kun",
+      "upper": "qian",
+      "lines": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 13,
+      "pinyin": "Tóng Rén",
+      "name": "Fellowship with Men",
+      "lower": "li",
+      "upper": "qian",
+      "lines": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 14,
+      "pinyin": "Dà Yǒu",
+      "name": "Possession in Great Measure",
+      "lower": "qian",
+      "upper": "li",
+      "lines": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 15,
+      "pinyin": "Qiān",
+      "name": "Modesty",
+      "lower": "gen",
+      "upper": "kun",
+      "lines": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 16,
+      "pinyin": "Yù",
+      "name": "Enthusiasm",
+      "lower": "kun",
+      "upper": "zhen",
+      "lines": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 17,
+      "pinyin": "Suí",
+      "name": "Following",
+      "lower": "zhen",
+      "upper": "dui",
+      "lines": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 18,
+      "pinyin": "Gǔ",
+      "name": "Work on What Has Been Spoiled",
+      "lower": "xun",
+      "upper": "gen",
+      "lines": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 19,
+      "pinyin": "Lín",
+      "name": "Approach",
+      "lower": "dui",
+      "upper": "kun",
+      "lines": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 20,
+      "pinyin": "Guān",
+      "name": "Contemplation",
+      "lower": "kun",
+      "upper": "xun",
+      "lines": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 21,
+      "pinyin": "Shì Kè",
+      "name": "Biting Through",
+      "lower": "zhen",
+      "upper": "li",
+      "lines": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 22,
+      "pinyin": "Bì",
+      "name": "Grace",
+      "lower": "li",
+      "upper": "gen",
+      "lines": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 23,
+      "pinyin": "Bō",
+      "name": "Splitting Apart",
+      "lower": "kun",
+      "upper": "gen",
+      "lines": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 24,
+      "pinyin": "Fù",
+      "name": "Return",
+      "lower": "zhen",
+      "upper": "kun",
+      "lines": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 25,
+      "pinyin": "Wú Wàng",
+      "name": "Innocence",
+      "lower": "zhen",
+      "upper": "qian",
+      "lines": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 26,
+      "pinyin": "Dà Chù",
+      "name": "The Taming Power of the Great",
+      "lower": "qian",
+      "upper": "gen",
+      "lines": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 27,
+      "pinyin": "Yí",
+      "name": "The Corners of the Mouth",
+      "lower": "zhen",
+      "upper": "gen",
+      "lines": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 28,
+      "pinyin": "Dà Guò",
+      "name": "Preponderance of the Great",
+      "lower": "xun",
+      "upper": "dui",
+      "lines": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 29,
+      "pinyin": "Kǎn",
+      "name": "The Abysmal",
+      "lower": "kan",
+      "upper": "kan",
+      "lines": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 30,
+      "pinyin": "Lí",
+      "name": "The Clinging",
+      "lower": "li",
+      "upper": "li",
+      "lines": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 31,
+      "pinyin": "Xián",
+      "name": "Influence",
+      "lower": "gen",
+      "upper": "dui",
+      "lines": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 32,
+      "pinyin": "Héng",
+      "name": "Duration",
+      "lower": "xun",
+      "upper": "zhen",
+      "lines": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 33,
+      "pinyin": "Dùn",
+      "name": "Retreat",
+      "lower": "gen",
+      "upper": "qian",
+      "lines": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 34,
+      "pinyin": "Dà Zhuàng",
+      "name": "The Power of the Great",
+      "lower": "qian",
+      "upper": "zhen",
+      "lines": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 35,
+      "pinyin": "Jìn",
+      "name": "Progress",
+      "lower": "kun",
+      "upper": "li",
+      "lines": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 36,
+      "pinyin": "Míng Yí",
+      "name": "Darkening of the Light",
+      "lower": "li",
+      "upper": "kun",
+      "lines": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 37,
+      "pinyin": "Jiā Rén",
+      "name": "The Family",
+      "lower": "li",
+      "upper": "xun",
+      "lines": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 38,
+      "pinyin": "Kuí",
+      "name": "Opposition",
+      "lower": "dui",
+      "upper": "li",
+      "lines": [
+        1,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 39,
+      "pinyin": "Jiǎn",
+      "name": "Obstruction",
+      "lower": "gen",
+      "upper": "kan",
+      "lines": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 40,
+      "pinyin": "Xiè",
+      "name": "Deliverance",
+      "lower": "kan",
+      "upper": "zhen",
+      "lines": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 41,
+      "pinyin": "Sǔn",
+      "name": "Decrease",
+      "lower": "dui",
+      "upper": "gen",
+      "lines": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 42,
+      "pinyin": "Yì",
+      "name": "Increase",
+      "lower": "zhen",
+      "upper": "xun",
+      "lines": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 43,
+      "pinyin": "Guài",
+      "name": "Break-through",
+      "lower": "qian",
+      "upper": "dui",
+      "lines": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 44,
+      "pinyin": "Gòu",
+      "name": "Coming to Meet",
+      "lower": "xun",
+      "upper": "qian",
+      "lines": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 45,
+      "pinyin": "Cuì",
+      "name": "Gathering Together",
+      "lower": "kun",
+      "upper": "dui",
+      "lines": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 46,
+      "pinyin": "Shēng",
+      "name": "Pushing Upward",
+      "lower": "xun",
+      "upper": "kun",
+      "lines": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 47,
+      "pinyin": "Kùn",
+      "name": "Oppression",
+      "lower": "kan",
+      "upper": "dui",
+      "lines": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 48,
+      "pinyin": "Jǐng",
+      "name": "The Well",
+      "lower": "xun",
+      "upper": "kan",
+      "lines": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 49,
+      "pinyin": "Gé",
+      "name": "Revolution",
+      "lower": "li",
+      "upper": "dui",
+      "lines": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 50,
+      "pinyin": "Dǐng",
+      "name": "The Cauldron",
+      "lower": "xun",
+      "upper": "li",
+      "lines": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 51,
+      "pinyin": "Zhèn",
+      "name": "The Arousing",
+      "lower": "zhen",
+      "upper": "zhen",
+      "lines": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 52,
+      "pinyin": "Gèn",
+      "name": "Keeping Still",
+      "lower": "gen",
+      "upper": "gen",
+      "lines": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 53,
+      "pinyin": "Jiàn",
+      "name": "Development",
+      "lower": "gen",
+      "upper": "xun",
+      "lines": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 54,
+      "pinyin": "Guī Mèi",
+      "name": "The Marrying Maiden",
+      "lower": "dui",
+      "upper": "zhen",
+      "lines": [
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 55,
+      "pinyin": "Fēng",
+      "name": "Abundance",
+      "lower": "li",
+      "upper": "zhen",
+      "lines": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 56,
+      "pinyin": "Lǚ",
+      "name": "The Wanderer",
+      "lower": "gen",
+      "upper": "li",
+      "lines": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 57,
+      "pinyin": "Xùn",
+      "name": "The Gentle",
+      "lower": "xun",
+      "upper": "xun",
+      "lines": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 58,
+      "pinyin": "Duì",
+      "name": "The Joyous",
+      "lower": "dui",
+      "upper": "dui",
+      "lines": [
+        1,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 59,
+      "pinyin": "Huàn",
+      "name": "Dispersion",
+      "lower": "kan",
+      "upper": "xun",
+      "lines": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 60,
+      "pinyin": "Jié",
+      "name": "Limitation",
+      "lower": "dui",
+      "upper": "kan",
+      "lines": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 61,
+      "pinyin": "Zhōng Fú",
+      "name": "Inner Truth",
+      "lower": "dui",
+      "upper": "xun",
+      "lines": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "significations": {}
+    },
+    {
+      "number": 62,
+      "pinyin": "Xiǎo Guò",
+      "name": "Preponderance of the Small",
+      "lower": "gen",
+      "upper": "zhen",
+      "lines": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 63,
+      "pinyin": "Jì Jì",
+      "name": "After Completion",
+      "lower": "li",
+      "upper": "kan",
+      "lines": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "significations": {}
+    },
+    {
+      "number": 64,
+      "pinyin": "Wèi Jì",
+      "name": "Before Completion",
+      "lower": "kan",
+      "upper": "li",
+      "lines": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "significations": {}
+    }
+  ]
+}

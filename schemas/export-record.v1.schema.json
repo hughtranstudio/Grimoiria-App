@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grimoire/export-record.v1.schema.json",
+  "title": "One line of grimoire.jsonl, export version 1 (spec §11.1)",
+  "type": "object",
+  "required": ["record_type", "grimoire_export_version", "record"],
+  "properties": {
+    "record_type": { "enum": ["entry", "inquiry", "volume", "reminder"] },
+    "grimoire_export_version": { "const": 1 },
+    "record": {
+      "type": "object",
+      "required": ["id"],
+      "properties": { "id": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$" } }
+    },
+    "derived": {
+      "type": "object",
+      "properties": {
+        "card_names": { "type": "object", "additionalProperties": { "type": "string" } },
+        "hexagrams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["primary", "changing"],
+            "properties": {
+              "primary": { "type": "integer", "minimum": 1, "maximum": 64 },
+              "changing": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 6 } },
+              "resulting": { "type": ["integer", "null"], "minimum": 1, "maximum": 64 }
+            }
+          }
+        },
+        "outcome_days_after": { "type": "array", "items": { "type": "integer" } }
+      }
+    }
+  }
+}

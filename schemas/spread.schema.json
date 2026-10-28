@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grimoire/spread.schema.json",
+  "title": "Grimoire spread definition (spec §5.2)",
+  "type": "object",
+  "required": ["id", "name", "positions"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string" },
+    "aliases": { "type": "array", "items": { "type": "string" } },
+    "positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "label"],
+        "properties": { "key": { "type": "string" }, "label": { "type": "string" } }
+      }
+    },
+    "decks": { "type": "array", "items": { "type": "string" } },
+    "openEnded": { "type": "boolean" }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grimoire/capture-sidecar.v1.schema.json",
+  "title": "Grimoire phone capture sidecar, contract v1",
+  "description": "Written last by the phone beside an optional audio file with the same basename (spec §12).",
+  "type": "object",
+  "required": ["contract_version", "id", "captured_at"],
+  "properties": {
+    "contract_version": { "const": 1 },
+    "id": { "type": "string", "minLength": 1, "description": "Opaque unique id chosen by the phone, e.g. 20261028-081400-4821 or a ULID." },
+    "captured_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$" },
+    "device": { "type": "string" },
+    "kind_hint": { "enum": ["draw", "yijing", "journal", "ritual", "meditation", "vision", "contact", "omen", "insight", "dream"] },
+    "text": { "type": "string" },
+    "audio": { "type": "string", "pattern": "^[^/.][^/]*$" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "inquiry_id": { "type": ["string", "null"] },
+    "location": {
+      "type": "object",
+      "required": ["lat", "lon"],
+      "properties": { "lat": { "type": "number" }, "lon": { "type": "number" } }
+    },
+    "draws": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["deck", "card"],
+        "properties": {
+          "deck": { "type": "string" },
+          "card": { "type": "string" },
+          "orientation": { "enum": ["upright", "reversed", "n/a"] }
+        }
+      }
+    }
+  }
+}
