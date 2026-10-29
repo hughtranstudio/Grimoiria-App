@@ -12,8 +12,8 @@ usage: grimoire <command> [options]
   draw --deck ID [--spread ID] "<cards>"  quick draw, e.g. "3 cups r, tower, page wands"
   cast <lines>                            quick Yi Jing cast, e.g. 789676 (bottom to top)
   timing <iso-date> [--lat N --lon N]     moon phase/sign, sun sign, planetary day/hour
-  ingest <GrimoireInbox folder> [--lat N --lon N --tz Zone] [--stable-seconds 3]
-                                          ingest phone captures into the Inbox
+  ingest <GrimoireInbox folder> [--lat N --lon N --tz Zone] [--stable-seconds 3] [--uranika]
+                                          ingest phone captures into the Inbox (--uranika adds the chart)
   import <file or folder>... [--tz Zone] [--lat N --lon N] [--dmy] [--tag T]... [--attachments DIR] [--dry-run]
                                           split .docx/.md/.txt records into Inbox items
   inbox                                   list Inbox items waiting for confirm
@@ -25,7 +25,15 @@ usage: grimoire <command> [options]
   show <id>
   inquiries [--open]
   needs-outcome [--today yyyy-MM-dd]
-  export --out DIR                        Obsidian Markdown + grimoire.jsonl
+  export --out DIR [--no-coordinates]     Obsidian Markdown + grimoire.jsonl
+  uranika check                           is Uranika open? lists its saved charts and their ids
+  uranika chart <iso-date> [--lat N --lon N] [--natal ID]
+                                          the chart Grimoire would store for that moment
+  uranika fill                            complete "chart pending" entries and Inbox items
+  uranika record <id>                     add a filed life event to your chart in Uranika
+
+  Uranika settings: --uranika-settings PATH (default $GRIMOIRE_URANIKA or ./uranika-settings.json),
+                    --uranika-url URL, --natal ID override it for one run
 
   Global: --store PATH (default $GRIMOIRE_STORE or ./grimoire-store.json)
 """
@@ -70,6 +78,14 @@ func loadLibrary(_ args: Args) throws -> DefinitionLibrary {
 func openStore(_ args: Args) throws -> JSONFileRepository {
     let path = args.one("store") ?? ProcessInfo.processInfo.environment["GRIMOIRE_STORE"] ?? "grimoire-store.json"
     return try JSONFileRepository(url: URL(fileURLWithPath: path))
+}
+
+func uranikaSettings(_ args: Args) throws -> UranikaSettings {
+    let path = args.one("uranika-settings") ?? ProcessInfo.processInfo.environment["GRIMOIRE_URANIKA"] ?? "uranika-settings.json"
+    var s = FileManager.default.fileExists(atPath: path) ? try UranikaSettings.load(from: URL(fileURLWithPath: path)) : UranikaSettings()
+    if let u = args.one("uranika-url") { s.baseURL = u }
+    if let n = args.one("natal").flatMap(Int.init) { s.natalChartId = n }
+    return s
 }
 
 func today(_ tz: TimeZone = .current) -> String { GrimoireDateFormat.day(Date(), in: tz) }
@@ -164,6 +180,8 @@ func run() async throws {
         if let s = args.one("stable-seconds").flatMap(Double.init) { ingestor.stableSeconds = s }
         if let tz = args.one("tz") { ingestor.defaultTimeZone = tz }
         if let la = args.one("lat").flatMap(Double.init), let lo = args.one("lon").flatMap(Double.init) { ingestor.location = GeoLocation(latitude: la, longitude: lo) }
+        if args.has("uranika") { ingestor.astrologer = UranikaAstrologer(settings: try uranikaSettings(args)) }
+        ingestor.tagVocabulary = Array(store.tagTree.all)
         let outcomes = await ingestor.scan(isKnown: store.knowsCapture, deliver: store.addToInbox)
         try store.flush()
         for o in outcomes { print(o) }
@@ -245,7 +263,7 @@ func run() async throws {
     case "add":
         let store = try openStore(args)
         guard args.positional.count >= 2, let type = EntryType(rawValue: args.positional[0]), type != .divination else {
-            throw CLIError(description: "add needs a type (journal, ritual, meditation, vision, contact, omen, insight, dream) and a body")
+            throw CLIError(description: "add needs a type (journal, ritual, meditation, vision, contact, omen, insight, dream, event) and a body")
         }
         let now = ZonedDate(Date())
         let e = Entry(type: type, title: args.one("title"), occurredAt: now, body: args.positional[1],
@@ -297,10 +315,63 @@ func run() async throws {
         let store = try openStore(args)
         guard let out = args.one("out") else { throw CLIError(description: "export needs --out DIR") }
         let root = URL(fileURLWithPath: out)
-        var files = ObsidianExporter(library: lib).files(for: store.data)
+        var exporter = ObsidianExporter(library: lib)
+        exporter.includeCoordinates = !args.has("no-coordinates")
+        var files = exporter.files(for: store.data)
         files["grimoire.jsonl"] = try JSONLExporter(library: lib).export(store.data)
         let report = try ExportWriter.write(files, to: root)
         print("\(report.written.count) written, \(report.unchanged) unchanged")
+
+    case "uranika":
+        let settings = try uranikaSettings(args)
+        let astro = UranikaAstrologer(settings: settings)
+        switch args.positional.first {
+        case "check":
+            let version = try await astro.service.health()
+            print("Uranika is open (Swiss Ephemeris \(version)) at \(settings.baseURL)")
+            for c in try await astro.service.charts() {
+                print("\(c.id)\t\(c.name)\t\(c.date) \(c.time) \(c.tz)" + (c.id == settings.natalChartId ? "\t← your chart" : ""))
+            }
+        case "chart":
+            guard args.positional.count >= 2, let z = ZonedDate.parse(args.positional[1], timeZone: args.one("tz")) else {
+                throw CLIError(description: "uranika chart needs an ISO 8601 date with offset")
+            }
+            var loc: GeoLocation?
+            if let la = args.one("lat").flatMap(Double.init), let lo = args.one("lon").flatMap(Double.init) { loc = GeoLocation(latitude: la, longitude: lo) }
+            let snap = await astro.snapshot(at: z, place: astro.place(captured: loc, fallback: nil))
+            try printJSON(snap)
+            for h in snap.hits { print(h.label) }
+        case "fill":
+            let store = try openStore(args)
+            let filled = await astro.fillPending(store.data.entries)
+            for e in filled { store.save(e) }
+            var items = 0
+            for item in store.data.inbox where item.entry.astro?.status == .pending {
+                guard let e = await astro.fillPending([item.entry]).first else { continue }
+                var updated = item
+                updated.entry = e
+                updated.notes = updated.notes?.filter { !$0.hasPrefix("Chart pending") }
+                if updated.notes?.isEmpty == true { updated.notes = nil }
+                store.addToInbox(updated)
+                items += 1
+            }
+            try store.flush()
+            let left = store.data.entries.filter { $0.astro?.status == .pending }.count + store.data.inbox.filter { $0.entry.astro?.status == .pending }.count
+            print("\(filled.count) entries and \(items) Inbox items filled, \(left) still pending")
+        case "record":
+            let store = try openStore(args)
+            guard args.positional.count >= 2, let id = ULID(args.positional[1]), let e = store.entry(id) else { throw CLIError(description: "uranika record needs a filed entry id") }
+            var s = settings
+            s.recordEventsInUranika = true
+            guard let updated = try await UranikaAstrologer(service: astro.service, settings: s).recordEvent(e) else {
+                throw CLIError(description: "nothing sent: the entry must be a life event, not sent before, and a natal chart must be set (--natal ID)")
+            }
+            store.save(updated)
+            try store.flush()
+            print("added to Uranika as event \(updated.astro?.uranikaEvent ?? 0)")
+        default:
+            throw CLIError(description: "uranika needs check, chart, fill or record")
+        }
 
     default:
         print(usage)

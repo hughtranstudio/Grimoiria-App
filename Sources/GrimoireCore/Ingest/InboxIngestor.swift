@@ -16,6 +16,10 @@ public final class InboxIngestor: @unchecked Sendable {
     public var location: GeoLocation?
     /// Attachments are copied here; the Entry stores a path relative to it.
     public var attachmentsFolder: URL?
+    /// When set, entries get the chart of their moment from Uranika (see `UranikaAstrologer`).
+    public var astrologer: UranikaAstrologer?
+    /// Existing tags, used to suggest tags for life events.
+    public var tagVocabulary: [TagPath] = []
 
     private var sizeObservations: [String: (size: Int, since: Date)] = [:]
     private let lock = NSLock()
@@ -147,12 +151,27 @@ public final class InboxIngestor: @unchecked Sendable {
         }
         let tags: [TagPath] = (s.tags ?? []).map { TagPath($0) }.filter { !$0.isEmpty }
         let sidecarLocation: GeoLocation? = s.location.map { GeoLocation(latitude: $0.lat, longitude: $0.lon) }
-        let timing = TimingContext.compute(at: occurred, location: location ?? sidecarLocation)
+        let uranikaHome = astrologer?.settings.home.map { GeoLocation(latitude: $0.latitude, longitude: $0.longitude, name: $0.name) }
+        let timing = TimingContext.compute(at: occurred, location: location ?? uranikaHome ?? sidecarLocation)
         var entry = Entry(id: ULID(date: occurred.instant), type: s.entryType, occurredAt: occurred, createdAt: now,
                           body: spoken, tags: tags, attachments: attachments, timing: timing,
                           mode: .quick, status: .inbox, captureId: s.id, transcript: transcript)
         if let iid = s.inquiryId, let u = ULID(iid) { entry.inquiryId = u }
-        return InboxItem(entry: entry, draft: draft, source: "phone:\(s.device ?? "unknown")")
+        var notes: [String] = []
+        // Only untyped captures (or the phone's Event button) are read as life events; a chosen type wins.
+        let hint = s.kindHint?.lowercased()
+        if hint == nil || hint == "event", draft?.divinations.isEmpty != false, let event = LifeEvent.detect(spoken, kindHint: s.kindHint, vocabulary: tagVocabulary) {
+            entry.type = .event
+            entry.title = event.title
+            for t in event.tags where !entry.tags.contains(t) { entry.tags.append(t) }
+            if s.kindHint?.lowercased() != "event" { notes.append("Filed as a life event because it starts like one; change the type if not") }
+        }
+        if let astro = astrologer, astro.applies(to: entry.type) {
+            let snap = await astro.snapshot(at: occurred, place: astro.place(captured: sidecarLocation, fallback: location), now: now)
+            entry.astro = snap
+            if snap.status == .pending, let n = snap.note { notes.append(n) }
+        }
+        return InboxItem(entry: entry, draft: draft, source: "phone:\(s.device ?? "unknown")", notes: notes)
     }
 
     func isStable(_ url: URL, now: Date) -> Bool {
