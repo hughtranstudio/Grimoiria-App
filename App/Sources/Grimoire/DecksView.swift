@@ -15,21 +15,20 @@ struct DeckList: View {
                     Label(error, systemImage: "exclamationmark.triangle").foregroundStyle(.red)
                 }
             }
-            Section("Decks") {
+            Section(header: Text("Decks").font(Typo.caption)) {
                 ForEach(model.library.decks) { d in
                     VStack(alignment: .leading, spacing: Space.xs) {
-                        Text(d.name)
+                        Text(d.name).font(Typo.body)
                         Text(subtitle(d)).font(Typo.caption).foregroundStyle(.secondary)
                     }
                     .padding(.vertical, Space.xs)
-                    .font(Typo.body)
                     .tag(Selection.deck(d.id))
                 }
             }
-            Section("Spreads") {
+            Section(header: Text("Spreads").font(Typo.caption)) {
                 ForEach(model.library.spreads) { s in
                     VStack(alignment: .leading, spacing: Space.xs) {
-                        Text(s.name)
+                        Text(s.name).font(Typo.body)
                         Text(s.openEnded ? "Any number of cards" : s.positions.map(\.label).joined(separator: " · "))
                             .font(Typo.caption).foregroundStyle(.secondary).lineLimit(2)
                     }
@@ -37,8 +36,8 @@ struct DeckList: View {
                     .selectionDisabled()
                 }
             }
-            Section("Yi Jing") {
-                Text("\(model.library.yijing.hexagrams.count) hexagrams, \(model.library.yijing.trigrams.count) trigrams")
+            Section(header: Text("Yi Jing").font(Typo.caption)) {
+                Text("\(model.library.yijing.hexagrams.count) hexagrams, \(model.library.yijing.trigrams.count) trigrams").font(Typo.body)
                     .foregroundStyle(.secondary)
                     .selectionDisabled()
             }

@@ -44,8 +44,8 @@ struct SearchList: View {
                 Section("\(hits.count) result\(hits.count == 1 ? "" : "s")") {
                     ForEach(hits, id: \.id) { hit in
                         switch hit {
-                        case .entry(let id): if let e = model.entry(id) { EntryRow(entry: e).font(Typo.body).tag(Selection.entry(id)) }
-                        case .inquiry(let id): if let i = model.inquiry(id) { InquiryRow(inquiry: i).font(Typo.body).tag(Selection.inquiry(id)) }
+                        case .entry(let id): if let e = model.entry(id) { EntryRow(entry: e).tag(Selection.entry(id)) }
+                        case .inquiry(let id): if let i = model.inquiry(id) { InquiryRow(inquiry: i).tag(Selection.inquiry(id)) }
                         }
                     }
                 }

@@ -33,11 +33,11 @@ struct TimelineList: View {
         @Bindable var model = model
         List(selection: $model.selection) {
             ForEach(days, id: \.0) { day, items in
-                Section(day) {
+                Section(header: Text(day).font(Typo.caption)) {
                     ForEach(items) { item in
                         switch item {
-                        case .entry(let e): EntryRow(entry: e).font(Typo.body).tag(Selection.entry(e.id)).contextMenu { DeleteButton(id: e.id) }
-                        case .inquiry(let i): InquiryRow(inquiry: i).font(Typo.body).tag(Selection.inquiry(i.id)).contextMenu { DeleteButton(id: i.id) }
+                        case .entry(let e): EntryRow(entry: e).tag(Selection.entry(e.id)).contextMenu { DeleteButton(id: e.id) }
+                        case .inquiry(let i): InquiryRow(inquiry: i).tag(Selection.inquiry(i.id)).contextMenu { DeleteButton(id: i.id) }
                         }
                     }
                 }
@@ -108,13 +108,13 @@ struct TodayList: View {
     var body: some View {
         @Bindable var model = model
         List(selection: $model.selection) {
-            Section("Now") {
+            Section(header: Text("Now").font(Typo.caption)) {
                 Text(TimingText.line(model.timing(at: model.now())))
                     .font(Typo.callout)
                     .foregroundStyle(.secondary)
                     .selectionDisabled()
             }
-            Section("Needs outcome") {
+            Section(header: Text("Needs outcome").font(Typo.caption)) {
                 if due.isEmpty {
                     Text("Nothing due.").foregroundStyle(.secondary).selectionDisabled()
                 }
@@ -130,17 +130,16 @@ struct TodayList: View {
                             }
                             .controlSize(.small)
                         }
-                        .font(Typo.body)
                         .tag(Selection.inquiry(i.id))
                     }
                 }
             }
-            Section("Today") {
+            Section(header: Text("Today").font(Typo.caption)) {
                 if todays.isEmpty && todaysInquiries.isEmpty {
                     Text("Nothing logged yet today.").foregroundStyle(.secondary).selectionDisabled()
                 }
-                ForEach(todaysInquiries) { i in InquiryRow(inquiry: i).font(Typo.body).tag(Selection.inquiry(i.id)) }
-                ForEach(todays) { e in EntryRow(entry: e).font(Typo.body).tag(Selection.entry(e.id)) }
+                ForEach(todaysInquiries) { i in InquiryRow(inquiry: i).tag(Selection.inquiry(i.id)) }
+                ForEach(todays) { e in EntryRow(entry: e).tag(Selection.entry(e.id)) }
             }
         }
         .toolbar { ToolbarItem { NewEntryMenu() } }

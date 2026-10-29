@@ -22,14 +22,13 @@ struct CorrespondenceList: View {
                         ForEach(rows) { e in
                             Label {
                                 VStack(alignment: .leading, spacing: Space.xs) {
-                                    Text(e.name)
+                                    Text(e.name).font(Typo.body)
                                     Text(summary(e)).font(Typo.caption).foregroundStyle(.secondary).lineLimit(1)
                                 }
                             } icon: {
                                 Text(e.glyph ?? "•").foregroundStyle(.tint)
                             }
                             .padding(.vertical, Space.xs)
-                            .font(Typo.body)
                             .tag(Selection.correspondence(e.id))
                         }
                     }

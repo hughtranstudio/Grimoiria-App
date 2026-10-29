@@ -77,7 +77,6 @@ struct CalendarList: View {
             }
             ForEach(days, id: \.day) { d in
                 CalendarDayRow(day: d, isToday: d.day == model.today)
-                    .font(Typo.body)
                     .tag(Selection.day(d.day))
             }
         }
@@ -111,7 +110,7 @@ struct CalendarDayRow: View {
                 .frame(width: 20)
             VStack(alignment: .leading, spacing: Space.xs) {
                 HStack(spacing: Space.sm) {
-                    Text(DisplayDate.day(day.day)).fontWeight(isToday ? .semibold : .regular)
+                    Text(DisplayDate.day(day.day)).font(Typo.body).fontWeight(isToday ? .semibold : .regular)
                     Text("\(CardGlyph.symbol(for: day.ruler)) \(day.ruler.rawValue.capitalized)").foregroundStyle(.secondary)
                     if isToday { Text("Today").font(Typo.caption).foregroundStyle(.tint) }
                 }

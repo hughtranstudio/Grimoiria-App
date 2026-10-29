@@ -14,7 +14,6 @@ struct InquiryList: View {
         @Bindable var model = model
         List(inquiries, selection: $model.selection) { i in
             InquiryRow(inquiry: i)
-                .font(Typo.body)
                 .tag(Selection.inquiry(i.id))
                 .contextMenu { DeleteButton(id: i.id) }
         }

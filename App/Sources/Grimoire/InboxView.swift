@@ -23,7 +23,7 @@ struct InboxList: View {
                 HStack(alignment: .firstTextBaseline, spacing: Space.sm) {
                     Image(systemName: item.draft == nil ? item.entry.type.symbol : "suit.diamond").foregroundStyle(.tint).frame(width: 20)
                     VStack(alignment: .leading, spacing: Space.xs) {
-                        Text(item.draft?.question.value ?? item.entry.displayTitle).lineLimit(2)
+                        Text(item.draft?.question.value ?? item.entry.displayTitle).font(Typo.body).lineLimit(2)
                         HStack(spacing: Space.sm) {
                             Text(DisplayDate.dayTime(item.entry.occurredAt))
                             if let d = item.draft, d.weakest < .high { Text("Check \(d.weakest.rawValue) fields") }
@@ -32,7 +32,6 @@ struct InboxList: View {
                     }
                 }
                 .padding(.vertical, Space.xs)
-                .font(Typo.body)
                 .tag(Selection.inbox(item.id))
             }
         }

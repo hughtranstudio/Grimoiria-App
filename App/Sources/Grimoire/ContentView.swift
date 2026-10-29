@@ -161,7 +161,7 @@ struct EntryRow: View {
                 .foregroundStyle(.tint)
                 .frame(width: 20)
             VStack(alignment: .leading, spacing: Space.xs) {
-                Text(entry.displayTitle).lineLimit(1)
+                Text(entry.displayTitle).font(Typo.body).lineLimit(1)
                 HStack(spacing: Space.sm) {
                     Text(DisplayDate.dayTime(entry.occurredAt))
                     if let ref = entry.physicalRef { PageBadge(ref: ref) }
@@ -185,7 +185,7 @@ struct InquiryRow: View {
                 .foregroundStyle(.tint)
                 .frame(width: 20)
             VStack(alignment: .leading, spacing: Space.xs) {
-                Text(inquiry.question).lineLimit(2)
+                Text(inquiry.question).font(Typo.body).lineLimit(2)
                 HStack(spacing: Space.sm) {
                     Text(DisplayDate.day(inquiry.askedAt))
                     Text(summary)
