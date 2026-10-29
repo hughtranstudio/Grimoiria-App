@@ -32,6 +32,8 @@ usage: grimoire <command> [options]
   remind <inquiry id> [--preset 7-30-90|1w|1m|3m] [--stop]
   remind-backfill [--today yyyy-MM-dd]    check-ins for open inquiries that have none (old notes)
   export --out DIR                        Obsidian Markdown + grimoire.jsonl
+  patterns [--from yyyy-MM-dd] [--to yyyy-MM-dd] [--top N] [--within DAYS] [--json]
+                                          most-drawn cards and hexagrams, recurrences, moon and day, outcomes
 
   Global: --store PATH (default $GRIMOIRE_STORE or ./grimoire-store.json)
           home location for --lat/--lon defaults: $GRIMOIRE_HOME="lat,lon"
@@ -335,6 +337,21 @@ func run() async throws {
         let n = store.fillTiming(location: location(args), overwrite: args.has("overwrite"))
         try store.flush()
         print("updated \(n) record(s)")
+
+    case "patterns":
+        let lib = try loadLibrary(args)
+        let store = try openStore(args)
+        func day(_ k: String, end: Bool) throws -> Date? {
+            guard let s = args.one(k) else { return nil }
+            let f = DateFormatter()
+            f.locale = Locale(identifier: "en_US_POSIX")
+            f.dateFormat = "yyyy-MM-dd"
+            guard let d = f.date(from: s) else { throw CLIError(description: "--\(k) must be yyyy-MM-dd") }
+            return end ? d.addingTimeInterval(86_399) : d
+        }
+        let p = Patterns(data: store.data, library: lib, from: try day("from", end: false), to: try day("to", end: true))
+        let report = p.report(top: args.one("top").flatMap(Int.init) ?? 10, recurrenceDays: args.one("within").flatMap(Int.init) ?? 30)
+        if args.has("json") { try printJSON(report) } else { print(report.text) }
 
     case "export":
         let lib = try loadLibrary(args)

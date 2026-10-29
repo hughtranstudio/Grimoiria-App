@@ -11,6 +11,10 @@ public struct SearchQuery: Sendable {
     public var from: Date?
     public var to: Date?
     public var includeInbox = false
+    /// Readings that drew this card, as "deckId/cardId". Entries never match.
+    public var card: String?
+    /// Readings that cast this hexagram or changed into it. Entries never match.
+    public var hexagram: Int?
 
     public init(text: String? = nil, tags: [TagPath] = [], types: Set<EntryType> = [], volumeId: ULID? = nil,
                 pages: ClosedRange<Int>? = nil, from: Date? = nil, to: Date? = nil, includeInbox: Bool = false) {
@@ -45,7 +49,8 @@ public extension GrimoireRepository {
         func dateMatch(_ d: Date) -> Bool { (q.from.map { d >= $0 } ?? true) && (q.to.map { d <= $0 } ?? true) }
 
         var hits: [(Date, SearchHit)] = []
-        for e in data.entries where (q.includeInbox || e.status == .filed) {
+        let readingsOnly = q.card != nil || q.hexagram != nil
+        for e in data.entries where !readingsOnly && (q.includeInbox || e.status == .filed) {
             guard q.types.isEmpty || q.types.contains(e.type) else { continue }
             let f = e.fields
             guard textMatch([e.title, e.body, e.extraNotes, e.transcript, f.intention, f.observations, f.interpretation, f.communication, f.result, f.steps])
@@ -54,6 +59,12 @@ public extension GrimoireRepository {
         }
         if q.types.isEmpty || q.types.contains(.divination) {
             for i in data.inquiries {
+                if let card = q.card, !i.divinations.contains(where: { d in d.draws.contains { "\(d.deckId ?? "")/\($0.cardId)" == card } }) { continue }
+                if let n = q.hexagram {
+                    guard let library, i.divinations.contains(where: { d in
+                        d.cast.map { $0.primaryHexagram(in: library.yijing) == n || $0.resultingHexagram(in: library.yijing) == n } ?? false
+                    }) else { continue }
+                }
                 var cardNames: [String?] = []
                 if let library {
                     for d in i.divinations {
