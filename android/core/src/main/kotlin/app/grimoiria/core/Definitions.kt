@@ -29,6 +29,8 @@ data class DeckDefinition(
         val aliases: List<String>,
         /** Flat per-deck attributes (arcana, suit, number, element, …). */
         val attributes: Map<String, JsonElement>,
+        /** Meanings by kind (Quareia: mundane, magical), in file order. Empty when the deck has none yet. */
+        val significations: Map<String, String> = emptyMap(),
     )
 
     val isPlaceholder: Boolean get() = cards.isEmpty()
@@ -134,7 +136,10 @@ class DefinitionLibrary(decks: List<DeckDefinition>, spreads: List<SpreadDefinit
             val o = json.parseToJsonElement(text).jsonObject
             val cards = o.getValue("cards").jsonArray.map { e ->
                 val c = e.jsonObject
-                DeckDefinition.Card(c.str("id"), c.str("name"), c.strings("aliases"), c.filterKeys { it !in knownCardKeys })
+                val meanings = (c["significations"] as? JsonObject)?.mapNotNull { (k, v) ->
+                    (v as? JsonPrimitive)?.content?.takeIf { it.isNotBlank() }?.let { k to it }
+                }?.toMap().orEmpty()
+                DeckDefinition.Card(c.str("id"), c.str("name"), c.strings("aliases"), c.filterKeys { it !in knownCardKeys }, meanings)
             }
             return DeckDefinition(
                 id = o.str("id"),

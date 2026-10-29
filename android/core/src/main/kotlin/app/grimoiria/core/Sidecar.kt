@@ -18,9 +18,17 @@ enum class CaptureKind(val hint: String, val label: String) {
     DREAM("dream", "Dream"),
     RITUAL("ritual", "Ritual"),
     MEDITATION("meditation", "Meditation"),
-    JOURNAL("journal", "Journal");
+    JOURNAL("journal", "Journal"),
+    /** What happened after a reading browsed on the phone; made from the reading, not picked on Home. */
+    OUTCOME("outcome", "Outcome");
 
     val expectsReading: Boolean get() = this == DRAW || this == YIJING
+
+    /** Offered in the capture kind pickers. */
+    val pickable: Boolean get() = this != OUTCOME
+
+    /** Kinds that can be recorded as a timed session. */
+    val isSessionType: Boolean get() = this == RITUAL || this == MEDITATION || this == VISION
 
     companion object {
         fun fromHint(hint: String?): CaptureKind = entries.firstOrNull { it.hint == hint } ?: INSIGHT
@@ -45,6 +53,12 @@ data class CaptureSidecar(
     val transcript: String? = null,
     /** Reading as checked on the phone. The Mac uses it instead of re-parsing; Inbox confirm still applies. */
     val draft: DraftReading? = null,
+    /** The reading an outcome belongs to (an Inquiry ULID from the library). */
+    @SerialName("inquiry_id") val inquiryId: String? = null,
+    /** With kind_hint "outcome": how it turned out. */
+    val outcome: SidecarOutcome? = null,
+    /** A recorded ritual, meditation or vision (docs/session-recording.md). */
+    val session: SidecarSession? = null,
 ) {
     fun encode(): String = json.encodeToString(serializer(), this) + "\n"
 
@@ -59,6 +73,33 @@ data class CaptureSidecar(
         fun decode(text: String): CaptureSidecar = json.decodeFromString(serializer(), text)
     }
 }
+
+@Serializable
+data class SidecarOutcome(val fulfilled: Fulfilled)
+
+/** The phone's session block: clock, phase changes, markers and typed observations by offset in seconds. */
+@Serializable
+data class SidecarSession(
+    val type: String,
+    @SerialName("started_at") val startedAt: String,
+    @SerialName("ended_at") val endedAt: String? = null,
+    val intention: String? = null,
+    val technique: String? = null,
+    val marks: List<SessionMark> = emptyList(),
+    val before: StateCheck? = null,
+    val after: StateCheck? = null,
+    val outcome: String? = null,
+)
+
+/** A phase change (`phase`), a typed observation (`kind` + `text`), or a bare marker (neither). */
+@Serializable
+data class SessionMark(
+    @SerialName("offset_s") val offsetS: Double,
+    val phase: String? = null,
+    val kind: String? = null,
+    val text: String? = null,
+    val tags: List<String>? = null,
+)
 
 object CaptureIds {
     private val stamp = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")

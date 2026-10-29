@@ -25,6 +25,11 @@ data class Capture(
     val transcriptionNote: String? = null,
     val deliveredAt: String? = null,
     val lastError: String? = null,
+    /** Outcomes: the reading they answer, and how it turned out. */
+    val inquiryId: String? = null,
+    val fulfilled: Fulfilled? = null,
+    /** Recorded sessions: the clock, phases and marks. */
+    val session: SidecarSession? = null,
 ) {
     val captureKind: CaptureKind get() = CaptureKind.fromHint(kind)
 
@@ -38,7 +43,10 @@ data class Capture(
         audio = audioFile,
         tags = tags,
         transcript = transcript?.takeIf { it.isNotBlank() && audioFile != null },
-        draft = draft?.takeIf { !it.isEmpty || captureKind.expectsReading },
+        draft = draft?.takeIf { (!it.isEmpty || captureKind.expectsReading) && session == null && captureKind != CaptureKind.OUTCOME },
+        inquiryId = inquiryId,
+        outcome = fulfilled?.let(::SidecarOutcome),
+        session = session,
     )
 }
 
