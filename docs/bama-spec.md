@@ -46,7 +46,7 @@ Native, system accent colour. Calm, text-first. Cards shown by name with suit/el
 
 ## Not in version one
 - Analytics dashboards, transits, Uranian midpoints
-- Phone app beyond the capture Shortcut
+- Phone app beyond capture (the iPhone Shortcut and the Android capture app in `android/` are capture-only)
 - Two-way Obsidian sync
 - ML, embeddings
 - Video, in-app drawing
@@ -96,7 +96,7 @@ Behaviors that matter:
 - **Inquiry screen.** Question, context, every divination laid out by spread (Celtic Cross as the cross + staff, others as a row), Yi Jing as two hexagram drawings with changing lines marked, synthesis editor with confidence 1–5, outcomes in date order with "days after", linked entries and backlinks. Adding an outcome uses `repository.addOutcome(_:to:)` so they stack, status moves open → resolved → revisited, and a due check-in rolls on to the next step.
 - **Reminders.** New-Inquiry sheet and Confirm offer presets 7 / 30 / 90 days (default, `.ladder`) / None / 1 week / 1 month / 3 months (`ReminderPreset`). Today shows `needsOutcome(today:)` with the reminder's prompt ("One week on: what has happened since you asked?"). After importing old notes, offer "Add check-ins to past readings" (`backfillOutcomeCheckIns`).
 - **Timing.** Compute at save from `occurredAt` and the home location in Settings (per-entry override, stored in `timing.location`). Show moon phase, planetary day and "hour of Mars (3rd of night)" from `planetaryHourNumber`; show `nearCusp` signs with "≈". When the home location is first set, run `fillTiming(location:)`. Transits and Uranian midpoints are out of v1.
-- **Ingest folder.** Default `~/Library/Mobile Documents/com~apple~CloudDocs/GrimoireInbox/`; Settings lists several. Set `ingestor.defaultTimeZone` to the Mac's zone and `ingestor.location` to the home location, `attachmentsFolder` to Application Support/Attachments.
+- **Ingest folder.** Default `~/Library/Mobile Documents/com~apple~CloudDocs/GrimoireInbox/`; Settings lists several (the Pixel's Syncthing folder, usually `~/GrimoireInbox/`, is the second; see `docs/android-capture.md`). Android captures may carry `transcript` and `draft`; `InboxIngestor` already uses them instead of Whisper and the parser, and the Inbox shows them like any other draft. Set `ingestor.defaultTimeZone` to the Mac's zone and `ingestor.location` to the home location, `attachmentsFolder` to Application Support/Attachments.
 - **Export.** Settings holds the vault folder (e.g. `Vault/Grimoire/`). Export runs on demand and after each confirm; `ExportWriter` only touches changed files. Copy attachments into `_attachments/`.
 - **Decks.** Read-only list in v1 milestone 1; the deck editor (add/rename cards, attributes, import JSON) writes JSON back to the Definitions folder and must pass `validate()` before saving.
 - **Privacy.** No network entitlement. WhisperKit models are bundled or downloaded once by explicit user action in Settings.

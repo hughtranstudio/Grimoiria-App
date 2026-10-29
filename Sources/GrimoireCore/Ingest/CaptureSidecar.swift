@@ -2,6 +2,10 @@ import Foundation
 
 /// The phone → Mac sidecar, contract v1 (spec §12). Only `contract_version`, `id` and
 /// `captured_at` are required.
+///
+/// `transcript` and `draft` are optional additions written by the Android capture app, which
+/// transcribes on the phone and lets the user check the parsed reading there. When present the
+/// Mac uses them instead of transcribing and parsing again; the Inbox confirm step still applies.
 public struct CaptureSidecar: Codable, Hashable, Sendable {
     public var contractVersion: Int
     public var id: String
@@ -14,6 +18,10 @@ public struct CaptureSidecar: Codable, Hashable, Sendable {
     public var inquiryId: String?
     public var location: Location?
     public var draws: [SidecarDraw]?
+    /// On-phone transcript of `audio`, as corrected by the user.
+    public var transcript: String?
+    /// Reading as checked on the phone, in `DraftReading`'s own JSON shape.
+    public var draft: DraftReading?
 
     public struct Location: Codable, Hashable, Sendable { public var lat: Double; public var lon: Double }
     public struct SidecarDraw: Codable, Hashable, Sendable {
@@ -24,7 +32,7 @@ public struct CaptureSidecar: Codable, Hashable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case contractVersion = "contract_version", id, capturedAt = "captured_at", device, kindHint = "kind_hint"
-        case text, audio, tags, inquiryId = "inquiry_id", location, draws
+        case text, audio, tags, inquiryId = "inquiry_id", location, draws, transcript, draft
     }
 
     public static let supportedVersion = 1

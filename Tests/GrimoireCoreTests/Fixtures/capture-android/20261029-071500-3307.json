@@ -1,0 +1,76 @@
+{
+  "contract_version": 1,
+  "id": "20261029-071500-3307",
+  "captured_at": "2026-10-29T07:15:00-07:00",
+  "device": "pixel",
+  "kind_hint": "draw",
+  "audio": "20261029-071500-3307.wav",
+  "tags": [
+    "theme/threshold"
+  ],
+  "transcript": "Question: will the move go ahead. Deck Rider-Waite. Three card. One, three of cups reversed. Two, the Tower. Three, page of wands.",
+  "draft": {
+    "question": {
+      "value": "will the move go ahead",
+      "heard": "will the move go ahead",
+      "confidence": "high"
+    },
+    "divinations": [
+      {
+        "system": "cards",
+        "deckId": {
+          "value": "rws-tarot",
+          "heard": "rider waite",
+          "confidence": "high"
+        },
+        "spreadId": {
+          "value": "three-card",
+          "heard": "three card",
+          "confidence": "high"
+        },
+        "draws": [
+          {
+            "cardId": {
+              "value": "cups-03",
+              "heard": "three cups",
+              "confidence": "high"
+            },
+            "orientation": {
+              "value": "reversed",
+              "heard": "reversed",
+              "confidence": "high"
+            },
+            "positionKey": "past"
+          },
+          {
+            "cardId": {
+              "value": "maj-16",
+              "heard": "tour",
+              "confidence": "high"
+            },
+            "orientation": {
+              "value": "upright",
+              "confidence": "high"
+            },
+            "positionKey": "present"
+          },
+          {
+            "cardId": {
+              "value": "wands-11",
+              "heard": "page wands",
+              "confidence": "high"
+            },
+            "orientation": {
+              "value": "upright",
+              "confidence": "high"
+            },
+            "positionKey": "future"
+          }
+        ],
+        "heard": "rider waite three card one three of cups reversed two the tour three page of wands"
+      }
+    ],
+    "unparsed": [],
+    "warnings": []
+  }
+}

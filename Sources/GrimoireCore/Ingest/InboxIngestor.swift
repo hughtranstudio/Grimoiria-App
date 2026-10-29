@@ -109,11 +109,13 @@ public final class InboxIngestor: @unchecked Sendable {
             occurred.timeZone = home.identifier
         }
         var transcript: String?
-        if let audio { transcript = try await transcriber.transcribe(audio) }
+        if let phone = s.transcript, !phone.isEmpty { transcript = phone }
+        else if let audio { transcript = try await transcriber.transcribe(audio) }
         let spoken = [s.text, transcript].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n\n")
 
         var draft: DraftReading?
-        let parsed = parser.parse(spoken)
+        // A reading already checked on the phone is kept as is; Confirm still happens here.
+        let parsed = s.draft ?? parser.parse(spoken)
         if !parsed.isEmpty || s.expectsReading {
             draft = parsed
             if s.expectsReading && parsed.isEmpty {

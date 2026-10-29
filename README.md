@@ -18,6 +18,7 @@ This repository holds **GrimoireCore**, the platform-neutral Swift package the M
 | `Sources/GrimoireCore/Timing/` | Moon phase, illumination and sign, Sun sign, planetary day and hour (sunrise to sunrise, Chaldean order). |
 | `Sources/GrimoireCore/Store/` | `GrimoireRepository` protocol (the SwiftData seam), in-memory and JSON-file stores, search. |
 | `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `import`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `outcome`, `remind`, `remind-backfill`, `timing-fill`, `export`. |
+| `android/` | **Grimoire Capture**, the Android (Pixel) capture app: record or type, transcribe on the phone, check the parsed reading, sync to the Mac's Inbox via Syncthing. See [`docs/android-capture.md`](docs/android-capture.md). |
 | `schemas/` | JSON Schemas: phone sidecar v1, deck, spread, JSONL export record. |
 | `tools/` | Definition generator, schema validator, import fixture generator, end-to-end demo script. |
 
@@ -27,7 +28,8 @@ Mac (Xcode 26 / Swift 6.2) or Linux (Swift 6.1+):
 
 ```bash
 swift build
-swift test                      # 73 tests
+swift test                      # 75 tests
+(cd android && ./gradlew -PcoreOnly :core:test)   # Kotlin parser parity + capture outbox
 tools/e2e-demo.sh               # capture → Inbox → confirm → export, through the CLI
 pip install jsonschema && python3 tools/validate_schemas.py
 ```
