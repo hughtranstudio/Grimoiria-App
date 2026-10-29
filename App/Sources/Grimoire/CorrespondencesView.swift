@@ -18,7 +18,7 @@ struct CorrespondenceList: View {
             ForEach(Correspondences.kinds, id: \.self) { kind in
                 let rows = hits.filter { $0.kind == kind }
                 if !rows.isEmpty {
-                    Section(Self.titles[kind] ?? kind.capitalized) {
+                    Section(header: Text(Self.titles[kind] ?? kind.capitalized).font(Typo.caption)) {
                         ForEach(rows) { e in
                             Label {
                                 VStack(alignment: .leading, spacing: Space.xs) {

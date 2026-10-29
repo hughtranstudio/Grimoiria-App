@@ -129,8 +129,8 @@ enum Motion {
 }
 
 extension View {
-    /// A grouped Form or List as a printed page: the house ground, the house
-    /// text font and colour. Put it after `.formStyle(.grouped)`.
+    /// A grouped Form or List as a printed page: the house ground and the
+    /// house text font. Put it after `.formStyle(.grouped)`.
     func pressPage() -> some View {
         modifier(PressPage())
     }
@@ -151,7 +151,7 @@ private struct PressPage: ViewModifier {
         } else if let ground = House.ground {
             content
                 .font(Typo.body)
-                .foregroundStyle(House.ink)
+                // No page-wide ink: selected list rows must still turn white.
                 .scrollContentBackground(.hidden)
                 .background(ground)
         } else {

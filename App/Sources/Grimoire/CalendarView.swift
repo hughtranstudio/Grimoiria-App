@@ -72,6 +72,7 @@ struct CalendarList: View {
         List(selection: $model.selection) {
             if model.settings.home == nil {
                 Label("Set a home location in Settings > General for sunrise, sunset and planetary hours.", systemImage: "location.slash")
+                    .font(Typo.body)
                     .foregroundStyle(.secondary)
                     .selectionDisabled()
             }
@@ -111,7 +112,7 @@ struct CalendarDayRow: View {
             VStack(alignment: .leading, spacing: Space.xs) {
                 HStack(spacing: Space.sm) {
                     Text(DisplayDate.day(day.day)).font(Typo.body).fontWeight(isToday ? .semibold : .regular)
-                    Text("\(CardGlyph.symbol(for: day.ruler)) \(day.ruler.rawValue.capitalized)").foregroundStyle(.secondary)
+                    Text("\(CardGlyph.symbol(for: day.ruler)) \(day.ruler.rawValue.capitalized)").font(Typo.body).foregroundStyle(.secondary)
                     if isToday { Text("Today").font(Typo.caption).foregroundStyle(.tint) }
                 }
                 ForEach(day.events, id: \.self) { e in
