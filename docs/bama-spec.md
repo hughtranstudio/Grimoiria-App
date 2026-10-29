@@ -46,7 +46,7 @@ Native, system accent colour. Calm, text-first. Cards shown by name with suit/el
 
 ## Not in version one
 - Analytics dashboards, transits, Uranian midpoints
-- Phone app beyond the capture Shortcut
+- Phone app beyond capture (the iPhone Shortcut and the Android capture app in `android/` are capture-only)
 - Two-way Obsidian sync
 - ML, embeddings
 - Video, in-app drawing
@@ -95,7 +95,7 @@ Behaviors that matter:
 - **Inquiry screen.** Question, context, every divination laid out by spread (Celtic Cross as the cross + staff, others as a row), Yi Jing as two hexagram drawings with changing lines marked, synthesis editor with confidence 1–5, outcomes in date order with "days after", linked entries and backlinks. Adding an outcome uses `Inquiry.addOutcome` so they stack; status moves open → resolved → revisited.
 - **Reminders.** New-Inquiry sheet offers presets None / 1 week / 1 month / 3 months / custom (`ReminderPreset`). The default is still an open question for Hugh; use None until he says otherwise. Today shows `needsOutcome(today:)`.
 - **Timing.** Compute at save from `occurredAt` and the home location in Settings (per-entry override). Show `nearCusp` signs with "≈".
-- **Ingest folder.** Default `~/Library/Mobile Documents/com~apple~CloudDocs/GrimoireInbox/`; Settings lists several. Set `ingestor.defaultTimeZone` to the Mac's zone and `ingestor.location` to the home location, `attachmentsFolder` to Application Support/Attachments.
+- **Ingest folder.** Default `~/Library/Mobile Documents/com~apple~CloudDocs/GrimoireInbox/`; Settings lists several (the Pixel's Syncthing folder, usually `~/GrimoireInbox/`, is the second; see `docs/android-capture.md`). Android captures may carry `transcript` and `draft`; `InboxIngestor` already uses them instead of Whisper and the parser, and the Inbox shows them like any other draft. Set `ingestor.defaultTimeZone` to the Mac's zone and `ingestor.location` to the home location, `attachmentsFolder` to Application Support/Attachments.
 - **Export.** Settings holds the vault folder (e.g. `Vault/Grimoire/`). Export runs on demand and after each confirm; `ExportWriter` only touches changed files. Copy attachments into `_attachments/`.
 - **Decks.** Read-only list in v1 milestone 1; the deck editor (add/rename cards, attributes, import JSON) writes JSON back to the Definitions folder and must pass `validate()` before saving.
 - **Privacy.** No network entitlement. WhisperKit models are bundled or downloaded once by explicit user action in Settings.
