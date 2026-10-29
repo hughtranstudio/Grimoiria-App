@@ -16,8 +16,10 @@ android {
         // 33: on-device speech recognition from an audio file (RecognizerIntent.EXTRA_AUDIO_SOURCE).
         minSdk = 33
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        // CI numbers each build so the phone (and Obtainium) see every new build as an update.
+        val build = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
+        versionCode = build
+        versionName = "0.1.$build"
     }
 
     signingConfigs {

@@ -38,9 +38,19 @@ The Pixel can't run iCloud Drive, and the practice records are private, so the s
 
 Test: record an omen saying a sentence, Save. Within a minute `GrimoireInbox/incoming/` on the Mac has a `.wav` and a `.json` with the same name, and the Mac app shows it in the Inbox.
 
-## Installing the APK
+## Installing and updating the app
 
-There is no Play Store listing. Every push that touches `android/` builds the app in GitHub Actions (**Actions → Android capture app → latest run → Artifacts → grimoire-capture-apk**). Download it on the Pixel (or `adb install -r app-debug.apk` from the Mac) and allow installing from that source when asked. The build is signed with a fixed key kept in the repo (`android/app/debug.keystore`), so new builds install over old ones and keep your captures and settings.
+There is no Play Store listing. Every push that touches `android/` builds the app in GitHub Actions and publishes it as a GitHub release named **Grimoire Capture 0.1.N** (the five newest are kept). The build is signed with a fixed key kept in the repo (`android/app/debug.keystore`), so each new build installs over the last one and keeps your captures and settings.
+
+**Easiest: Obtainium (one-tap updates).** Obtainium is a free app that watches GitHub releases and installs updates.
+
+1. Make a read-only GitHub token (once): github.com → your photo → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**. Name it `Obtainium`, set **Repository access** to *Only select repositories* → `Grimoiria-App`, and under **Repository permissions** set **Contents** to *Read-only*. Generate and copy it.
+2. On the Pixel, install **Obtainium** (from F-Droid or its GitHub releases page).
+3. In Obtainium: **Settings → GitHub → Personal access token**, paste the token.
+4. **Add app** → URL `https://github.com/hughtranstudio/Grimoiria-App` → **Add**. Obtainium installs the newest build; allow it to install apps when asked.
+5. From then on Obtainium shows a notification when a new build is out; tap **Update**.
+
+**Manual:** open the repo's **Releases** page on the phone, download the newest `grimoire-capture-0.1.N.apk`, and open it.
 
 To build locally instead: Android Studio (or the command-line SDK) with JDK 17, then `cd android && ./gradlew :app:assembleDebug`.
 
