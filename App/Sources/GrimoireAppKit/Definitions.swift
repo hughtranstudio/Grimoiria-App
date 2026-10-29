@@ -6,7 +6,8 @@ import GrimoireCore
 public enum DefinitionsFolder {
     /// Copies `bundled` to `destination` when the destination has no
     /// definitions yet, then loads from the destination. Existing files are
-    /// never overwritten, so edits survive app updates.
+    /// never overwritten, so edits survive app updates; files a newer app
+    /// adds (a new spread, the correspondences table) are copied in.
     @discardableResult
     public static func install(from bundled: URL, to destination: URL) throws -> DefinitionLibrary {
         let fm = FileManager.default
@@ -14,8 +15,25 @@ public enum DefinitionsFolder {
             try fm.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
             if fm.fileExists(atPath: destination.path) { try fm.removeItem(at: destination) }
             try fm.copyItem(at: bundled, to: destination)
+        } else {
+            try addMissing(from: bundled, to: destination)
         }
         return try DefinitionLibrary.load(from: destination)
+    }
+
+    /// Copies bundled files that the destination doesn't have yet, keeping everything that is there.
+    static func addMissing(from bundled: URL, to destination: URL) throws {
+        let fm = FileManager.default
+        let walker = fm.enumerator(at: bundled, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
+        let base = bundled.standardizedFileURL.path
+        while let url = walker?.nextObject() as? URL {
+            guard (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) != true else { continue }
+            let rel = String(url.standardizedFileURL.path.dropFirst(base.count)).trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+            let target = destination.appendingPathComponent(rel)
+            guard !fm.fileExists(atPath: target.path) else { continue }
+            try fm.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try fm.copyItem(at: url, to: target)
+        }
     }
 
     /// Writes one deck back as JSON, but only when the whole library still
@@ -23,7 +41,7 @@ public enum DefinitionsFolder {
     public static func save(_ deck: DeckDefinition, in library: DefinitionLibrary, folder: URL) throws -> DefinitionLibrary {
         var decks = library.decks.filter { $0.id != deck.id }
         decks.append(deck)
-        let next = DefinitionLibrary(decks: decks, spreads: library.spreads, yijing: library.yijing)
+        let next = DefinitionLibrary(decks: decks, spreads: library.spreads, yijing: library.yijing, correspondences: library.correspondences)
         let report = next.validate()
         guard report.isValid else { throw DeckSaveError.invalid(report.errors) }
         let enc = JSONEncoder()

@@ -145,6 +145,19 @@ enum SelfTest {
         check("import files nothing", model.data.entries.count == filedNow)
         check("import reads month-first dates", model.data.inbox.contains { $0.entry.occurredAt.day == "2025-03-04" })
         let reimport = model.importDocuments([doc])
+        // Patterns, browse, calendar, correspondences
+        let p = model.patterns
+        check("patterns count the Tower", p.cardCounts(deckId: "rws-tarot").contains { $0.key == "maj-16" })
+        model.browse(card: "rws-tarot", "maj-16")
+        check("browse by card finds the reading", model.search("").contains(.inquiry(inq.id)))
+        let hex = model.inquiry(inq.id)?.divinations[1].cast?.primaryHexagram(in: model.library.yijing) ?? 0
+        model.browse(hexagram: hex)
+        check("browse by hexagram", model.search("").contains(.inquiry(inq.id)))
+        model.searchHexagram = nil
+        check("calendar month has every day", model.calendarDays.count >= 28)
+        check("calendar shows lunar phases", model.calendarDays.flatMap(\.events).contains { $0.isPhase })
+        check("correspondences loaded", model.library.correspondences?.search("iron").first?.id == "planet:mars")
+        check("Mars has the Tower", model.library.cards(for: model.library.correspondences!.entry("planet:mars")!).first?.card.id == "maj-16")
         check("importing again makes no duplicates", reimport.allSatisfy { if case .duplicate = $0 { true } else { false } } && model.data.inbox.count == inboxBefore + 2)
     }
 

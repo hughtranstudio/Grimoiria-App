@@ -36,6 +36,7 @@ usage: grimoire <command> [options]
                                           moon phases, sign changes, day rulers (and planetary hours) ahead
   hours <planet> [--after ISO] [--its-day] [--limit 5] [--tz Zone] [--lat N --lon N]
                                           next planetary hours of a planet, e.g. hours mars --its-day
+  correspond [text] [--json]              look up planets, signs, elements, trigrams: correspond iron, correspond aries
   patterns [--from yyyy-MM-dd] [--to yyyy-MM-dd] [--top N] [--within DAYS] [--json]
                                           most-drawn cards and hexagrams, recurrences, moon and day, outcomes
 
@@ -369,6 +370,20 @@ func run() async throws {
         for h in RitualCalendar.nextHours(of: planet, after: after, location: loc, zone: tz, onItsDay: args.has("its-day"),
                                           limit: args.one("limit").flatMap(Int.init) ?? 5) {
             print("\(GrimoireDateFormat.iso(h.start, in: tz))  to \(String(GrimoireDateFormat.iso(h.end, in: tz).dropFirst(11).prefix(5)))  hour \(h.number) of \(planet.rawValue)")
+        }
+
+    case "correspond":
+        let lib = try loadLibrary(args)
+        guard let table = lib.correspondences else { throw CLIError(description: "no correspondences.json in the definitions folder") }
+        let hits = table.search(args.positional.joined(separator: " "))
+        if args.has("json") { try printJSON(hits); break }
+        if hits.isEmpty { print("nothing matches") }
+        for e in hits {
+            print("\(e.glyph.map { "\($0) " } ?? "")\(e.name)  (\(e.kind))")
+            for f in e.fields { print("    \(f.label): \(f.values.joined(separator: ", "))") }
+            let cards = lib.cards(for: e)
+            if !cards.isEmpty { print("    Cards: " + cards.map { "\($0.card.name) (\($0.deck.name))" }.joined(separator: ", ")) }
+            if e.kind == "trigram" { print("    Hexagrams: " + lib.hexagrams(withTrigram: e.key).map { "\($0.number)" }.joined(separator: " ")) }
         }
 
     case "patterns":

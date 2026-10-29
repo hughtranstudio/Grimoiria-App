@@ -98,6 +98,21 @@ func tempFolder() -> URL {
     #expect(again.deck("custom-template")?.name == "My deck")
 }
 
+@Test func installAddsFilesFromANewerApp() throws {
+    let dest = tempFolder()
+    defer { try? FileManager.default.removeItem(at: dest.deletingLastPathComponent()) }
+    _ = try DefinitionsFolder.install(from: bundledDefinitions(), to: dest)
+    // An older install had no correspondences table and one spread fewer.
+    try FileManager.default.removeItem(at: dest.appendingPathComponent("correspondences.json"))
+    try FileManager.default.removeItem(at: dest.appendingPathComponent("spreads/celtic-cross.json"))
+    #expect(try DefinitionLibrary.load(from: dest).correspondences == nil)
+    let lib = try DefinitionsFolder.install(from: bundledDefinitions(), to: dest)
+    #expect(lib.correspondences?.entry("planet:mars") != nil)
+    #expect(lib.spread("celtic-cross") != nil)
+    // Saving a deck keeps the table.
+    #expect(try DefinitionsFolder.save(lib.deck("custom-template")!, in: lib, folder: dest).correspondences != nil)
+}
+
 @Test func invalidDeckIsNotSaved() throws {
     let dest = tempFolder()
     defer { try? FileManager.default.removeItem(at: dest.deletingLastPathComponent()) }
