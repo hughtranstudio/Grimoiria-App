@@ -11,7 +11,7 @@ let package = Package(
     targets: [
         .target(
             name: "GrimoireCore",
-            resources: [.copy("Resources/Definitions")]
+            resources: [.copy("Resources/Definitions"), .copy("Resources/Book")]
         ),
         .executableTarget(name: "grimoire", dependencies: ["GrimoireCore"]),
         .testTarget(

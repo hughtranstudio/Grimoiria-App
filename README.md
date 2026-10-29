@@ -14,10 +14,11 @@ This repository holds **GrimoireCore**, the platform-neutral Swift package the M
 | `Sources/GrimoireCore/Parsing/` | Spoken/typed draw parser → `DraftReading` with per-field confidence. Quick draw (`3 cups r, tower`). |
 | `Sources/GrimoireCore/Ingest/` | Phone sidecar contract v1, `InboxIngestor` (folder rules from spec §12), mandatory confirm-and-correct with a correction log. |
 | `Sources/GrimoireCore/Import/` | Google Docs / local file importer: .docx (built-in zip + inflate), .md with frontmatter, .txt; splits on dated headings and date lines into Inbox items. See [`docs/google-docs-import.md`](docs/google-docs-import.md). |
-| `Sources/GrimoireCore/Export/` | Obsidian Markdown + YAML frontmatter, `grimoire.jsonl`, write-only-if-changed writer. |
+| `Sources/GrimoireCore/Export/` | Obsidian Markdown + YAML frontmatter, `grimoire.jsonl`, write-only-if-changed writer, and printable books (`BookExporter` → Typst). See [`docs/book-export.md`](docs/book-export.md). |
+| `Sources/GrimoireCore/Resources/Book/` | Shared Typst book layout and the two bundled designs (Working Journal, Book of Shadows). |
 | `Sources/GrimoireCore/Timing/` | Moon phase, illumination and sign, Sun sign, planetary day and hour (sunrise to sunrise, Chaldean order). |
 | `Sources/GrimoireCore/Store/` | `GrimoireRepository` protocol (the SwiftData seam), in-memory and JSON-file stores, search. |
-| `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `import`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `export`. |
+| `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `import`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `export`, `book`. |
 | `schemas/` | JSON Schemas: phone sidecar v1, deck, spread, JSONL export record. |
 | `tools/` | Definition generator, schema validator, import fixture generator, end-to-end demo script. |
 
@@ -27,7 +28,7 @@ Mac (Xcode 26 / Swift 6.2) or Linux (Swift 6.1+):
 
 ```bash
 swift build
-swift test                      # 73 tests
+swift test                      # 81 tests
 tools/e2e-demo.sh               # capture → Inbox → confirm → export, through the CLI
 pip install jsonschema && python3 tools/validate_schemas.py
 ```

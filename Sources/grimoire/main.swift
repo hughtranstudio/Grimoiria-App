@@ -26,6 +26,10 @@ usage: grimoire <command> [options]
   inquiries [--open]
   needs-outcome [--today yyyy-MM-dd]
   export --out DIR                        Obsidian Markdown + grimoire.jsonl
+  book --out DIR [--design working-journal|book-of-shadows|FOLDER] [--from D] [--to D]
+       [--type T]... [--tag T]... [--deck ID]... [--card ID]... [--group month|week|type|tag|deck|card|none]
+       [--title T] [--subtitle T] [--transcripts] [--attachments DIR] [--fonts DIR]... [--typst PATH] [--no-pdf]
+                                          printable PDF via Typst (writes a Typst project, then book.pdf)
 
   Global: --store PATH (default $GRIMOIRE_STORE or ./grimoire-store.json)
 """
@@ -301,6 +305,34 @@ func run() async throws {
         files["grimoire.jsonl"] = try JSONLExporter(library: lib).export(store.data)
         let report = try ExportWriter.write(files, to: root)
         print("\(report.written.count) written, \(report.unchanged) unchanged")
+
+    case "book":
+        let lib = try loadLibrary(args)
+        let store = try openStore(args)
+        guard let out = args.one("out") else { throw CLIError(description: "book needs --out DIR") }
+        var spec = BookSpec(title: args.one("title") ?? "Grimoire", subtitle: args.one("subtitle"), from: args.one("from"), to: args.one("to"),
+                            tags: args.all("tag").map { TagPath($0) }, decks: args.all("deck"), cards: args.all("card"),
+                            includeTranscripts: args.has("transcripts"))
+        spec.types = try args.all("type").map { t in
+            guard let type = EntryType(rawValue: t == "reading" ? "divination" : t) else { throw CLIError(description: "unknown type \(t)") }
+            return type
+        }
+        if let g = args.one("group") {
+            guard let grouping = BookSpec.Grouping(rawValue: g) else { throw CLIError(description: "--group is one of \(BookSpec.Grouping.allCases.map(\.rawValue).joined(separator: ", "))") }
+            spec.grouping = grouping
+        }
+        let design = try BookDesign.named(args.one("design") ?? "working-journal")
+        let attachments = args.one("attachments").map { URL(fileURLWithPath: $0) }
+        let book = BookExporter(library: lib).book(store.data, spec: spec, generatedOn: today(), attachmentExists: { path in
+            attachments.map { FileManager.default.fileExists(atPath: $0.appendingPathComponent(path).path) } ?? false
+        })
+        let root = URL(fileURLWithPath: out)
+        try BookWriter.write(book, design: design, to: root, attachmentsRoot: attachments)
+        print("\(design.name): \(book.chapters.count) chapter(s), \(book.counts.entries) entries, \(book.counts.readings) readings → \(root.path)")
+        if args.has("no-pdf") { break }
+        guard let typst = args.one("typst").map({ URL(fileURLWithPath: $0) }) ?? TypstRenderer.locate() else { throw BookError.typstNotFound }
+        let pdf = try TypstRenderer(executable: typst, fontPaths: args.all("fonts").map { URL(fileURLWithPath: $0) }).render(folder: root)
+        print(pdf.path)
 
     default:
         print(usage)

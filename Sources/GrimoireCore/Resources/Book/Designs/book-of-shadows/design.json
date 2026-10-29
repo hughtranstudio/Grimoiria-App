@@ -1,0 +1,45 @@
+{
+  "formatVersion": 1,
+  "id": "book-of-shadows",
+  "name": "Book of Shadows",
+  "description": "Old printed book on A5: Garamond text, Fell titles, black with oxblood red, ornaments, chapters opening on the right-hand page.",
+  "page": {
+    "size": "a5",
+    "margins": { "inside": "20mm", "outside": "15mm", "top": "17mm", "bottom": "20mm" },
+    "bleed": "0mm",
+    "cropMarks": false,
+    "chaptersOnRecto": true
+  },
+  "type": {
+    "body": ["EB Garamond", "Hoefler Text", "Libertinus Serif"],
+    "display": ["IM FELL English", "EB Garamond", "Big Caslon", "Libertinus Serif"],
+    "label": ["EB Garamond", "Hoefler Text", "Libertinus Serif"],
+    "symbols": ["Noto Sans Symbols", "Noto Sans Symbols 2", "Apple Symbols", "DejaVu Sans"],
+    "size": "10.5pt",
+    "leading": "0.62em",
+    "justify": true,
+    "indent": "1.2em",
+    "paragraphSpacing": "0.62em",
+    "smallCapsLabels": true,
+    "initial": "accent"
+  },
+  "colour": {
+    "ink": "#1a1714",
+    "accent": "#8a1c1c",
+    "quiet": "#6e6259",
+    "rule": "#8a1c1c"
+  },
+  "ornament": {
+    "chapterMark": "✠",
+    "itemSeparator": "⁂",
+    "titleMark": "✠"
+  },
+  "content": {
+    "contents": true,
+    "timing": true,
+    "photos": true,
+    "tags": false,
+    "cardIndex": true,
+    "hexagramIndex": true
+  }
+}
