@@ -41,6 +41,19 @@ public protocol Transcriber: Sendable {
     func transcribe(_ audio: URL) async throws -> String
 }
 
+/// A transcriber that knows when each piece was said, for session recordings.
+public protocol SegmentingTranscriber: Transcriber {
+    func segments(_ audio: URL) async throws -> [TranscriptSegment]
+}
+
+public extension Transcriber {
+    /// Timed segments when the transcriber has them; otherwise the text, with any "[mm:ss]" stamps read.
+    func timedSegments(_ audio: URL) async throws -> [TranscriptSegment] {
+        if let s = self as? SegmentingTranscriber { return try await s.segments(audio) }
+        return TimedTranscript.parse(try await transcribe(audio))
+    }
+}
+
 /// For tests and the Linux CLI: reads `<audio basename>.txt` beside the audio if present.
 public struct SidecarTextTranscriber: Transcriber {
     public init() {}

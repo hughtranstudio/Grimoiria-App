@@ -14,6 +14,8 @@ public struct MLExporter: Sendable {
     public static let formatVersion = 1
     public let library: DefinitionLibrary
     public var chunkSize = 1200
+    /// The tag vocabulary for session and observation tables.
+    public var vocabulary: TagVocabulary = .standard
 
     public init(library: DefinitionLibrary) { self.library = library }
 
@@ -59,6 +61,7 @@ public struct MLExporter: Sendable {
     struct Manifest: Encodable {
         struct File: Encodable { var path: String; var rows: Int; var about: String }
         var grimoire_ml_export_version: Int
+        var session_schema_version: Int
         var privacy: String
         var files: [File]
     }
@@ -72,23 +75,33 @@ public struct MLExporter: Sendable {
 
         let draws = try drawRows(data).map(line)
         let passages = try corpus(data).map(line)
+        let sessionExport = SessionExporter(vocabulary: vocabulary)
+        let (sessionCount, observationCount) = sessionExport.counts(for: data)
         let manifest = Manifest(
             grimoire_ml_export_version: Self.formatVersion,
+            session_schema_version: SessionExporter.schemaVersion,
             privacy: "Written by Grimoire on this Mac for tools you run locally. Nothing here is sent anywhere.",
             files: [
                 .init(path: "ML/draws.jsonl", rows: draws.count,
                       about: "One row per card drawn or hexagram cast (primary and resulting), with deck attributes, timing, synthesis confidence and the latest outcome."),
                 .init(path: "ML/corpus.jsonl", rows: passages.count,
                       about: "Passages of about \(chunkSize) characters from entries, questions, context, syntheses, outcomes and transcripts, for local embeddings or search."),
+                .init(path: "ML/sessions.jsonl", rows: sessionCount,
+                      about: "One row per recorded ritual, meditation or vision: clock, phase lengths, before and after ratings, observation counts by kind, tags and timing. Same rows in sessions.csv."),
+                .init(path: "ML/observations.jsonl", rows: observationCount,
+                      about: "One row per observation in a session, with its time, phase, kind, how it was captured, tags (controlled, free, and one column per facet) and the session's timing. Same rows in observations.csv."),
+                .init(path: "ML/tag-vocabulary.json", rows: vocabulary.terms.count, about: "The controlled tag vocabulary the tags were checked against."),
                 .init(path: "grimoire.jsonl", rows: -1, about: "Every record whole, one per line (see grimoire_export_version)."),
             ])
         let pretty = JSONEncoder()
         pretty.outputFormatting = [.sortedKeys, .prettyPrinted, .withoutEscapingSlashes]
-        return [
+        var out = [
             "ML/draws.jsonl": jsonl(draws),
             "ML/corpus.jsonl": jsonl(passages),
             "ML/manifest.json": String(decoding: try pretty.encode(manifest), as: UTF8.self) + "\n",
         ]
+        out.merge(try sessionExport.files(for: data)) { a, _ in a }
+        return out
     }
 
     func drawRows(_ data: GrimoireData) -> [DrawRow] {

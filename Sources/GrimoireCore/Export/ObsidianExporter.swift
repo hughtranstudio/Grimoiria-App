@@ -126,6 +126,7 @@ public struct ObsidianExporter: Sendable {
         fm += physical(e.physicalRef, volumes: volumes)
         fm += timing(e.timing)
         fm += typeFields(e)
+        fm += sessionYAML(e.session)
         fm.append(("mode", .string(e.mode.rawValue)))
         if let c = e.captureId { fm.append(("capture_id", .string(c))) }
         if !e.attachments.isEmpty { fm.append(("attachments", .list(e.attachments.map { .string("_attachments/\($0.path)") }))) }
@@ -133,10 +134,55 @@ public struct ObsidianExporter: Sendable {
 
         var body = e.body.trimmingCharacters(in: .whitespacesAndNewlines)
         if let x = e.extraNotes, !x.isEmpty { body += "\n\n## Extra notes\n\n\(x)" }
+        if let s = e.session { body += sessionLog(s) }
         if let t = e.transcript, !t.isEmpty, t != e.body { body += "\n\n## Transcript\n\n\(t)" }
         if let photo = e.physicalRef?.photo { body += "\n\n![[_attachments/\(photo.path)]]" }
         for a in e.attachments where a.kind == .image { body += "\n\n![[_attachments/\(a.path)]]" }
         return YAML.frontmatter(.map(fm), comment: Self.header) + "\n" + body + "\n"
+    }
+
+    /// `session:` frontmatter: the clock, phases, ratings and counts, for Dataview.
+    func sessionYAML(_ s: PracticeSession?) -> [(String, YAMLValue)] {
+        guard let s else { return [] }
+        var m: [(String, YAMLValue)] = [("started_at", .string(s.startedAt.iso8601))]
+        if let end = s.endedAt { m.append(("ended_at", .string(end.iso8601))) }
+        if let d = s.duration { m.append(("duration_min", .int(Int((d / 60).rounded())))) }
+        if !s.phases.isEmpty {
+            m.append(("phases", .list(s.phases.map { .map([("phase", .string($0.phase.rawValue)), ("at", .string(TimedTranscript.clock($0.offset)))]) })))
+        }
+        func check(_ c: StateCheck?) -> YAMLValue? {
+            guard let c, !c.isEmpty else { return nil }
+            var x: [(String, YAMLValue)] = []
+            if let v = c.energy { x.append(("energy", .int(v))) }
+            if let v = c.calm { x.append(("calm", .int(v))) }
+            if let v = c.focus { x.append(("focus", .int(v))) }
+            return .map(x)
+        }
+        if let b = check(s.before) { m.append(("before", b)) }
+        if let a = check(s.after) { m.append(("after", a)) }
+        m.append(("observations", .int(s.observations.count)))
+        let kinds = Dictionary(grouping: s.observations, by: \.kind)
+        if !kinds.isEmpty {
+            m.append(("kinds", .map(ObservationKind.allCases.compactMap { k in kinds[k].map { (k.rawValue, YAMLValue.int($0.count)) } })))
+        }
+        let tags = s.observationTags
+        if !tags.isEmpty { m.append(("observed_tags", .list(tags.map { .string($0.path) }))) }
+        if s.interrupted == true { m.append(("interrupted", .bool(true))) }
+        return [("session", .map(m))]
+    }
+
+    /// The session's observations as a table, with inline #tags so Obsidian counts them.
+    func sessionLog(_ s: PracticeSession) -> String {
+        guard !s.observations.isEmpty else { return "" }
+        var md = "\n\n## Session log\n\n| Time | Phase | Kind | Observation | Tags |\n|---|---|---|---|---|\n"
+        for o in s.observations {
+            var text = o.text.isEmpty ? "_(marker)_" : Self.cell(o.text)
+            if o.capture == .recalled { text += " _(recalled)_" }
+            if let i = o.intensity { text += " · intensity \(i)" }
+            if let c = o.clarity { text += " · clarity \(c)" }
+            md += "| \(TimedTranscript.clock(o.offset)) | \(o.phase?.rawValue ?? "") | \(o.kind.rawValue) | \(text) | \(o.tags.map { "#\($0.path)" }.joined(separator: " ")) |\n"
+        }
+        return md.trimmingCharacters(in: .newlines).isEmpty ? "" : String(md.dropLast())
     }
 
     func typeFields(_ e: Entry) -> [(String, YAMLValue)] {

@@ -16,6 +16,8 @@ public final class InboxIngestor: @unchecked Sendable {
     public var location: GeoLocation?
     /// Attachments are copied here; the Entry stores a path relative to it.
     public var attachmentsFolder: URL?
+    /// Tags suggested for observations in recorded sessions.
+    public var vocabulary: TagVocabulary = .standard
 
     private var sizeObservations: [String: (size: Int, since: Date)] = [:]
     private let lock = NSLock()
@@ -108,6 +110,7 @@ public final class InboxIngestor: @unchecked Sendable {
         if let home = TimeZone(identifier: defaultTimeZone), home.secondsFromGMT(for: occurred.instant) == occurred.zone.secondsFromGMT(for: occurred.instant) {
             occurred.timeZone = home.identifier
         }
+        if let ss = s.session { return try await makeSessionItem(s, ss, occurred: occurred, audio: audio, now: now) }
         var transcript: String?
         if let phone = s.transcript, !phone.isEmpty { transcript = phone }
         else if let audio { transcript = try await transcriber.transcribe(audio) }
@@ -138,14 +141,7 @@ public final class InboxIngestor: @unchecked Sendable {
 
         var attachments: [Attachment] = []
         if let audio {
-            var rel = audio.lastPathComponent
-            if let folder = attachmentsFolder {
-                rel = "audio/\(audio.lastPathComponent)"
-                let dest = folder.appendingPathComponent(rel)
-                try fs.makeDirectory(dest.deletingLastPathComponent())
-                try fs.write(try fs.read(audio), to: dest)
-            }
-            attachments.append(Attachment(kind: .audio, path: rel, originalName: audio.lastPathComponent))
+            attachments.append(Attachment(kind: .audio, path: try copyAudio(audio), originalName: audio.lastPathComponent))
         }
         let tags: [TagPath] = (s.tags ?? []).map { TagPath($0) }.filter { !$0.isEmpty }
         let sidecarLocation: GeoLocation? = s.location.map { GeoLocation(latitude: $0.lat, longitude: $0.lon) }
@@ -155,6 +151,55 @@ public final class InboxIngestor: @unchecked Sendable {
                           mode: .quick, status: .inbox, captureId: s.id, transcript: transcript)
         if let iid = s.inquiryId, let u = ULID(iid) { entry.inquiryId = u }
         return InboxItem(entry: entry, draft: draft, source: "phone:\(s.device ?? "unknown")")
+    }
+
+    /// Copies the audio into the attachments folder; returns the path the Entry stores.
+    func copyAudio(_ audio: URL) throws -> String {
+        guard let folder = attachmentsFolder else { return audio.lastPathComponent }
+        let rel = "audio/\(audio.lastPathComponent)"
+        let dest = folder.appendingPathComponent(rel)
+        try fs.makeDirectory(dest.deletingLastPathComponent())
+        try fs.write(try fs.read(audio), to: dest)
+        return rel
+    }
+
+    /// A recorded session from the phone: phases and markers from the sidecar, observations from
+    /// the timed transcript (the phone's, or the Mac's own when it sent none).
+    func makeSessionItem(_ s: CaptureSidecar, _ ss: CaptureSidecar.SidecarSession, occurred: ZonedDate, audio: URL?, now: Date) async throws -> InboxItem {
+        let zone = occurred.timeZone
+        var start = ss.startedAt.flatMap { ZonedDate.parse($0) } ?? occurred
+        start.timeZone = zone
+        let type = EntryType.sessionTypes.contains(s.entryType) ? s.entryType : .meditation
+        var recorder = SessionRecorder(type: type, startedAt: start, intention: ss.intention, technique: ss.technique,
+                                       tags: (s.tags ?? []).map { TagPath($0) }.filter { !$0.isEmpty }, before: ss.before, firstPhase: nil)
+        for m in (ss.marks ?? []).sorted(by: { $0.offsetS < $1.offsetS }) {
+            let at = start.instant.addingTimeInterval(m.offsetS)
+            if let p = m.phase { recorder.setPhase(p, at: at) }
+            if let k = m.kind ?? (m.text?.isEmpty == false ? .note : nil) {
+                recorder.observe(k, m.text ?? "", tags: (m.tags ?? []).map { vocabulary.canonical(TagPath($0)) }.filter { !$0.isEmpty }, at: at)
+            } else if m.phase == nil {
+                recorder.mark(at: at)
+            }
+        }
+        var segments = ss.segments ?? []
+        if segments.isEmpty, let phone = s.transcript, !phone.isEmpty { segments = TimedTranscript.parse(phone) }
+        if segments.isEmpty, let audio { segments = try await transcriber.timedSegments(audio) }
+        // No end time sent: the session ran at least until its last mark or words.
+        let lastOffset = max(ss.marks?.map(\.offsetS).max() ?? 0, segments.map(\.offset).max() ?? 0)
+        let end = ss.endedAt.flatMap { ZonedDate.parse($0) }?.instant ?? start.instant.addingTimeInterval(lastOffset)
+        recorder.finish(at: end, after: ss.after, outcome: ss.outcome ?? s.text)
+
+        let extractor = ObservationExtractor(vocabulary: vocabulary)
+        let source = "phone:\(s.device ?? "unknown")"
+        let recording = try audio.map { SessionRecording(path: try copyAudio($0), offset: 0, duration: recorder.session.duration, segments: segments) }
+        let item = recorder.inboxItem(recording: recording, extractor: extractor, timing: timing(start, s), source: source, captureId: s.id, now: now)
+        // A transcript with no audio (typed or dictated on the phone) still becomes observations.
+        if recording == nil, !segments.isEmpty { return SessionAssembler.retranscribed(item, segments: segments, extractor: extractor) }
+        return item
+    }
+
+    func timing(_ at: ZonedDate, _ s: CaptureSidecar) -> TimingContext {
+        TimingContext.compute(at: at, location: location ?? s.location.map { GeoLocation(latitude: $0.lat, longitude: $0.lon) })
     }
 
     func isStable(_ url: URL, now: Date) -> Bool {

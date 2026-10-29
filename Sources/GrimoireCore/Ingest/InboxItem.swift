@@ -69,6 +69,10 @@ public enum Confirmation {
         entry.status = .filed
         entry.updatedAt = now
         if let t = entryType { entry.type = t }
+        // Confirming a session is the review: its observations count as checked from here on.
+        if entry.session != nil {
+            for i in entry.session!.observations.indices { entry.session!.observations[i].reviewed = true }
+        }
 
         var corrections: [CorrectionLogEntry] = []
         var inquiry: Inquiry?

@@ -31,6 +31,8 @@ public struct Entry: Codable, Hashable, Sendable, Identifiable {
     public var captureId: String?
     /// Raw transcript of the attached audio, when ingested.
     public var transcript: String?
+    /// The recorded session behind a ritual, meditation or vision: clock, phases, observations.
+    public var session: PracticeSession?
 
     public init(
         id: ULID = ULID(),
@@ -50,7 +52,8 @@ public struct Entry: Codable, Hashable, Sendable, Identifiable {
         fields: TypeFields = TypeFields(),
         extraNotes: String? = nil,
         captureId: String? = nil,
-        transcript: String? = nil
+        transcript: String? = nil,
+        session: PracticeSession? = nil
     ) {
         self.id = id
         self.type = type
@@ -71,6 +74,7 @@ public struct Entry: Codable, Hashable, Sendable, Identifiable {
         self.extraNotes = extraNotes
         self.captureId = captureId
         self.transcript = transcript
+        self.session = session
     }
 
     /// Title, or the first line of the body when blank (spec §3.1).
