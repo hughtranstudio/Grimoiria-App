@@ -25,10 +25,7 @@ extension AppModel {
         let inquiry = Inquiry(question: question.trimmingCharacters(in: .whitespacesAndNewlines), askedAt: at, context: context,
                               divinations: divinations, timing: timing(at: at))
         repository.save(inquiry)
-        if let due = reminder.dueOn(from: at.day) {
-            repository.save(Reminder(targetId: inquiry.id, dueOn: due))
-            ReminderScheduler.shared.refresh()
-        }
+        addReminder(for: inquiry.id, reminder, askedOn: at.day)
         if select {
             if page != .inquiries && page != .timeline { page = .inquiries }
             selection = .inquiry(inquiry.id)
@@ -36,24 +33,48 @@ extension AppModel {
         return inquiry
     }
 
-    /// Outcomes stack in date order; reminders that are due for this Inquiry are done.
+    /// Outcomes stack in date order. Reminders due by the outcome's day are done; a 7/30/90
+    /// check-in rolls on to its next step, so later outcomes layer on.
     func addOutcome(to id: ULID, _ outcome: Outcome) {
         flushEdits()
-        guard var i = inquiry(id) else { return }
-        i.addOutcome(outcome)
-        i.updatedAt = .now
-        repository.save(i)
-        for var r in data.reminders where r.targetId == id && r.isDue(today: today) {
-            r.complete()
+        _ = try? repository.addOutcome(outcome, to: id)
+        ReminderScheduler.shared.refresh()
+    }
+
+    /// A reminder for a record. The 7/30/90 ladder counts from the day the question was asked.
+    func addReminder(for target: ULID, _ choice: ReminderChoice, askedOn: String? = nil) {
+        if case .preset(.ladder) = choice {
+            let anchor = askedOn ?? inquiry(target)?.askedAt.day ?? entry(target)?.occurredAt.day ?? today
+            guard let r = OutcomeCheckIn.reminder(for: target, askedOn: anchor, today: today, preset: .ladder) else { return }
             repository.save(r)
+        } else {
+            guard let due = choice.dueOn(from: askedOn ?? today) else { return }
+            repository.save(Reminder(targetId: target, dueOn: due))
         }
         ReminderScheduler.shared.refresh()
     }
 
-    func addReminder(for target: ULID, _ choice: ReminderChoice) {
-        guard let due = choice.dueOn(from: today) else { return }
-        repository.save(Reminder(targetId: target, dueOn: due))
+    /// Open readings with no outcome and no reminder get a 7/30/90 check-in (after importing old notes).
+    @discardableResult
+    func backfillCheckIns() -> Int {
+        flushEdits()
+        let added = repository.backfillOutcomeCheckIns(today: today, preset: .ladder)
         ReminderScheduler.shared.refresh()
+        show(added.isEmpty ? "Every open reading already has a check-in" : "Added check-ins to \(added.count) past reading\(added.count == 1 ? "" : "s")")
+        return added.count
+    }
+
+    /// Fills moon, Sun and planetary hours on records saved before a home location was set.
+    @discardableResult
+    func fillMissingTiming() -> Int {
+        flushEdits()
+        guard let home = settings.home else {
+            show("Set a home location in Settings > General first")
+            return 0
+        }
+        let n = repository.fillTiming(location: home)
+        show(n == 0 ? "Every record already has its timing" : "Filled timing on \(n) record\(n == 1 ? "" : "s")")
+        return n
     }
 
     func snooze(_ reminderId: ULID) {

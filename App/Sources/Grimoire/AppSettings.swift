@@ -23,7 +23,7 @@ final class AppSettings {
         ingestFolders = defaults.stringArray(forKey: "ingest.folders")
             ?? [Store.isOverridden ? Store.folder.appending(path: "Inbox").path : Self.defaultIngestFolder]
         whisperModel = defaults.string(forKey: "whisper.model") ?? (Store.isOverridden ? "sidecar" : "apple")
-        reminderDefault = ReminderPreset(rawValue: defaults.string(forKey: "reminder.default") ?? "") ?? .none
+        reminderDefault = ReminderPreset(rawValue: defaults.string(forKey: "reminder.default") ?? "") ?? .ladder
         hotkeyEnabled = defaults.object(forKey: "quick.hotkey") as? Bool ?? true
     }
 
@@ -42,7 +42,7 @@ final class AppSettings {
     /// Ingest folders; each has incoming/, processed/ and failed/ inside.
     var ingestFolders: [String] { didSet { defaults.set(ingestFolders, forKey: "ingest.folders") } }
     var whisperModel: String { didSet { defaults.set(whisperModel, forKey: "whisper.model") } }
-    /// Reminder offered on the New Inquiry sheet. None until Hugh decides (spec §16.3).
+    /// Reminder offered on the New Inquiry sheet and at Confirm: check-ins at 7, 30 and 90 days unless changed.
     var reminderDefault: ReminderPreset { didSet { defaults.set(reminderDefault.rawValue, forKey: "reminder.default") } }
     var hotkeyEnabled: Bool { didSet { defaults.set(hotkeyEnabled, forKey: "quick.hotkey") } }
 

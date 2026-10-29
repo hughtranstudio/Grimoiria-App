@@ -86,6 +86,14 @@ enum SelfTest {
             check("snooze moves the reminder 3 days", model.data.reminders.first { $0.id == r.id }?.status == .snoozed)
         }
 
+        // Check-ins at 7, 30 and 90 days
+        let laddered = model.newInquiry(question: "Self-test: check-ins", reminder: .preset(.ladder), select: false)
+        let rung = model.data.reminders.first { $0.targetId == laddered.id }
+        check("7/30/90 check-in starts at 7 days", rung?.repeat == .ladder && rung?.step == 7, "\(String(describing: rung))")
+        model.addOutcome(to: laddered.id, Outcome(recordedAt: ZonedDate(Calendar.current.date(byAdding: .day, value: 8, to: .now)!,
+                                                                        timeZone: TimeZone.current.identifier), body: "Early news.", fulfilled: .partly))
+        check("an outcome rolls the check-in on to 30 days", model.data.reminders.first { $0.targetId == laddered.id }?.step == 30)
+
         // M4: quick log
         let started = Date.now
         let omen = model.quickSave(.omen, text: "Crow on the gate", tags: ["entity/ally/crow"])

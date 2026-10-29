@@ -124,6 +124,7 @@ public enum ReminderChoice: Hashable, Sendable {
     public var title: String {
         switch self {
         case .preset(.none): "None"
+        case .preset(.ladder): "At 7, 30 and 90 days"
         case .preset(.oneWeek): "In 1 week"
         case .preset(.oneMonth): "In 1 month"
         case .preset(.threeMonths): "In 3 months"

@@ -67,18 +67,26 @@ struct GeneralSettings: View {
             TextField("Place", text: $settings.homeName, prompt: Text("Home"))
             TextField("Latitude", value: $settings.homeLatitude, format: .number.precision(.fractionLength(0...4)), prompt: Text("37.77"))
             TextField("Longitude", value: $settings.homeLongitude, format: .number.precision(.fractionLength(0...4)), prompt: Text("-122.42"))
+            Button("Fill Timing on Older Records") { model.fillMissingTiming() }
+                .disabled(settings.home == nil)
         } header: {
             Text("Home location")
         } footer: {
             Text("Used for planetary days and hours. Moon and Sun work without it.")
         }
-        Section("Inquiries") {
+        Section {
             Picker("Outcome reminder", selection: $settings.reminderDefault) {
+                Text("At 7, 30 and 90 days").tag(ReminderPreset.ladder)
                 Text("None").tag(ReminderPreset.none)
                 Text("In 1 week").tag(ReminderPreset.oneWeek)
                 Text("In 1 month").tag(ReminderPreset.oneMonth)
                 Text("In 3 months").tag(ReminderPreset.threeMonths)
             }
+            Button("Add Check-ins to Past Readings") { model.backfillCheckIns() }
+        } header: {
+            Text("Inquiries")
+        } footer: {
+            Text("Past readings without an outcome get one check-in, due today, at the latest step already passed.")
         }
         Section {
             Toggle("Quick Log hotkey (Control-Option-G)", isOn: $settings.hotkeyEnabled)
