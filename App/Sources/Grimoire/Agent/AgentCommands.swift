@@ -225,13 +225,105 @@ enum AgentCommands {
             model.repository.save(v)
             return ["id": v.id.string, "name": v.name]
         },
+        AgentCommand(name: "import", summary: "Import downloaded Google Docs, .md or .txt files (or folders of them) into the Inbox.",
+                     params: [.init(name: "paths", required: true, positional: true, help: "files or folders, separated by commas"),
+                              .init(name: "day-first", kind: .boolean, help: "dates like 3/4/2025 mean 3 April"),
+                              .init(name: "tags", help: "comma-separated tags for every imported entry (default source/import)")],
+                     example: "grimoire import ~/Downloads/Takeout --json") { args, model in
+            let urls = try files(try args.required("paths"))
+            let tags = args.string("tags").map(TagInput.parse) ?? [TagPath("source/import")]
+            let outcomes = model.importDocuments(urls, dayFirst: try args.bool("day-first") ?? false, tags: tags)
+            var imported = 0, duplicates = 0, failed: [String] = []
+            for o in outcomes {
+                switch o {
+                case .imported: imported += 1
+                case .duplicate: duplicates += 1
+                case .failed(let file, let reason): failed.append("\(file): \(reason)")
+                }
+            }
+            return ["imported": imported, "duplicates": duplicates, "failed": failed, "hint": "check them with `grimoire inbox list`"]
+        },
+        AgentCommand(name: "volumes index", summary: "File photos of notebook pages in a volume, one record per photo, pages counted on.",
+                     params: [.init(name: "volume", required: true, help: "volume name or id"),
+                              .init(name: "photos", required: true, help: "image files, separated by commas, in page order"),
+                              .init(name: "from", help: "first page, like 12 or 3r (default: after the last indexed page)"),
+                              .init(name: "per-photo", kind: .integer, help: "pages in each photo, 2 for open spreads (default 1)"),
+                              .init(name: "tags", help: "comma-separated tags")],
+                     example: "grimoire volumes index --volume \"Volume III\" --photos ~/Desktop/p1.jpg,~/Desktop/p2.jpg --json") { args, model in
+            let volume = try findVolume(try args.required("volume"), in: model)
+            let photos = try files(try args.required("photos"))
+            let entries: [Entry]
+            do {
+                entries = try model.indexPages(volumeId: volume.id, photos: photos, firstPage: args.string("from") ?? model.nextPage(in: volume.id),
+                                               pagesPerPhoto: try args.int("per-photo", default: 1), tags: TagInput.parse(args.string("tags") ?? ""))
+            } catch {
+                throw AgentError.invalid("\(error). Pages look like 12, or 3r and 3v for folios")
+            }
+            return ["indexed": entries.map { entryJSON($0, model) }]
+        },
+        AgentCommand(name: "patterns", summary: "Cards, hexagrams, recurrences, timing and outcomes across your readings.",
+                     params: [.init(name: "days", kind: .integer, help: "only the last this many days (default all)"),
+                              .init(name: "top", kind: .integer, help: "rows per list (default 10)"),
+                              .init(name: "within", kind: .integer, help: "a card counts as recurring within this many days (default 30)")],
+                     example: "grimoire patterns --days 90 --json", readOnly: true) { args, model in
+            let days = try args.int("days", default: 0)
+            let from = days > 0 ? Calendar.current.date(byAdding: .day, value: -days, to: .now) : nil
+            let p = Patterns(data: model.data, library: model.library, from: from)
+            let report = p.report(top: try args.int("top", default: 10), recurrenceDays: try args.int("within", default: 30))
+            return ["summary": report.text, "report": try encoded(report)]
+        },
+        AgentCommand(name: "calendar", summary: "Days ahead: planetary ruler, Moon, lunations and ingresses, and optionally planetary hours.",
+                     params: [.init(name: "from", help: "yyyy-mm-dd (default today)"),
+                              .init(name: "days", kind: .integer, help: "how many days (default 7)"),
+                              .init(name: "hours", kind: .boolean, help: "include each day's planetary hours (needs a home location)")],
+                     example: "grimoire calendar --days 14 --json", readOnly: true) { args, model in
+            let withHours = try args.bool("hours") ?? false
+            let days = RitualCalendar.days(from: args.string("from") ?? model.today, count: try args.int("days", default: 7),
+                                           zone: .current, location: model.settings.home)
+            let iso = { (d: Date) in GrimoireDateFormat.iso(d, in: .current) }
+            return ["days": days.map { d -> JSONObject in
+                var o: JSONObject = ["day": d.day, "ruler": d.ruler.rawValue, "moonPhase": d.moonPhase.rawValue,
+                                     "moonIllumination": d.moonIllumination, "moonSign": d.moonSign.rawValue, "sunSign": d.sunSign.rawValue,
+                                     "events": d.events.map { ["at": iso($0.at), "title": $0.title] }]
+                if let r = d.sunrise, let s = d.sunset { o["sunrise"] = iso(r); o["sunset"] = iso(s) }
+                if withHours { o["hours"] = d.hours.map { ["number": $0.number, "planet": $0.planet.rawValue, "start": iso($0.start), "end": iso($0.end)] } }
+                return o
+            }]
+        },
+        AgentCommand(name: "hours", summary: "The next planetary hours of a planet at the home location.",
+                     params: [.init(name: "planet", required: true, positional: true, help: Planet.chaldean.map(\.rawValue).joined(separator: ", ")),
+                              .init(name: "its-day", kind: .boolean, help: "only hours on the planet's own day"),
+                              .init(name: "limit", kind: .integer, help: "how many (default 5)")],
+                     example: "grimoire hours venus --its-day --json", readOnly: true) { args, model in
+            guard let planet = Planet(rawValue: try args.required("planet").lowercased()) else {
+                throw AgentError.usage("planet must be one of \(Planet.chaldean.map(\.rawValue).joined(separator: ", "))")
+            }
+            guard let home = model.settings.home else { throw AgentError.invalid("no home location. Set one in Settings > General") }
+            let hours = RitualCalendar.nextHours(of: planet, after: .now, location: home, zone: .current,
+                                                 onItsDay: try args.bool("its-day") ?? false, limit: try args.int("limit", default: 5))
+            return ["planet": planet.rawValue, "hours": hours.map {
+                ["number": $0.number, "start": GrimoireDateFormat.iso($0.start, in: .current), "end": GrimoireDateFormat.iso($0.end, in: .current)]
+            }]
+        },
+        AgentCommand(name: "correspond", summary: "Look up planets, signs, elements and trigrams by anything they correspond to.",
+                     params: [.init(name: "query", positional: true, help: "like iron, tuesday, mars, ☰ (empty lists all)")],
+                     example: "grimoire correspond iron --json", readOnly: true) { args, model in
+            guard let table = model.library.correspondences else { throw AgentError.invalid("correspondences.json is missing from the Definitions folder") }
+            return ["source": table.source ?? "", "matches": table.search(args.string("query") ?? "").map { e -> JSONObject in
+                var o: JSONObject = ["key": e.key, "kind": e.kind, "name": e.name, "glyph": e.glyph ?? "",
+                                     "fields": Dictionary(e.fields.map { ($0.label, $0.values) }, uniquingKeysWith: { a, _ in a }),
+                                     "cards": model.library.cards(for: e).map { "\($0.card.name) (\($0.deck.name))" }]
+                if e.kind == "trigram" { o["hexagrams"] = model.library.hexagrams(withTrigram: e.key).map(\.number) }
+                return o
+            }]
+        },
         AgentCommand(name: "export", summary: "Export to the Obsidian vault folder set in Settings. Writes only changed files.",
                      params: [.init(name: "to", help: "another folder, instead of the one in Settings")],
                      example: "grimoire export --json") { args, model in
             guard let report = model.exportNow(to: args.string("to").map { URL(fileURLWithPath: ($0 as NSString).expandingTildeInPath) }, quiet: true) else {
                 throw AgentError.invalid("no vault folder. Set one in Settings > Export, or pass --to <folder>")
             }
-            return ["written": report.written, "unchanged": report.unchanged]
+            return ["written": report.written, "unchanged": report.unchanged, "removed": report.removed]
         },
         AgentCommand(name: "delete", summary: "Delete an entry, inquiry or volume.",
                      params: [.init(name: "id", required: true, positional: true, help: "the record id")],
@@ -259,6 +351,15 @@ enum AgentCommands {
         if let v = model.data.volumes.first(where: { $0.name.caseInsensitiveCompare(key) == .orderedSame || $0.id.string.localizedCaseInsensitiveContains(key) }) { return v }
         if let q = PageQuery.parse(key), let v = model.data.volumes.first(where: { q.matches(volumeName: $0.name) }) { return v }
         throw AgentError.notFound("no volume \(key). Run `grimoire volumes list`")
+    }
+
+    /// Comma-separated paths. The app does not know the caller's folder, so they must be absolute or start with ~.
+    static func files(_ list: String) throws -> [URL] {
+        try list.split(separator: ",").map { raw in
+            let path = (raw.trimmingCharacters(in: .whitespaces) as NSString).expandingTildeInPath
+            guard path.hasPrefix("/") else { throw AgentError.usage("\(raw) is a relative path. Give a full path, like ~/Downloads/notes.docx") }
+            return URL(fileURLWithPath: path)
+        }
     }
 
     static func castOf(_ lines: String) throws -> YiJingCast {

@@ -2,7 +2,7 @@
 
 A native Mac master grimoire for magical practice: journals, rituals, meditations, visions, contacts, omens, dreams and divination (tarot, oracle decks, Yi Jing), with phone voice capture and an open Obsidian/JSONL export. Spec: `specs/grimoire-v1-spec-brief.md` in the project files.
 
-This repository holds **GrimoireCore**, the platform-neutral Swift package the Mac app is built on, plus the `grimoire` agent CLI. The SwiftUI app itself is built with BAMA from [`docs/bama-spec.md`](docs/bama-spec.md).
+This repository holds **GrimoireCore**, the platform-neutral Swift package the Mac app is built on, the `grimoire` CLI, the SwiftUI Mac app in `App/` (built with BAMA from [`docs/bama-spec.md`](docs/bama-spec.md)), and the Android capture app.
 
 ## What is here
 
@@ -14,10 +14,14 @@ This repository holds **GrimoireCore**, the platform-neutral Swift package the M
 | `Sources/GrimoireCore/Parsing/` | Spoken/typed draw parser → `DraftReading` with per-field confidence. Quick draw (`3 cups r, tower`). |
 | `Sources/GrimoireCore/Ingest/` | Phone sidecar contract v1, `InboxIngestor` (folder rules from spec §12), mandatory confirm-and-correct with a correction log. |
 | `Sources/GrimoireCore/Import/` | Google Docs / local file importer: .docx (built-in zip + inflate), .md with frontmatter, .txt; splits on dated headings and date lines into Inbox items. See [`docs/google-docs-import.md`](docs/google-docs-import.md). |
-| `Sources/GrimoireCore/Export/` | Obsidian Markdown + YAML frontmatter, `grimoire.jsonl`, write-only-if-changed writer. |
-| `Sources/GrimoireCore/Timing/` | Moon phase, illumination and sign, Sun sign, planetary day and hour (sunrise to sunrise, Chaldean order). |
+| `Sources/GrimoireCore/Export/` | Obsidian Markdown + YAML frontmatter, card and hexagram notes, a home note, `grimoire.jsonl`, `ML/` files for local models (draws, text chunks, manifest), write-only-if-changed writer that removes notes for deleted records. |
+| `Sources/GrimoireCore/Attachments/` | Copies photos, audio and files into the attachments folder; indexes photos of notebook pages into a volume (pages, folios, two-page spreads). |
+| `Sources/GrimoireCore/Analysis/` | Patterns: card and hexagram counts, recurrences, timing (moon phase, sign, planetary day and hour), outcomes by system and confidence. |
+| `Sources/GrimoireCore/Definitions/` | Decks, spreads, Yi Jing, and the correspondence table (planets, signs, elements, trigrams; Golden Dawn and Agrippa). |
+| `Sources/GrimoireCore/Timing/` | Moon phase, illumination and sign, Sun sign, planetary day and hour (sunrise to sunrise, Chaldean order); the ritual calendar (lunations, ingresses, planetary hours ahead). |
 | `Sources/GrimoireCore/Store/` | `GrimoireRepository` protocol (the SwiftData seam), in-memory and JSON-file stores, search. |
-| `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `import`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `outcome`, `remind`, `remind-backfill`, `timing-fill`, `export`. |
+| `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `import`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `outcome`, `remind`, `remind-backfill`, `timing-fill`, `patterns`, `calendar`, `hours`, `correspond`, `export`. |
+| `App/` | The Mac app (macOS 26, SwiftUI + SwiftData). `cd App && ./build.sh` builds and installs it; `tools/selftest.sh` runs its self-test. |
 | `android/` | **Grimoire Capture**, the Android (Pixel) capture app: record or type, transcribe on the phone, check the parsed reading, sync to the Mac's Inbox via Syncthing. See [`docs/android-capture.md`](docs/android-capture.md). |
 | `schemas/` | JSON Schemas: phone sidecar v1, deck, spread, JSONL export record. |
 | `tools/` | Definition generator, schema validator, import fixture generator, end-to-end demo script. |
@@ -28,7 +32,7 @@ Mac (Xcode 26 / Swift 6.2) or Linux (Swift 6.1+):
 
 ```bash
 swift build
-swift test                      # 75 tests
+swift test                      # 113 tests
 (cd android && ./gradlew -PcoreOnly :core:test)   # Kotlin parser parity + capture outbox
 tools/e2e-demo.sh               # capture → Inbox → confirm → export, through the CLI
 pip install jsonschema && python3 tools/validate_schemas.py
@@ -50,7 +54,7 @@ swift run grimoire timing 2026-10-28T08:14:00-07:00 --lat 37.77 --lon -122.42 --
 - **Quareia and Mystagogos decks** have no cards yet (`status: placeholder`). Their card lists, attributes and significations should be generated from Hugh's deck repositories by extending `tools/generate_definitions.py`. Every RWS card and hexagram already has an empty `significations` slot for the same merge.
 - **Transcription** uses `SidecarTextTranscriber` (reads `<id>.txt`) off the Mac. The app plugs in WhisperKit or whisper.cpp through the `Transcriber` protocol.
 
-**Not built here (needs macOS 26 + Xcode 26):** the SwiftUI app, SwiftData models, FSEvents watching, Whisper, notifications, global hotkey panel. See [`docs/bama-spec.md`](docs/bama-spec.md).
+**Mac app (needs macOS 26 + Xcode 26):** Timeline, Inquiries, Inbox with Transcribe Again, Volumes with page photos, Search and browse by tag, card and hexagram, Patterns, Calendar with planetary hours, Correspondences, Obsidian export, and the agent CLI and MCP server. See [`docs/bama-spec.md`](docs/bama-spec.md).
 
 ## Known parser limits
 
