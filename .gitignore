@@ -154,3 +154,11 @@ vite.config.ts.timestamp-*
 DerivedData/
 *.xcodeproj/xcuserdata/
 .DS_Store
+
+# Android / Gradle
+android/.gradle/
+android/**/build/
+android/local.properties
+android/.idea/
+android/.kotlin/
+*.apk

@@ -1,0 +1,1403 @@
+[
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "three cups",
+                "value" : "cups-03"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "heard" : "reversed",
+                "value" : "reversed"
+              },
+              "positionKey" : "past"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "tower",
+                "value" : "maj-16"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "present"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "page wands",
+                "value" : "wands-11"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "future"
+            }
+          ],
+          "heard" : "rider waite three card three of cups reversed the tower page of wands",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "three card",
+            "value" : "three-card"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Deck Rider-Waite, three card: three of cups reversed, the Tower, page of wands",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "three cups",
+                "value" : "cups-03"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "heard" : "reversed",
+                "value" : "reversed"
+              },
+              "positionKey" : "past"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "tower",
+                "value" : "maj-16"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "present"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "page wands",
+                "value" : "wands-11"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "future"
+            }
+          ],
+          "heard" : "rider waite three card one three of cups reversed two the tower three page of wands",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "three card",
+            "value" : "three-card"
+          },
+          "system" : "cards"
+        },
+        {
+          "cast" : {
+            "lines" : {
+              "confidence" : "high",
+              "heard" : "seven eight nine six seven seven",
+              "value" : [
+                7,
+                8,
+                9,
+                6,
+                7,
+                7
+              ]
+            },
+            "method" : "coins"
+          },
+          "deckId" : {
+            "confidence" : "missing"
+          },
+          "draws" : [
+
+          ],
+          "heard" : "coins seven eight nine six seven seven",
+          "spreadId" : {
+            "confidence" : "missing"
+          },
+          "system" : "yijing"
+        }
+      ],
+      "question" : {
+        "confidence" : "high",
+        "heard" : "will the move go ahead",
+        "value" : "will the move go ahead"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Question: will the move go ahead. Deck Rider-Waite. Three card. One, three of cups reversed. Two, the Tower. Three, page of wands. Yi Jing, coins. Seven eight nine six seven seven.",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "three cups",
+                "value" : "cups-03"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "heard" : "reversed",
+                "value" : "reversed"
+              },
+              "positionKey" : "past"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "tower",
+                "value" : "maj-16"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "present"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "page wands",
+                "value" : "wands-11"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "future"
+            }
+          ],
+          "heard" : "rider waite three card three of cups reversed the tower page of wands",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "three card",
+            "value" : "three-card"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "deck rider waite three card three of cups reversed the tower page of wands",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rws",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "ace swords",
+                "value" : "swords-01"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "card"
+            }
+          ],
+          "heard" : "rws single card ace of swords",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "single card",
+            "value" : "single"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "high",
+        "heard" : "will anna take the job",
+        "value" : "Will Anna take the job?"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Question: Will Anna take the job? Deck RWS single card. Ace of Swords.",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "ten coins",
+                "value" : "pentacles-10"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "1"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "knight rods",
+                "value" : "wands-12"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "heard" : "upside",
+                "value" : "reversed"
+              },
+              "positionKey" : "2"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "queen chalices",
+                "value" : "cups-13"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "3"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "hanged man",
+                "value" : "maj-12"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "heard" : "inverted",
+                "value" : "reversed"
+              },
+              "positionKey" : "4"
+            }
+          ],
+          "heard" : "rider waite 10 of coins knight of rods upside down queen of chalices the hanged man inverted",
+          "spreadId" : {
+            "confidence" : "medium",
+            "value" : "freeform"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Deck Rider Waite. 10 of coins, knight of rods upside down, queen of chalices, the hanged man inverted",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "medium",
+                "heard" : "hight priestess",
+                "value" : "maj-02"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "1"
+            },
+            {
+              "cardId" : {
+                "confidence" : "medium",
+                "heard" : "temperence",
+                "value" : "maj-14"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "2"
+            }
+          ],
+          "heard" : "rider waite the hight priestess temperence",
+          "spreadId" : {
+            "confidence" : "medium",
+            "value" : "freeform"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Deck Rider-Waite. The hight priestess, temperence",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "three cups",
+                "value" : "cups-03"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "past"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "page wands",
+                "value" : "wands-11"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "present"
+            }
+          ],
+          "heard" : "rider waite three card three of cups the tour page of wands",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "three card",
+            "value" : "three-card"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+        "tour"
+      ],
+      "warnings" : [
+        "Three card has 3 positions but 2 cards were heard"
+      ]
+    },
+    "input" : "Deck Rider-Waite three card. Three of cups. The tour. Page of wands.",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "star",
+                "value" : "maj-17"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "card"
+            }
+          ],
+          "heard" : "rider waite single the star",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "single",
+            "value" : "single"
+          },
+          "system" : "cards"
+        },
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "quareia",
+            "value" : "quareia"
+          },
+          "draws" : [
+
+          ],
+          "heard" : "quareia the weaver",
+          "spreadId" : {
+            "confidence" : "medium",
+            "value" : "freeform"
+          },
+          "system" : "cards"
+        },
+        {
+          "cast" : {
+            "lines" : {
+              "confidence" : "high",
+              "heard" : "789676",
+              "value" : [
+                7,
+                8,
+                9,
+                6,
+                7,
+                6
+              ]
+            },
+            "method" : "coins"
+          },
+          "deckId" : {
+            "confidence" : "missing"
+          },
+          "draws" : [
+
+          ],
+          "heard" : "789676",
+          "spreadId" : {
+            "confidence" : "missing"
+          },
+          "system" : "yijing"
+        }
+      ],
+      "question" : {
+        "confidence" : "high",
+        "heard" : "the new house",
+        "value" : "the new house"
+      },
+      "unparsed" : [
+        "weaver"
+      ],
+      "warnings" : [
+        "Deck quareia has no card list yet; draws must be entered by hand"
+      ]
+    },
+    "input" : "Question: the new house. Deck Rider-Waite, single, the Star. Deck Quareia, the weaver. I Ching 789676.",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rws",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "fool",
+                "value" : "maj-00"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "card"
+            },
+            {
+              "cardId" : {
+                "confidence" : "low",
+                "heard" : "magician",
+                "value" : "maj-01"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "extra-1"
+            }
+          ],
+          "heard" : "rws single card the fool the magician",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "single card",
+            "value" : "single"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+        "Single card has 1 positions but 2 cards were heard"
+      ]
+    },
+    "input" : "Deck RWS single card. The Fool, the Magician",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "cast" : {
+            "lines" : {
+              "confidence" : "low",
+              "heard" : "seven eight nine",
+              "value" : [
+                7,
+                8,
+                9
+              ]
+            },
+            "method" : "yarrow"
+          },
+          "deckId" : {
+            "confidence" : "missing"
+          },
+          "draws" : [
+
+          ],
+          "heard" : "yarrow seven eight nine",
+          "spreadId" : {
+            "confidence" : "missing"
+          },
+          "system" : "yijing"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+        "Yi Jing: heard 3 line values, need 6 (bottom to top)"
+      ]
+    },
+    "input" : "Yi Jing yarrow. seven eight nine",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Saw a crow land on the gate this morning, felt like a threshold.",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "hermit",
+                "value" : "maj-09"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "present"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "two swords",
+                "value" : "swords-02"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "heard" : "reversed",
+                "value" : "reversed"
+              },
+              "positionKey" : "challenge"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "wheel fortune",
+                "value" : "maj-10"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "foundation"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "ten pentacles",
+                "value" : "pentacles-10"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "past"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "empress",
+                "value" : "maj-03"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "crown"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "knight cups",
+                "value" : "cups-12"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "near-future"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "moon",
+                "value" : "maj-18"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "heard" : "rev",
+                "value" : "reversed"
+              },
+              "positionKey" : "self"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "four wands",
+                "value" : "wands-04"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "environment"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "judgement",
+                "value" : "maj-20"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "hopes-fears"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "world",
+                "value" : "maj-21"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "outcome"
+            }
+          ],
+          "heard" : "rider waite celtic cross the hermit two of swords reversed wheel of fortune ten of pentacles the empress knight of cups the moon rev four of wands judgement the world",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "celtic cross",
+            "value" : "celtic-cross"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "high",
+        "heard" : "should i start the quareia module now",
+        "value" : "should I start the Quareia module now?"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Question – should I start the Quareia module now? Deck Rider–Waite Celtic Cross. The Hermit, two of swords reversed, Wheel of Fortune, ten of pentacles, the Empress, knight of cups, the Moon rev, four of wands, Judgement, the World.",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "medium",
+            "heard" : "ryder waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "king swords",
+                "value" : "swords-14"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "1"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "page pentacles",
+                "value" : "pentacles-11"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "2"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "lovers",
+                "value" : "maj-06"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "3"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "ace cups",
+                "value" : "cups-01"
+              },
+              "orientation" : {
+                "confidence" : "medium",
+                "heard" : "r",
+                "value" : "reversed"
+              },
+              "positionKey" : "4"
+            }
+          ],
+          "heard" : "ryder waite freeform king of swords page of pentacles the lovers upright ace of cups r",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "freeform",
+            "value" : "freeform"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Deck Ryder Waite freeform. King of swords, Page of Pentacles, the Lovers upright, ace of cups R",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rider waite",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "high priestess",
+                "value" : "maj-02"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "past"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "tower",
+                "value" : "maj-16"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "present"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "star",
+                "value" : "maj-17"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "future"
+            }
+          ],
+          "heard" : "rider waite three card the high priestess the tower and the star",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "three card",
+            "value" : "three-card"
+          },
+          "system" : "cards"
+        },
+        {
+          "cast" : {
+            "lines" : {
+              "confidence" : "high",
+              "heard" : "6 7 8 9 7 8",
+              "value" : [
+                6,
+                7,
+                8,
+                9,
+                7,
+                8
+              ]
+            },
+            "method" : "coins"
+          },
+          "deckId" : {
+            "confidence" : "missing"
+          },
+          "draws" : [
+
+          ],
+          "heard" : "coins 6 7 8 9 7 8",
+          "spreadId" : {
+            "confidence" : "missing"
+          },
+          "system" : "yijing"
+        }
+      ],
+      "question" : {
+        "confidence" : "high",
+        "heard" : "what is this contact about",
+        "value" : "what is this contact about"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Question: what is this contact about. Deck rider waite. Three card. the high priestess, the tower and the star. I ching coins 6 7 8 9 7 8.",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "mystagogos",
+            "value" : "mystagogos"
+          },
+          "draws" : [
+
+          ],
+          "heard" : "mystagogos the gate the key",
+          "spreadId" : {
+            "confidence" : "medium",
+            "value" : "freeform"
+          },
+          "system" : "cards"
+        },
+        {
+          "cast" : {
+            "lines" : {
+              "confidence" : "high",
+              "heard" : "nine nine nine nine nine nine",
+              "value" : [
+                9,
+                9,
+                9,
+                9,
+                9,
+                9
+              ]
+            },
+            "method" : "coins"
+          },
+          "deckId" : {
+            "confidence" : "missing"
+          },
+          "draws" : [
+
+          ],
+          "heard" : "nine nine nine nine nine nine",
+          "spreadId" : {
+            "confidence" : "missing"
+          },
+          "system" : "yijing"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+        "gate",
+        "key"
+      ],
+      "warnings" : [
+        "Deck mystagogos has no card list yet; draws must be entered by hand"
+      ]
+    },
+    "input" : "Deck Mystagogos. the gate, the key. Yi Jing. nine nine nine nine nine nine",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "missing"
+          },
+          "draws" : [
+
+          ],
+          "heard" : "kwareya the weaver",
+          "spreadId" : {
+            "confidence" : "medium",
+            "value" : "freeform"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+        "kwareya",
+        "weaver"
+      ],
+      "warnings" : [
+        "No deck recognised after \"deck\"; pick one in the Inbox"
+      ]
+    },
+    "input" : "Deck Kwareya, the weaver",
+    "mode" : "full"
+  },
+  {
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "heard" : "rws",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "sun",
+                "value" : "maj-19"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "card"
+            }
+          ],
+          "heard" : "rws single the sun",
+          "spreadId" : {
+            "confidence" : "high",
+            "heard" : "single",
+            "value" : "single"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "high",
+        "heard" : "cafe resume naive",
+        "value" : "Café Résumé – naïve?"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "Question: Café Résumé – naïve? Deck RWS single. The Sün",
+    "mode" : "full"
+  },
+  {
+    "deckId" : "rws-tarot",
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "three cups",
+                "value" : "cups-03"
+              },
+              "orientation" : {
+                "confidence" : "medium",
+                "heard" : "r",
+                "value" : "reversed"
+              },
+              "positionKey" : "past"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "tower",
+                "value" : "maj-16"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "present"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "page wands",
+                "value" : "wands-11"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "future"
+            }
+          ],
+          "heard" : "3 cups r, tower, page wands",
+          "spreadId" : {
+            "confidence" : "high",
+            "value" : "three-card"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "3 cups r, tower, page wands",
+    "mode" : "quick",
+    "spreadId" : "three-card"
+  },
+  {
+    "deckId" : "rws-tarot",
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "wheel fortune",
+                "value" : "maj-10"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "1"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "two swords",
+                "value" : "swords-02"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "heard" : "rev",
+                "value" : "reversed"
+              },
+              "positionKey" : "2"
+            },
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "hierophant",
+                "value" : "maj-05"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "3"
+            }
+          ],
+          "heard" : "wheel of fortune, 2 swords rev, hierophant",
+          "spreadId" : {
+            "confidence" : "high",
+            "value" : "freeform"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "wheel of fortune, 2 swords rev, hierophant",
+    "mode" : "quick"
+  },
+  {
+    "deckId" : "rws-tarot",
+    "expected" : {
+      "divinations" : [
+        {
+          "deckId" : {
+            "confidence" : "high",
+            "value" : "rws-tarot"
+          },
+          "draws" : [
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "ace pentacles",
+                "value" : "pentacles-01"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "card"
+            },
+            {
+              "cardId" : {
+                "confidence" : "low",
+                "heard" : "fool",
+                "value" : "maj-00"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "extra-1"
+            },
+            {
+              "cardId" : {
+                "confidence" : "low",
+                "heard" : "knight wands",
+                "value" : "wands-12"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "extra-2"
+            },
+            {
+              "cardId" : {
+                "confidence" : "low",
+                "heard" : "queen swords",
+                "value" : "swords-13"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "extra-3"
+            },
+            {
+              "cardId" : {
+                "confidence" : "low",
+                "heard" : "six cups",
+                "value" : "cups-06"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "extra-4"
+            }
+          ],
+          "heard" : "ace pentacles, the fool, knight wands, queen swords, six cups",
+          "spreadId" : {
+            "confidence" : "high",
+            "value" : "single"
+          },
+          "system" : "cards"
+        }
+      ],
+      "question" : {
+        "confidence" : "missing"
+      },
+      "unparsed" : [
+
+      ],
+      "warnings" : [
+
+      ]
+    },
+    "input" : "ace pentacles, the fool, knight wands, queen swords, six cups",
+    "mode" : "quick",
+    "spreadId" : "single"
+  }
+]

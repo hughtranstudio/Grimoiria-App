@@ -115,6 +115,34 @@ final class IngestTests: XCTestCase {
         XCTAssertEqual(item.entry.body, "Crow on the gate")
     }
 
+    /// The Android app sends its own transcript and the reading the user checked on the phone.
+    /// The Mac keeps both (no second transcription, no re-parse) but the item still waits in the Inbox.
+    func testAndroidCaptureKeepsPhoneTranscriptAndCheckedDraft() async throws {
+        struct NoTranscriber: Transcriber {
+            func transcribe(_ audio: URL) async throws -> String { throw IngestError.transcription("should not be called") }
+        }
+        ingestor = InboxIngestor(root: root, transcriber: NoTranscriber(), parser: TestSupport.parser)
+        ingestor.defaultTimeZone = "America/Los_Angeles"
+        ingestor.stableSeconds = 0
+        try fm.createDirectory(at: ingestor.incoming, withIntermediateDirectories: true)
+        for ext in ["wav", "json"] {
+            let name = "20261029-071500-3307.\(ext)"
+            try fm.copyItem(at: TestSupport.fixture("capture-android/\(name)"), to: ingestor.incoming.appendingPathComponent(name))
+        }
+        let out = await scan(t0)
+        XCTAssertEqual(out, [.ingested(captureId: "20261029-071500-3307")])
+        let item = try XCTUnwrap(repo.data.inbox.first)
+        XCTAssertEqual(item.source, "phone:pixel")
+        XCTAssertEqual(item.entry.status, .inbox)
+        XCTAssertEqual(item.entry.type, .divination)
+        XCTAssertTrue(item.entry.transcript?.hasPrefix("Question: will the move go ahead.") ?? false)
+        let d = try XCTUnwrap(item.draft?.divinations.first)
+        XCTAssertEqual(d.draws.map(\.cardId.value), ["cups-03", "maj-16", "wands-11"])
+        XCTAssertEqual(d.draws[1].cardId.heard, "tour") // corrected on the phone, heard text kept
+        XCTAssertEqual(item.draft?.weakest, .high)
+        XCTAssertTrue(repo.data.entries.isEmpty)
+    }
+
     func testSidecarSchemaRequirements() {
         XCTAssertThrowsError(try CaptureSidecar.decode(Data(#"{"contract_version":1,"id":"a"}"#.utf8)))
         XCTAssertThrowsError(try CaptureSidecar.decode(Data(#"{"contract_version":1,"id":"a","captured_at":"yesterday"}"#.utf8)))

@@ -20,6 +20,50 @@
       "required": ["lat", "lon"],
       "properties": { "lat": { "type": "number" }, "lon": { "type": "number" } }
     },
+    "transcript": { "type": "string", "description": "On-phone transcript of audio, corrected by the user. When present the Mac does not transcribe again." },
+    "draft": {
+      "type": "object",
+      "description": "Reading checked on the phone, in GrimoireCore DraftReading JSON (camelCase keys, Parsed fields as {value, heard, confidence}). When present the Mac uses it instead of parsing; Inbox confirm still applies.",
+      "required": ["question", "divinations", "unparsed", "warnings"],
+      "properties": {
+        "question": { "$ref": "#/$defs/parsed" },
+        "divinations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["system", "deckId", "spreadId", "draws", "heard"],
+            "properties": {
+              "system": { "enum": ["cards", "yijing", "other"] },
+              "deckId": { "$ref": "#/$defs/parsed" },
+              "spreadId": { "$ref": "#/$defs/parsed" },
+              "draws": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["cardId", "orientation", "positionKey"],
+                  "properties": {
+                    "cardId": { "$ref": "#/$defs/parsed" },
+                    "orientation": { "$ref": "#/$defs/parsed" },
+                    "positionKey": { "type": "string" }
+                  }
+                }
+              },
+              "cast": {
+                "type": "object",
+                "required": ["lines", "method"],
+                "properties": {
+                  "lines": { "$ref": "#/$defs/parsed" },
+                  "method": { "enum": ["coins", "yarrow", "other"] }
+                }
+              },
+              "heard": { "type": "string" }
+            }
+          }
+        },
+        "unparsed": { "type": "array", "items": { "type": "string" } },
+        "warnings": { "type": "array", "items": { "type": "string" } }
+      }
+    },
     "draws": {
       "type": "array",
       "items": {
@@ -30,6 +74,17 @@
           "card": { "type": "string" },
           "orientation": { "enum": ["upright", "reversed", "n/a"] }
         }
+      }
+    }
+  },
+  "$defs": {
+    "parsed": {
+      "type": "object",
+      "required": ["confidence"],
+      "properties": {
+        "value": {},
+        "heard": { "type": "string" },
+        "confidence": { "enum": ["missing", "low", "medium", "high"] }
       }
     }
   }
