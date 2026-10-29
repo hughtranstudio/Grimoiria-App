@@ -83,6 +83,9 @@ struct PageList: View {
             case .search: SearchList()
             case .volumes: VolumeList()
             case .decks: DeckList()
+            case .patterns: PatternList()
+            case .calendar: CalendarList()
+            case .correspondences: CorrespondenceList()
             }
         }
         .navigationTitle(page.title)
@@ -105,6 +108,12 @@ struct DetailView: View {
             VolumeDetail(volumeId: id).id(id)
         case .deck(let id) where model.library.deck(id) != nil:
             DeckDetail(deckId: id).id(id)
+        case .pattern(let section):
+            PatternDetail(section: section).id(section)
+        case .day(let day):
+            CalendarDayDetail(day: day).id(day)
+        case .correspondence(let key):
+            CorrespondenceDetail(key: key).id(key)
         default:
             ContentUnavailableView("Nothing Selected", systemImage: "sidebar.right",
                                    description: Text("Choose a record, or press Command-N for a new journal entry."))

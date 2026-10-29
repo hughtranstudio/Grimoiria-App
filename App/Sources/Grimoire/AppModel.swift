@@ -4,10 +4,11 @@ import GrimoireAppKit
 import GrimoireCore
 import Observation
 import SwiftData
+import SwiftUI
 
 /// The sidebar pages. Snapshot mode walks through every case.
 enum SidebarPage: String, CaseIterable, Identifiable {
-    case today, timeline, inquiries, inbox, search, volumes, decks
+    case today, timeline, inquiries, inbox, search, volumes, decks, patterns, calendar, correspondences
 
     var id: String { rawValue }
 
@@ -20,6 +21,9 @@ enum SidebarPage: String, CaseIterable, Identifiable {
         case .search: "Search"
         case .volumes: "Volumes"
         case .decks: "Decks"
+        case .patterns: "Patterns"
+        case .calendar: "Calendar"
+        case .correspondences: "Correspondences"
         }
     }
 
@@ -32,11 +36,17 @@ enum SidebarPage: String, CaseIterable, Identifiable {
         case .search: "magnifyingglass"
         case .volumes: "books.vertical"
         case .decks: "rectangle.stack"
+        case .patterns: "chart.bar.xaxis"
+        case .calendar: "moon.stars"
+        case .correspondences: "tablecells"
         }
     }
 
-    /// Command-1 … Command-7.
-    var shortcut: Character { Character(String((Self.allCases.firstIndex(of: self) ?? 0) + 1)) }
+    /// Command-1 … Command-9, then Command-0.
+    var shortcut: KeyEquivalent? {
+        let i = Self.allCases.firstIndex(of: self) ?? 0
+        return i < 9 ? KeyEquivalent(Character(String(i + 1))) : i == 9 ? "0" : nil
+    }
 }
 
 /// What the detail column shows.
@@ -46,6 +56,12 @@ enum Selection: Hashable {
     case inbox(ULID)
     case volume(ULID)
     case deck(String)
+    /// A Patterns section: overview, deck:<id>, yijing, recurring, timing, outcomes, tags.
+    case pattern(String)
+    /// A Calendar day, yyyy-MM-dd.
+    case day(String)
+    /// A Correspondences row: planet:mars, sign:aries, element:fire, trigram:qian.
+    case correspondence(String)
 }
 
 /// Sheets the window can show.
@@ -86,6 +102,11 @@ final class AppModel {
     var selection: Selection?
     var sheet: Sheet?
     var searchText = ""
+    /// Search narrowed to readings with one card ("deckId/cardId") or one hexagram, from Browse and Patterns.
+    var searchCard: String?
+    var searchHexagram: Int?
+    var patternWindow: PatternWindow = .all
+    var recurrenceDays = 30
     /// A short line shown at the bottom of the window, like "Exported 12 files".
     var notice: String?
     /// Files the last import couldn't read, shown on the Inbox page.

@@ -43,8 +43,11 @@ struct AppCommands: Commands {
         }
         CommandMenu("Go") {
             ForEach(SidebarPage.allCases) { page in
-                Button(page.title) { model.page = page }
-                    .keyboardShortcut(KeyEquivalent(page.shortcut))
+                if let key = page.shortcut {
+                    Button(page.title) { model.page = page }.keyboardShortcut(key)
+                } else {
+                    Button(page.title) { model.page = page }
+                }
             }
         }
     }

@@ -32,6 +32,10 @@ usage: grimoire <command> [options]
   remind <inquiry id> [--preset 7-30-90|1w|1m|3m] [--stop]
   remind-backfill [--today yyyy-MM-dd]    check-ins for open inquiries that have none (old notes)
   export --out DIR                        Obsidian Markdown + grimoire.jsonl
+  calendar [--from yyyy-MM-dd] [--days 14] [--tz Zone] [--lat N --lon N] [--hours]
+                                          moon phases, sign changes, day rulers (and planetary hours) ahead
+  hours <planet> [--after ISO] [--its-day] [--limit 5] [--tz Zone] [--lat N --lon N]
+                                          next planetary hours of a planet, e.g. hours mars --its-day
   patterns [--from yyyy-MM-dd] [--to yyyy-MM-dd] [--top N] [--within DAYS] [--json]
                                           most-drawn cards and hexagrams, recurrences, moon and day, outcomes
 
@@ -337,6 +341,35 @@ func run() async throws {
         let n = store.fillTiming(location: location(args), overwrite: args.has("overwrite"))
         try store.flush()
         print("updated \(n) record(s)")
+
+    case "calendar":
+        let tz = args.one("tz").flatMap(TimeZone.init(identifier:)) ?? .current
+        let days = RitualCalendar.days(from: args.one("from") ?? today(tz), count: args.one("days").flatMap(Int.init) ?? 14,
+                                       zone: tz, location: location(args))
+        func time(_ d: Date) -> String { String(GrimoireDateFormat.iso(d, in: tz).dropFirst(11).prefix(5)) }
+        for d in days {
+            print("\(d.day)  day of \(d.ruler.rawValue.capitalized)  \(d.moonPhase.rawValue) moon \(d.moonIllumination)% in \(d.moonSign.rawValue)")
+            if let r = d.sunrise, let s = d.sunset { print("    sunrise \(time(r))  sunset \(time(s))") }
+            for e in d.events { print("    \(time(e.at))  \(e.title)") }
+            if args.has("hours") {
+                for h in d.hours { print("      \(h.number < 10 ? " " : "")\(h.number)  \(time(h.start))–\(time(h.end))  \(h.planet.rawValue)") }
+            }
+        }
+
+    case "hours":
+        guard let name = args.positional.first, let planet = Planet(rawValue: name.lowercased()) else {
+            throw CLIError(description: "hours needs a planet: \(Planet.chaldean.map(\.rawValue).joined(separator: ", "))")
+        }
+        guard let loc = location(args) else { throw CLIError(description: "hours needs a location: --lat N --lon N or $GRIMOIRE_HOME") }
+        let tz = args.one("tz").flatMap(TimeZone.init(identifier:)) ?? .current
+        let after = try args.one("after").map { s -> Date in
+            guard let d = GrimoireDateFormat.parseISO(s) else { throw CLIError(description: "--after must be ISO 8601") }
+            return d
+        } ?? Date()
+        for h in RitualCalendar.nextHours(of: planet, after: after, location: loc, zone: tz, onItsDay: args.has("its-day"),
+                                          limit: args.one("limit").flatMap(Int.init) ?? 5) {
+            print("\(GrimoireDateFormat.iso(h.start, in: tz))  to \(String(GrimoireDateFormat.iso(h.end, in: tz).dropFirst(11).prefix(5)))  hour \(h.number) of \(planet.rawValue)")
+        }
 
     case "patterns":
         let lib = try loadLibrary(args)
