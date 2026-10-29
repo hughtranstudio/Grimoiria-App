@@ -37,6 +37,8 @@ struct ContentView: View {
         }
         .animation(.default, value: model.notice)
         .task {
+            AgentRouter.model = model
+            AgentSocket.listen { AgentRouter.handle($0) }
             SeedData.insertIfRequested(into: model)
             SelfTest.runIfRequested(model: model)
             Snapshot.runIfRequested(model: model, openSettings: openSettings)

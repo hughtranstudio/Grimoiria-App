@@ -147,6 +147,7 @@ struct InboxSettings: View {
                 Text("Apple on-device speech").tag("apple")
                 Text("Transcript file beside the audio").tag("sidecar")
             }
+            if settings.whisperModel == "apple" { SpeechModelRow() }
         } header: {
             Text("Transcription")
         } footer: {
@@ -163,5 +164,33 @@ enum FolderPanel {
         panel.canCreateDirectories = true
         panel.message = message
         return panel.runModal() == .OK ? panel.url?.path : nil
+    }
+}
+
+/// Apple's on-device speech model: downloaded once, only when the person presses Install.
+struct SpeechModelRow: View {
+    @State private var installed: Bool?
+    @State private var working = false
+    @State private var error: String?
+
+    var body: some View {
+        LabeledContent("Speech model") {
+            if installed == true {
+                Text("Installed").foregroundStyle(.secondary)
+            } else if working {
+                ProgressView().controlSize(.small)
+            } else {
+                Button("Install") {
+                    working = true
+                    Task {
+                        do { try await AppleSpeechTranscriber.installModel(); error = nil } catch { self.error = error.localizedDescription }
+                        installed = await AppleSpeechTranscriber.modelInstalled()
+                        working = false
+                    }
+                }
+            }
+        }
+        .task { installed = await AppleSpeechTranscriber.modelInstalled() }
+        if let error { Text(error).foregroundStyle(.red).font(.caption) }
     }
 }

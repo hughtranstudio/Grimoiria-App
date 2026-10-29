@@ -1,7 +1,15 @@
 # Grimoire
 
-A native macOS app in SwiftUI. It runs on this Mac only, with a local
-SwiftData database and no server.
+Grimoire: a native macOS app in SwiftUI over the GrimoireCore package one
+folder up (`../Sources/GrimoireCore`). Spec: `../docs/bama-spec.md`. It runs on
+this Mac only, with a local SwiftData database and no server.
+
+- Never rewrite GrimoireCore logic here: call it. Records in `Records.swift`
+  keep each GrimoireCore value as JSON plus indexed columns.
+- Dates display MM-DD-YYYY (`DisplayDate`).
+- Data folder: `~/Library/Application Support/Grimoire/` (store, Definitions,
+  Attachments). With `APP_STORE` set, everything goes beside that file instead.
+- Inbox items are never filed except by Confirm (`AppModel.confirm`).
 
 ## Layout
 
@@ -50,3 +58,7 @@ The bama plugin has a skill for each step: `mac-design` (design rules),
 ## Git
 
 - Commit after each working change, with a message that says what the user can now do.
+
+## Agents
+
+Drive the app with `grimoire`. See `.claude/skills/grimoire/SKILL.md` (repo root).

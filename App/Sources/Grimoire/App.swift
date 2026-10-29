@@ -10,8 +10,8 @@ import SwiftUI
 //   Grimoire --selftest           run the self-test on a /tmp store and quit with 0 or 1 (tools/selftest.sh)
 //   APP_ACCENT=<id> Grimoire      run with another accent from Theme.all (UI/Theme.swift)
 //   APP_GRID=1 Grimoire           draw the 8 pt grid and the layout probes over the window
+//   Grimoire help                 the agent CLI (Agent/), also linked as ~/.local/bin/grimoire
 
-@main
 struct GrimoireApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @State private var model = AppModel.shared
