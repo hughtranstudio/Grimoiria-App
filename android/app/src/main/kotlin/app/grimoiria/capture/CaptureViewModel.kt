@@ -196,12 +196,12 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
     /** Parses the (edited) words again, replacing the reading. */
     fun readAgain() = update { c -> withParsed(c, if (c.audioFile != null) c.transcript.orEmpty() else c.text.orEmpty()) }
 
-    fun setKind(k: CaptureKind) = update { c ->
+    fun changeKind(k: CaptureKind) = update { c ->
         val updated = c.copy(kind = k.hint)
         if (k.expectsReading && updated.draft == null) updated.copy(draft = DraftReading()) else updated
     }
 
-    fun setTags(text: String) = update { c -> c.copy(tags = text.split(',', ' ').map { it.trim().trim('#') }.filter { it.isNotEmpty() }) }
+    fun changeTags(text: String) = update { c -> c.copy(tags = text.split(',', ' ').map { it.trim().trim('#') }.filter { it.isNotEmpty() }) }
 
     fun edit(f: (DraftReading) -> DraftReading) = update { c -> c.copy(draft = f(c.draft ?: DraftReading())) }
 

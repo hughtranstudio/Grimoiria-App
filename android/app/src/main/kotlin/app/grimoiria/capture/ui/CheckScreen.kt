@@ -73,12 +73,12 @@ fun CheckScreen(vm: CaptureViewModel, state: CheckState, modifier: Modifier = Mo
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Picker("Kind", c.captureKind.label, app.grimoiria.core.CaptureKind.entries.map { it.label to it }) { vm.setKind(it) }
+                Picker("Kind", c.captureKind.label, app.grimoiria.core.CaptureKind.entries.map { it.label to it }) { vm.changeKind(it) }
                 Text(c.capturedAt.take(16).replace('T', ' '), style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             var tagText by remember(c.id) { mutableStateOf(c.tags.joinToString(", ")) }
-            OutlinedTextField(tagText, { tagText = it; vm.setTags(it) }, Modifier.fillMaxWidth(), singleLine = true, label = { Text("Tags") })
+            OutlinedTextField(tagText, { tagText = it; vm.changeTags(it) }, Modifier.fillMaxWidth(), singleLine = true, label = { Text("Tags") })
 
             if (state.transcribing) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
