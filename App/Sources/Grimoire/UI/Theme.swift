@@ -92,10 +92,11 @@ final class ThemeStore {
 }
 
 /// Accent tokens for views. Never hard-code an accent hex in a view.
+/// Under a house style (UI/HouseStyle.swift, DRAFT) the accent is rubric red.
 enum Palette {
-    static var accent: Color { ThemeStore.shared.theme.accent }
-    static var accentText: Color { ThemeStore.shared.theme.accentText }
-    static var onAccent: Color { ThemeStore.shared.theme.onAccent }
+    static var accent: Color { House.rubric ?? ThemeStore.shared.theme.accent }
+    static var accentText: Color { House.rubricText ?? ThemeStore.shared.theme.accentText }
+    static var onAccent: Color { House.rubric != nil ? .white : ThemeStore.shared.theme.onAccent }
 }
 
 extension View {
@@ -107,9 +108,12 @@ extension View {
 
 private struct Themed: ViewModifier {
     private var store = ThemeStore.shared
+    private var house = HouseStyleStore.shared
 
     func body(content: Content) -> some View {
-        content.tint(store.theme.tint)
+        content
+            .tint(house.style.accentIsRubric ? House.rubric : store.theme.tint)
+            .modifier(HouseStyled())
     }
 }
 

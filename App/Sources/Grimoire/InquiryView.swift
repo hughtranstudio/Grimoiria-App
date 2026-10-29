@@ -69,7 +69,7 @@ struct InquiryView: View {
         Form {
             Section {
                 TextField("Question", text: inquiry.question, axis: .vertical)
-                    .font(.title3)
+                    .font(Typo.title3)
                 DatePicker("Asked", selection: inquiry.askedAt.date)
                 if let t = inquiry.wrappedValue.timing {
                     LabeledContent("Timing") { Text(TimingText.line(t)).foregroundStyle(.secondary).multilineTextAlignment(.trailing) }
@@ -82,6 +82,9 @@ struct InquiryView: View {
                 TextField("Context", text: inquiry.context, axis: .vertical).lineLimit(2...)
                 LabeledContent("Category") { TagField(tags: inquiry.category.asList, prompt: "question/…") }
                 LabeledContent("Tags") { TagField(tags: inquiry.tags) }
+            } header: {
+                PressHeading(kicker: "Inquiry · \(DisplayDate.day(inquiry.wrappedValue.askedAt))",
+                             title: inquiry.wrappedValue.question)
             }
 
             ForEach(inquiry.divinations) { $d in
@@ -113,7 +116,7 @@ struct InquiryView: View {
                 ForEach(inquiry.wrappedValue.outcomes) { o in
                     VStack(alignment: .leading, spacing: Space.xs) {
                         HStack {
-                            Text(DisplayDate.day(o.recordedAt)).font(.headline)
+                            Text(DisplayDate.day(o.recordedAt)).font(Typo.headline)
                             Text("\(inquiry.wrappedValue.daysAfter(o)) days after").foregroundStyle(.secondary)
                             Spacer()
                             Text(o.fulfilled.title).foregroundStyle(.tint)
@@ -335,17 +338,17 @@ struct CardTile: View {
     var body: some View {
         let card = deck?.card(draw.cardId)
         VStack(spacing: Space.xs) {
-            Text(label).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+            Text(label).font(Typo.caption2).foregroundStyle(.secondary).lineLimit(1)
             Spacer(minLength: 0)
             if let card, let g = CardGlyph.symbol(for: card) {
-                Text(g).font(.title2).foregroundStyle(.tint)
+                Text(g).font(Typo.title2).foregroundStyle(.tint)
             }
             Text(card?.name ?? "—")
-                .font(.callout.weight(.medium))
+                .font(Typo.callout.weight(.medium))
                 .multilineTextAlignment(.center)
                 .lineLimit(3)
             if draw.orientation == .reversed {
-                Text("Reversed").font(.caption2).foregroundStyle(.secondary)
+                Text("Reversed").font(Typo.caption2).foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
         }
@@ -427,7 +430,7 @@ struct HexagramFigure: View {
                 }
             }
             .frame(width: 96)
-            Text("\(number). \(name)").font(.callout.weight(.medium))
+            Text("\(number). \(name)").font(Typo.callout.weight(.medium))
         }
     }
 
@@ -442,7 +445,7 @@ struct HexagramFigure: View {
             .foregroundStyle(.primary)
             if showChanges && YiJingCast.isChanging(v) {
                 Text(v == 9 ? "○" : "×")
-                    .font(.caption.bold())
+                    .font(Typo.caption.bold())
                     .foregroundStyle(.tint)
                     .offset(x: 62)
             }

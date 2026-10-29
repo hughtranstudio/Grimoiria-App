@@ -9,6 +9,7 @@ import SwiftUI
 //   APP_SEED=1 Grimoire           fill an empty /tmp store with sample records (tools/snap.sh)
 //   Grimoire --selftest           run the self-test on a /tmp store and quit with 0 or 1 (tools/selftest.sh)
 //   APP_ACCENT=<id> Grimoire      run with another accent from Theme.all (UI/Theme.swift)
+//   APP_STYLE=a|b|c Grimoire      run with a house style option (UI/HouseStyle.swift, DRAFT)
 //   APP_GRID=1 Grimoire           draw the 8 pt grid and the layout probes over the window
 //   Grimoire help                 the agent CLI (Agent/), also linked as ~/.local/bin/grimoire
 

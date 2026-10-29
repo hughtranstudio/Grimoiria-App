@@ -19,7 +19,7 @@ struct DeckList: View {
                 ForEach(model.library.decks) { d in
                     VStack(alignment: .leading, spacing: Space.xs) {
                         Text(d.name)
-                        Text(subtitle(d)).font(.caption).foregroundStyle(.secondary)
+                        Text(subtitle(d)).font(Typo.caption).foregroundStyle(.secondary)
                     }
                     .padding(.vertical, Space.xs)
                     .tag(Selection.deck(d.id))
@@ -30,7 +30,7 @@ struct DeckList: View {
                     VStack(alignment: .leading, spacing: Space.xs) {
                         Text(s.name)
                         Text(s.openEnded ? "Any number of cards" : s.positions.map(\.label).joined(separator: " · "))
-                            .font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                            .font(Typo.caption).foregroundStyle(.secondary).lineLimit(2)
                     }
                     .padding(.vertical, Space.xs)
                     .selectionDisabled()
@@ -90,7 +90,7 @@ struct DeckDetail: View {
                 Toggle("Reversals allowed", isOn: deck.reversalsAllowed)
                 LabeledContent("Aliases") { ListField(items: deck.aliases.optional, prompt: "rws, rider") }
                 if let source = deck.wrappedValue.source {
-                    Text(source).font(.callout).foregroundStyle(.secondary)
+                    Text(source).font(Typo.callout).foregroundStyle(.secondary)
                 }
             }
             Section("Cards (\(deck.wrappedValue.cards.count))") {

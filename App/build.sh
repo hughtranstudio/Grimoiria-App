@@ -39,6 +39,8 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$bin" "$app/Contents/MacOS/$name"
 # Decks, spreads and Yi Jing ship inside the app; first launch copies them to Application Support.
 cp -R "$here/../Sources/GrimoireCore/Resources/Definitions" "$app/Contents/Resources/Definitions"
+# The house style's Garamonds (SIL Open Font License), registered at launch by UI/HouseStyle.swift.
+cp -R "$here/Resources/Fonts" "$app/Contents/Resources/Fonts"
 sed -e "s/__BUILD__/$(date +%Y%m%d%H%M)/" "$here/Info.plist.in" > "$app/Contents/Info.plist"
 # The icon: Icon/AppIcon.icon -> Resources/Assets.car + AppIcon.icns, rebuilt when it changed.
 if [[ -d "$here/Icon/AppIcon.icon" ]]; then

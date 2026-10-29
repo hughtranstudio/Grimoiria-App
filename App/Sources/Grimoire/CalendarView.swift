@@ -112,11 +112,11 @@ struct CalendarDayRow: View {
                 HStack(spacing: Space.sm) {
                     Text(DisplayDate.day(day.day)).fontWeight(isToday ? .semibold : .regular)
                     Text("\(CardGlyph.symbol(for: day.ruler)) \(day.ruler.rawValue.capitalized)").foregroundStyle(.secondary)
-                    if isToday { Text("Today").font(.caption).foregroundStyle(.tint) }
+                    if isToday { Text("Today").font(Typo.caption).foregroundStyle(.tint) }
                 }
                 ForEach(day.events, id: \.self) { e in
                     Label("\(clock(e.at))  \(e.title)", systemImage: e.symbol)
-                        .font(.caption)
+                        .font(Typo.caption)
                         .foregroundStyle(e.isPhase ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
                 }
                 let rituals = logged.entries.filter { $0.type == .ritual }.count
@@ -124,7 +124,7 @@ struct CalendarDayRow: View {
                 if rituals + others > 0 {
                     Text([rituals > 0 ? "\(rituals) ritual\(rituals == 1 ? "" : "s")" : nil,
                           others > 0 ? "\(others) other record\(others == 1 ? "" : "s")" : nil].compactMap { $0 }.joined(separator: " · "))
-                        .font(.caption)
+                        .font(Typo.caption)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -181,7 +181,7 @@ struct CalendarDayDetail: View {
                                 Text("\(h.number)").monospacedDigit().foregroundStyle(.secondary).frame(width: 24, alignment: .trailing)
                                 Text("\(CardGlyph.symbol(for: h.planet)) \(h.planet.rawValue.capitalized)")
                                     .fontWeight(now ? .semibold : .regular)
-                                if now { Text("Now").font(.caption).foregroundStyle(.tint) }
+                                if now { Text("Now").font(Typo.caption).foregroundStyle(.tint) }
                                 Spacer()
                                 Text("\(clock(h.start)) – \(clock(h.end))").monospacedDigit().foregroundStyle(.secondary)
                             }

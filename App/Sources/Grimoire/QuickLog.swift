@@ -87,7 +87,7 @@ struct QuickLogView: View {
         VStack(alignment: .leading, spacing: Space.md) {
             if let kind {
                 HStack {
-                    Label(kind.title, systemImage: symbol(kind)).font(.headline)
+                    Label(kind.title, systemImage: symbol(kind)).font(Typo.headline)
                     Spacer()
                     Button("Change Type") { self.kind = nil; text = ""; focus = .keys }
                         .controlSize(.small)
@@ -115,7 +115,7 @@ struct QuickLogView: View {
                 }
                 preview(kind)
                 HStack {
-                    Text("Return saves · Esc closes").font(.caption).foregroundStyle(.secondary)
+                    Text("Return saves · Esc closes").font(Typo.caption).foregroundStyle(.secondary)
                     Spacer()
                     Button("Save", action: save)
                         .buttonStyle(.borderedProminent)
@@ -123,7 +123,7 @@ struct QuickLogView: View {
                         .disabled(!canSave(kind))
                 }
             } else {
-                Text("Quick Log").font(.headline)
+                Text("Quick Log").font(Typo.headline)
                 Text("Press a key to choose:").foregroundStyle(.secondary)
                 Grid(alignment: .leading, horizontalSpacing: Space.lg, verticalSpacing: Space.sm) {
                     ForEach(Array(QuickKind.allCases.chunked(4).enumerated()), id: \.offset) { _, row in
@@ -199,7 +199,7 @@ struct QuickLogView: View {
                         }
                     }
                 }
-                .font(.callout)
+                .font(Typo.callout)
             }
         case .yijing:
             if let cast = try? YiJingCast(quick: text) { CastDrawing(cast: cast) }

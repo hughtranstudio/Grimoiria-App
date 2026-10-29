@@ -11,7 +11,7 @@ struct VolumeList: View {
         List(model.data.volumes, selection: $model.selection) { v in
             VStack(alignment: .leading, spacing: Space.xs) {
                 Text(v.name)
-                Text(subtitle(v)).font(.caption).foregroundStyle(.secondary)
+                Text(subtitle(v)).font(Typo.caption).foregroundStyle(.secondary)
             }
             .padding(.vertical, Space.xs)
             .tag(Selection.volume(v.id))

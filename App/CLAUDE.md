@@ -48,6 +48,15 @@ this Mac only, with a local SwiftData database and no server.
 - `ContentUnavailableView` for empty states.
 - Liquid Glass belongs to floating controls only, never to content.
 
+## House style (DRAFT)
+
+- The HT Press house style is on trial: options A, B and C in `Design/` (see `Design/README.md`). Until Hugh approves one, the app ships with the System style, and everything about the house style is labelled DRAFT.
+- Tokens come from `Design/tokens.json` only. Edit it, then run `tools/gen-tokens.py`; never edit `HouseTokens.swift` or `tokens.css` by hand.
+- Views use `Typo.body`, `Typo.caption`, and friends instead of `.font(.body)`, and `House.ink` / `House.muted` / `Palette.accent` instead of fixed colours. Under the System style each token is Apple's own, so the rules above still hold.
+- Content columns and sheets get `.pressPage()`. A record page's first Section gets a `PressHeading` header.
+- Settings and window chrome stay Apple's in every style.
+- Compare styles: `APP_STYLE=a tools/snap.sh` (and `b`, `c`).
+
 ## Skills
 
 The bama plugin has a skill for each step: `mac-design` (design rules),

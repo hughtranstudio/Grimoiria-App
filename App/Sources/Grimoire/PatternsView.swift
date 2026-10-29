@@ -346,7 +346,7 @@ struct TallyChart: View {
             Chart(Array(rows.enumerated()), id: \.offset) { _, row in
                 BarMark(x: .value("Count", row.1), y: .value("Name", row.0))
                     .foregroundStyle(.tint)
-                    .annotation(position: .trailing) { Text("\(row.1)").font(.caption).foregroundStyle(.secondary) }
+                    .annotation(position: .trailing) { Text("\(row.1)").font(Typo.caption).foregroundStyle(.secondary) }
             }
             .chartXAxis(.hidden)
             .frame(height: CGFloat(max(rows.count, 1)) * 24 + Space.lg)

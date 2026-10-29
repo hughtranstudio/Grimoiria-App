@@ -241,7 +241,7 @@ struct VolumePhotoGrid: View {
                             AttachmentThumbnail(attachment: e.physicalRef!.photo!)
                             Button("p. \(e.physicalRef!.page)") { model.reveal(e.id) }
                                 .buttonStyle(.link)
-                                .font(.caption)
+                                .font(Typo.caption)
                         }
                     }
                 }

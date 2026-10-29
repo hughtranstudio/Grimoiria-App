@@ -110,7 +110,7 @@ struct TodayList: View {
         List(selection: $model.selection) {
             Section("Now") {
                 Text(TimingText.line(model.timing(at: model.now())))
-                    .font(.callout)
+                    .font(Typo.callout)
                     .foregroundStyle(.secondary)
                     .selectionDisabled()
             }
@@ -123,7 +123,7 @@ struct TodayList: View {
                         VStack(alignment: .leading, spacing: Space.xs) {
                             InquiryRow(inquiry: i)
                             HStack {
-                                Text("Due \(DisplayDate.day(r.dueOn))").font(.caption).foregroundStyle(.secondary)
+                                Text("Due \(DisplayDate.day(r.dueOn))").font(Typo.caption).foregroundStyle(.secondary)
                                 Spacer()
                                 Button("Snooze 3 Days") { model.snooze(r.id) }
                                 Button("Add Outcome…") { model.sheet = .addOutcome(i.id) }

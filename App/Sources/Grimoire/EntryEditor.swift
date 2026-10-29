@@ -37,10 +37,13 @@ struct EntryEditor: View {
                 LabeledContent("Logged") {
                     Text(entry.wrappedValue.mode == .quick ? "Quick" : "Reflective").foregroundStyle(.secondary)
                 }
+            } header: {
+                PressHeading(kicker: "\(entry.wrappedValue.type.title) · \(DisplayDate.day(entry.wrappedValue.occurredAt))",
+                             title: entry.wrappedValue.displayTitle)
             }
             Section("Text") {
                 TextEditor(text: entry.body)
-                    .font(.body)
+                    .font(Typo.body)
                     .frame(minHeight: 180)
                     .scrollContentBackground(.hidden)
             }

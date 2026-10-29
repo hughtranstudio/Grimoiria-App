@@ -13,23 +13,29 @@ struct ContentView: View {
             sidebar
         } content: {
             PageList(page: model.page ?? .today)
+                .pressPage()
                 .navigationSplitViewColumnWidth(min: 280, ideal: 340)
         } detail: {
             DetailView()
+                .pressPage()
         }
         .sheet(item: $model.sheet) { sheet in
-            switch sheet {
-            case .newInquiry: NewInquirySheet()
-            case .addOutcome(let id): AddOutcomeSheet(inquiryId: id)
-            case .newVolume: NewVolumeSheet()
-            case .indexPages(let id): IndexPagesSheet(volumeId: id)
-            case .importDocuments: ImportDocumentsSheet()
+            Group {
+                switch sheet {
+                case .newInquiry: NewInquirySheet()
+                case .addOutcome(let id): AddOutcomeSheet(inquiryId: id)
+                case .newVolume: NewVolumeSheet()
+                case .indexPages(let id): IndexPagesSheet(volumeId: id)
+                case .importDocuments: ImportDocumentsSheet()
+                }
             }
+            .pressPage()
+            .modifier(HouseStyled())
         }
         .overlay(alignment: .bottom) {
             if let notice = model.notice {
                 Text(notice)
-                    .font(.callout)
+                    .font(Typo.callout)
                     .padding(.horizontal, Space.lg)
                     .padding(.vertical, Space.sm)
                     .glassEffect()
@@ -37,7 +43,7 @@ struct ContentView: View {
                     .transition(.opacity)
             }
         }
-        .animation(.default, value: model.notice)
+        .animation(Motion.arrive, value: model.notice)
         .task {
             AgentRouter.model = model
             AgentSocket.listen { AgentRouter.handle($0) }
@@ -160,7 +166,7 @@ struct EntryRow: View {
                     if let ref = entry.physicalRef { PageBadge(ref: ref) }
                     if !entry.tags.isEmpty { Text(TagInput.format(entry.tags)).lineLimit(1) }
                 }
-                .font(.caption)
+                .font(Typo.caption)
                 .foregroundStyle(.secondary)
             }
         }
@@ -184,7 +190,7 @@ struct InquiryRow: View {
                     Text(summary)
                     Text(inquiry.status.rawValue.capitalized)
                 }
-                .font(.caption)
+                .font(Typo.caption)
                 .foregroundStyle(.secondary)
             }
         }

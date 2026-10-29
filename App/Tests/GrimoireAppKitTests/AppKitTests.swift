@@ -122,3 +122,43 @@ func tempFolder() -> URL {
     #expect(throws: DeckSaveError.self) { try DefinitionsFolder.save(deck, in: lib, folder: dest) }
     #expect(try DefinitionLibrary.load(from: dest).deck("rws-tarot")?.cards.count == 78)
 }
+
+// MARK: House style (DRAFT)
+
+@Test("Every house style reads", arguments: HouseTokens.styles)
+func houseStyleContrast(_ style: HouseStyleTokens) {
+    for mode in [style.light, style.dark] {
+        // A style that keeps Apple's ground keeps Apple's text colours too.
+        guard let ground = mode.ground, let ink = mode.ink, let muted = mode.muted else { continue }
+        #expect(ink.contrast(on: ground) >= 7, "\(style.id) text")
+        #expect(muted.contrast(on: ground) >= 4.5, "\(style.id) secondary text")
+        if let surface = mode.surface {
+            #expect(ink.contrast(on: surface) >= 7, "\(style.id) text on a card")
+            #expect(muted.contrast(on: surface) >= 4.5, "\(style.id) secondary text on a card")
+        }
+        if let red = mode.rubricText {
+            #expect(red.contrast(on: ground) >= 4.5, "\(style.id) red text")
+        }
+    }
+}
+
+@Test func houseStyleRedIsTheOnlyColour() {
+    // Rubric red is the only hue: every other colour is a gray or the night ground.
+    let reds: Set<UInt32> = [HouseTokens.Palette.rubric, HouseTokens.Palette.rubricSmall, HouseTokens.Palette.rubricOnDark]
+    let night: Set<UInt32> = [HouseTokens.Palette.beltane, HouseTokens.Palette.beltaneDeep]
+    for style in HouseTokens.styles {
+        for mode in [style.light, style.dark] {
+            for ink in [mode.ground, mode.surface, mode.ink, mode.muted, mode.rule].compactMap({ $0 }) {
+                let c = ink.rgb()
+                #expect(night.contains(ink.hex) || (c.r == c.g && c.g == c.b), "\(style.id) \(ink.hex)")
+            }
+            for ink in [mode.rubric, mode.rubricText].compactMap({ $0 }) { #expect(reds.contains(ink.hex)) }
+        }
+    }
+}
+
+@Test func houseStyleDefaultsToSystem() {
+    #expect(HouseStyleTokens.style("missing").isSystem)
+    #expect(HouseStyleTokens.style("system").accentIsRubric == false)
+    #expect(HouseTokens.styles.map(\.id) == ["system", "a", "b", "c"])
+}
