@@ -19,10 +19,13 @@ extension AppModel {
         do {
             var files = ObsidianExporter(library: library).files(for: filed)
             files["grimoire.jsonl"] = try JSONLExporter(library: library).export(filed)
-            var report = try ExportWriter.write(files, to: root)
+            if settings.exportML { files.merge(try MLExporter(library: library).files(for: filed)) { a, _ in a } }
+            var report = try ExportWriter.write(files, to: root, prune: true)
             report.written += try copyAttachments(of: filed, to: root.appending(path: "_attachments"))
             if !quiet {
-                show(report.written.isEmpty ? "Export is up to date" : "Exported \(report.written.count) file\(report.written.count == 1 ? "" : "s")")
+                var parts = [report.written.isEmpty ? "Export is up to date" : "Exported \(report.written.count) file\(report.written.count == 1 ? "" : "s")"]
+                if !report.removed.isEmpty { parts.append("removed \(report.removed.count) for deleted records") }
+                show(parts.joined(separator: ", "))
             }
             return report
         } catch {

@@ -65,10 +65,10 @@ final class ExportTests: XCTestCase {
         XCTAssertTrue(md.contains("fulfilled: yes\n") == false) // "yes" must be quoted so YAML keeps it a string
         XCTAssertTrue(md.contains("fulfilled: \"yes\"\n"))
         XCTAssertTrue(md.contains("| Recent past |") == false)
-        XCTAssertTrue(md.contains("| Past | Three of Cups | reversed |  |"))
-        XCTAssertTrue(md.contains("| Present | The Tower | upright | sudden \\| shock |"))
-        XCTAssertTrue(md.contains("- Primary: **37. The Family**"))
-        XCTAssertTrue(md.contains("- Resulting: **25. Innocence**"))
+        XCTAssertTrue(md.contains("| Past | [[rws-tarot-cups-03-three-of-cups\\|Three of Cups]] | reversed |  |"), md)
+        XCTAssertTrue(md.contains("| Present | [[rws-tarot-maj-16-the-tower\\|The Tower]] | upright | sudden \\| shock |"))
+        XCTAssertTrue(md.contains("- Primary: **[[37-the-family|37. The Family]]**"))
+        XCTAssertTrue(md.contains("- Resulting: **[[25-innocence|25. Innocence]]**"))
         XCTAssertTrue(md.contains("## Synthesis\n\nDisruption, then news.\n"))
         XCTAssertTrue(md.contains("### 2026-11-04 · yes · day 7"))
         XCTAssertTrue(md.contains("## Linked entries\n\n- [[2026-10-28-omen-01JBXA0000000000000000E001]] (omen)"))
@@ -81,6 +81,39 @@ final class ExportTests: XCTestCase {
         XCTAssertNotNil(files["Decks/rws-tarot.md"])
         XCTAssertNotNil(files["Decks/quareia.md"])
         XCTAssertNil(files["Decks/custom-template.md"])
+    }
+
+    func testCardHexagramAndHomeNotes() throws {
+        let files = ObsidianExporter(library: lib).files(for: try sampleData())
+        let tower = try XCTUnwrap(files["Cards/rws-tarot-maj-16-the-tower.md"], "\(files.keys.sorted())")
+        XCTAssertTrue(tower.contains("type: card\n"))
+        XCTAssertTrue(tower.contains("attribution: mars\n"))
+        XCTAssertTrue(tower.contains("times_drawn: 1\n"))
+        XCTAssertTrue(tower.contains("| 2026-10-28 | [[2026-10-28-will-the-move-go-ahead-01JBXA0000000000000000Q001\\|Will the move go ahead?]] | Present | upright |"), tower)
+        let family = try XCTUnwrap(files["Hexagrams/37-the-family.md"])
+        XCTAssertTrue(family.contains("times_cast: 1\n") && family.contains("| primary | 3, 4 |"), family)
+        XCTAssertTrue(try XCTUnwrap(files["Hexagrams/25-innocence.md"]).contains("times_resulting: 1\n"))
+        let home = try XCTUnwrap(files["Grimoire.md"])
+        XCTAssertTrue(home.contains("[[volume-iii-01JBXA0000000000000000VA13|Volume III]]"), home)
+        XCTAssertTrue(home.contains("## Cards that come up most"))
+    }
+
+    func testPruneRemovesOnlyGrimoireNotesThatAreGone() throws {
+        let dir = TestSupport.tempDir()
+        var data = try sampleData()
+        let files = ObsidianExporter(library: lib).files(for: data)
+        _ = try ExportWriter.write(files, to: dir)
+        let mine = dir.appendingPathComponent("Notes/My crow note.md")
+        try FileManager.default.createDirectory(at: mine.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data("---\ntags: [crow]\n---\nMine.\n".utf8).write(to: mine)
+        // The omen is deleted in the app.
+        data.entries.removeAll()
+        let report = try ExportWriter.write(ObsidianExporter(library: lib).files(for: data), to: dir, prune: true)
+        XCTAssertEqual(report.removed, ["Entries/2026/10/2026-10-28-omen-01JBXA0000000000000000E001.md"])
+        XCTAssertTrue(FileManager.default.fileExists(atPath: mine.path), "the person's own notes stay")
+        let again = try ExportWriter.write(ObsidianExporter(library: lib).files(for: data), to: dir, prune: true)
+        XCTAssertEqual(again.removed, [])
+        XCTAssertEqual(again.written, [])
     }
 
     func testReExportChangesNothing() throws {
@@ -126,5 +159,37 @@ final class ExportTests: XCTestCase {
         XCTAssertEqual(YAML.quote("[[x]]"), "\"[[x]]\"")
         XCTAssertEqual(YAML.quote("say \"hi\"\nnow"), "\"say \\\"hi\\\"\\nnow\"")
         XCTAssertEqual(YAML.quote(""), "\"\"")
+    }
+
+    func testMLFiles() throws {
+        let data = try sampleData()
+        let files = try MLExporter(library: lib).files(for: data)
+        let draws = try XCTUnwrap(files["ML/draws.jsonl"]).split(separator: "\n").map {
+            try JSONSerialization.jsonObject(with: Data($0.utf8)) as! [String: Any]
+        }
+        XCTAssertEqual(draws.count, 5, "3 cards + primary and resulting hexagram")
+        XCTAssertEqual(draws[1]["card_name"] as? String, "The Tower")
+        XCTAssertEqual((draws[1]["attributes"] as? [String: String])?["attribution"], "mars")
+        XCTAssertEqual(draws[0]["orientation"] as? String, "reversed")
+        XCTAssertEqual(draws[0]["fulfilled"] as? String, "yes")
+        XCTAssertEqual(draws[0]["days_to_first_outcome"] as? Int, 7)
+        XCTAssertEqual(draws[3]["hexagram"] as? Int, 37)
+        XCTAssertEqual(draws[4]["hexagram_role"] as? String, "resulting")
+        let corpus = try XCTUnwrap(files["ML/corpus.jsonl"])
+        XCTAssertTrue(corpus.contains("\"kind\":\"synthesis\""))
+        XCTAssertTrue(corpus.contains("\"text\":\"yes: Offer came.\""))
+        XCTAssertTrue(try XCTUnwrap(files["ML/manifest.json"]).contains("\"rows\" : 5"))
+        XCTAssertEqual(try MLExporter(library: lib).files(for: data), files, "byte-stable")
+    }
+
+    func testChunks() {
+        let para = String(repeating: "Word ", count: 50)  // 250 characters
+        let text = [para, para, para].joined(separator: "\n\n")
+        let pieces = MLExporter.chunks(text, size: 600)
+        XCTAssertEqual(pieces.count, 2)
+        XCTAssertTrue(pieces.allSatisfy { $0.count <= 600 })
+        let long = String(repeating: "x ", count: 400)
+        XCTAssertTrue(MLExporter.chunks(long, size: 100).allSatisfy { $0.count <= 100 })
+        XCTAssertEqual(MLExporter.chunks("short", size: 100), ["short"])
     }
 }

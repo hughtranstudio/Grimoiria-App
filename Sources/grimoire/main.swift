@@ -31,7 +31,8 @@ usage: grimoire <command> [options]
                                           stack an outcome; due check-ins roll on to the next step
   remind <inquiry id> [--preset 7-30-90|1w|1m|3m] [--stop]
   remind-backfill [--today yyyy-MM-dd]    check-ins for open inquiries that have none (old notes)
-  export --out DIR                        Obsidian Markdown + grimoire.jsonl
+  export --out DIR [--keep-stale]         Obsidian Markdown, card and hexagram notes, grimoire.jsonl, ML/ files;
+                                          removes notes it wrote for records that are gone
   calendar [--from yyyy-MM-dd] [--days 14] [--tz Zone] [--lat N --lon N] [--hours]
                                           moon phases, sign changes, day rulers (and planetary hours) ahead
   hours <planet> [--after ISO] [--its-day] [--limit 5] [--tz Zone] [--lat N --lon N]
@@ -408,8 +409,9 @@ func run() async throws {
         let root = URL(fileURLWithPath: out)
         var files = ObsidianExporter(library: lib).files(for: store.data)
         files["grimoire.jsonl"] = try JSONLExporter(library: lib).export(store.data)
-        let report = try ExportWriter.write(files, to: root)
-        print("\(report.written.count) written, \(report.unchanged) unchanged")
+        files.merge(try MLExporter(library: lib).files(for: store.data)) { a, _ in a }
+        let report = try ExportWriter.write(files, to: root, prune: !args.has("keep-stale"))
+        print("\(report.written.count) written, \(report.unchanged) unchanged, \(report.removed.count) removed")
 
     default:
         print(usage)

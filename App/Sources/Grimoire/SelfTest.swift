@@ -132,6 +132,16 @@ enum SelfTest {
         check("grimoire.jsonl written", FileManager.default.fileExists(atPath: vault.appending(path: "grimoire.jsonl").path))
         let second = model.exportNow(to: vault, quiet: true)
         check("second export writes 0 files", second?.written.isEmpty == true, "\(second?.written ?? [])")
+        check("card notes written", FileManager.default.fileExists(atPath: vault.appending(path: "Cards/rws-tarot-maj-16-the-tower.md").path))
+        check("ML files written", FileManager.default.fileExists(atPath: vault.appending(path: "ML/draws.jsonl").path))
+        let ownNote = vault.appending(path: "My own note.md")
+        try? Data("Mine.".utf8).write(to: ownNote)
+        let doomed = model.newEntry(.dream, body: "Self-test: deleted later", select: false)
+        model.exportNow(to: vault, quiet: true)
+        model.delete(doomed.id)
+        let pruned = model.exportNow(to: vault, quiet: true)
+        check("export removes the note of a deleted record", pruned?.removed.count == 1, "\(pruned?.removed ?? [])")
+        check("export keeps your own notes", FileManager.default.fileExists(atPath: ownNote.path))
 
         // M7: ingest, no duplicates, nothing filed before Confirm
         await ingestChecks(model)

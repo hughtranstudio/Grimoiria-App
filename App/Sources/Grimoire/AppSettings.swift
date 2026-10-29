@@ -20,6 +20,7 @@ final class AppSettings {
         homeLongitude = defaults.object(forKey: "home.longitude") as? Double
         vaultPath = defaults.string(forKey: "vault.path") ?? ""
         exportAfterConfirm = defaults.object(forKey: "vault.afterConfirm") as? Bool ?? true
+        exportML = defaults.object(forKey: "vault.ml") as? Bool ?? true
         ingestFolders = defaults.stringArray(forKey: "ingest.folders")
             ?? [Store.isOverridden ? Store.folder.appending(path: "Inbox").path : Self.defaultIngestFolder]
         whisperModel = defaults.string(forKey: "whisper.model") ?? (Store.isOverridden ? "sidecar" : "apple")
@@ -39,6 +40,8 @@ final class AppSettings {
     /// The Obsidian export folder, for example Vault/Grimoire.
     var vaultPath: String { didSet { defaults.set(vaultPath, forKey: "vault.path") } }
     var exportAfterConfirm: Bool { didSet { defaults.set(exportAfterConfirm, forKey: "vault.afterConfirm") } }
+    /// Also write ML/draws.jsonl, ML/corpus.jsonl and ML/manifest.json for local models.
+    var exportML: Bool { didSet { defaults.set(exportML, forKey: "vault.ml") } }
     /// Ingest folders; each has incoming/, processed/ and failed/ inside.
     var ingestFolders: [String] { didSet { defaults.set(ingestFolders, forKey: "ingest.folders") } }
     var whisperModel: String { didSet { defaults.set(whisperModel, forKey: "whisper.model") } }

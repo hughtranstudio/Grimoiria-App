@@ -113,10 +113,11 @@ struct ExportSettings: View {
                 }
             }
             Toggle("Export after each Inbox confirm", isOn: $settings.exportAfterConfirm)
+            Toggle("Also write files for local AI models", isOn: $settings.exportML)
             Button("Export Now") { model.exportNow() }
                 .disabled(settings.vaultPath.isEmpty)
         } footer: {
-            Text("Markdown with YAML frontmatter, plus grimoire.jsonl. Only changed files are written.")
+            Text("Markdown with YAML frontmatter, a note per card and hexagram, and grimoire.jsonl. Only changed files are written, and notes for deleted records are removed; your own notes are never touched. The ML folder holds one row per draw and passages of your writing, for models you run on this Mac.")
         }
     }
 }

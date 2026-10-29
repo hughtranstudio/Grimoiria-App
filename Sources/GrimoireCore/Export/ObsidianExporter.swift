@@ -31,6 +31,17 @@ public struct ObsidianExporter: Sendable {
         for d in library.decks where d.status != .template {
             out["Decks/\(d.id).md"] = deck(d)
         }
+        // One note per card drawn and per hexagram cast, listing every reading: Obsidian's graph and
+        // backlinks then show which readings share a card.
+        let patterns = Patterns(data: data, library: library)
+        let readings = Dictionary(uniqueKeysWithValues: data.inquiries.map { ($0.id, $0) })
+        for (key, draws) in Dictionary(grouping: patterns.cards, by: { "\($0.deckId)/\($0.cardId)" }) {
+            out["Cards/\(cardBase(draws[0].deckId, draws[0].cardId)).md"] = card(draws, readings: readings, links: inquiryLinks, key: key)
+        }
+        for (n, casts) in Dictionary(grouping: patterns.hexagrams, by: \.number) {
+            out["Hexagrams/\(hexagramBase(n)).md"] = hexagram(n, casts, readings: readings, links: inquiryLinks)
+        }
+        out["Grimoire.md"] = home(data, patterns: patterns, links: entryLinks)
         return out
     }
 
@@ -56,6 +67,15 @@ public struct ObsidianExporter: Sendable {
         return "\(i.askedAt.day)-\(s.isEmpty ? "inquiry" : s)-\(i.id)"
     }
     static func wiki(_ base: String) -> String { "[[\(base)]]" }
+    static func wiki(_ base: String, _ alias: String) -> String { "[[\(base)|\(alias)]]" }
+    func cardBase(_ deckId: String, _ cardId: String) -> String {
+        let s = Self.slug(cardName(deckId, cardId))
+        return "\(deckId)-\(cardId)\(s.isEmpty ? "" : "-\(s)")"
+    }
+    func hexagramBase(_ n: Int) -> String {
+        let s = Self.slug(library.yijing.hexagram(n)?.name ?? "")
+        return String(format: "%02d", n) + (s.isEmpty ? "" : "-\(s)")
+    }
 
     // MARK: Shared frontmatter pieces
 
@@ -209,12 +229,12 @@ public struct ObsidianExporter: Sendable {
                 let ph = library.yijing.hexagram(p)
                 md += "\n## Yi Jing (\(c.method.rawValue))\n\n"
                 md += "Lines (bottom → top): \(c.lines.map(String.init).joined(separator: " "))\n\n"
-                md += "- Primary: **\(p). \(ph?.name ?? "")** (\(ph?.pinyin ?? ""))\n"
+                md += "- Primary: **\(Self.wiki(hexagramBase(p), "\(p). \(ph?.name ?? "")"))** (\(ph?.pinyin ?? ""))\n"
                 if !c.changingLines.isEmpty {
                     md += "- Changing lines: \(c.changingLines.map(String.init).joined(separator: ", "))\n"
                 }
                 if let r = c.resultingHexagram(in: library.yijing), let rh = library.yijing.hexagram(r) {
-                    md += "- Resulting: **\(r). \(rh.name)** (\(rh.pinyin))\n"
+                    md += "- Resulting: **\(Self.wiki(hexagramBase(r), "\(r). \(rh.name)"))** (\(rh.pinyin))\n"
                 }
                 md += "\n" + Self.hexagramDiagram(c) + "\n"
             } else {
@@ -225,7 +245,8 @@ public struct ObsidianExporter: Sendable {
                 md += "| Position | Card | Orientation | Notes |\n|---|---|---|---|\n"
                 for w in d.draws {
                     let pos = spread?.label(for: w.positionKey) ?? w.positionKey
-                    md += "| \(Self.cell(pos)) | \(Self.cell(cardName(d.deckId, w.cardId))) | \(w.orientation.rawValue) | \(Self.cell(w.notes ?? "")) |\n"
+                    let name = d.deckId.map { Self.wiki(cardBase($0, w.cardId), cardName($0, w.cardId)) } ?? w.cardId
+                    md += "| \(Self.cell(pos)) | \(Self.cell(name)) | \(w.orientation.rawValue) | \(Self.cell(w.notes ?? "")) |\n"
                 }
             }
             if let n = d.notes, !n.isEmpty { md += "\n\(n)\n" }
@@ -292,11 +313,16 @@ public struct ExportWriter {
     public struct Report: Equatable, Sendable {
         public var written: [String] = []
         public var unchanged: Int = 0
+        /// Notes Grimoire wrote earlier for records that are gone (deleted, renamed, re-dated).
+        public var removed: [String] = []
     }
 
-    public static func write(_ files: [String: String], to root: URL) throws -> Report {
+    /// With `prune`, Markdown files under `root` that Grimoire generated (they start with its header)
+    /// and that this export no longer produces are deleted. Anything else in the folder is left alone.
+    public static func write(_ files: [String: String], to root: URL, prune: Bool = false) throws -> Report {
         var report = Report()
         let fm = FileManager.default
+        if prune { report.removed = try stale(in: root, keeping: Set(files.keys)) }
         for path in files.keys.sorted() {
             let url = root.appendingPathComponent(path)
             let data = Data(files[path]!.utf8)
@@ -306,5 +332,25 @@ public struct ExportWriter {
             report.written.append(path)
         }
         return report
+    }
+
+    static let marker = Data("---\n# \(ObsidianExporter.header)".utf8)
+
+    static func stale(in root: URL, keeping: Set<String>) throws -> [String] {
+        let fm = FileManager.default
+        guard let walker = fm.enumerator(at: root, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles]) else { return [] }
+        let base = root.standardizedFileURL.path
+        var removed: [String] = []
+        while let url = walker.nextObject() as? URL {
+            guard url.pathExtension == "md" else { continue }
+            let rel = String(url.standardizedFileURL.path.dropFirst(base.count)).trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+            guard !keeping.contains(rel), let handle = try? FileHandle(forReadingFrom: url) else { continue }
+            let head = try handle.read(upToCount: marker.count)
+            try handle.close()
+            guard head == marker else { continue }
+            try fm.removeItem(at: url)
+            removed.append(rel)
+        }
+        return removed.sorted()
     }
 }
