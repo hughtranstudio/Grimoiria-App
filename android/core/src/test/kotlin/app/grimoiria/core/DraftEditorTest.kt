@@ -42,8 +42,8 @@ class DraftEditorTest {
 
     @Test
     fun placeholderDeckIsFlaggedNotBlocked() {
-        val r = parser.parse("Deck Quareia, the weaver")
-        assertEquals(listOf("Quareia Deck has no card list yet; enter its cards on the Mac"), editor.issues(r))
+        val r = parser.parse("Deck Mystagogos, the oracle")
+        assertEquals(listOf("Mystagogos Deck has no card list yet; enter its cards on the Mac"), editor.issues(r))
     }
 
     @Test
