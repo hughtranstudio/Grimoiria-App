@@ -107,6 +107,8 @@ final class AppModel {
     var searchHexagram: Int?
     var patternWindow: PatternWindow = .all
     var recurrenceDays = 30
+    /// The month the Calendar page shows.
+    var calendarMonth = Date.now
     /// A short line shown at the bottom of the window, like "Exported 12 files".
     var notice: String?
     /// Files the last import couldn't read, shown on the Inbox page.

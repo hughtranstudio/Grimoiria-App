@@ -41,6 +41,21 @@ struct AppCommands: Commands {
             }
             .keyboardShortcut("f", modifiers: [.command, .option])
         }
+        CommandMenu("Calendar") {
+            Button("Previous Month") { model.page = .calendar; model.moveCalendar(months: -1) }
+                .keyboardShortcut(.leftArrow, modifiers: [.command, .option])
+            Button("Next Month") { model.page = .calendar; model.moveCalendar(months: 1) }
+                .keyboardShortcut(.rightArrow, modifiers: [.command, .option])
+            Button("Today in the Calendar") {
+                model.page = .calendar
+                model.calendarMonth = .now
+                model.selection = .day(model.today)
+            }
+            .keyboardShortcut("y", modifiers: [.command, .option])
+            Divider()
+            Button("Fill Timing on Older Records") { model.fillMissingTiming() }
+            Button("Add Check-ins to Past Readings") { model.backfillCheckIns() }
+        }
         CommandMenu("Go") {
             ForEach(SidebarPage.allCases) { page in
                 if let key = page.shortcut {
