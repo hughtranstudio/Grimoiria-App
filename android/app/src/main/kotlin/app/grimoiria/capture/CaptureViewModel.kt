@@ -48,6 +48,7 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
     val editor by lazy { DraftEditor(ctx.library) }
     private val store get() = ctx.store
     private val transcriber = OnDeviceTranscriber(app)
+    private val speechHints by lazy { ctx.library.speechHints() }
     private val deliverLock = Mutex()
 
     var screen by mutableStateOf<Screen>(Screen.Home)
@@ -132,7 +133,7 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun transcribe(id: String, pcm: File, seconds: Double) {
         viewModelScope.launch {
-            val result = transcriber.transcribe(pcm, ctx.settings.speechLanguage, seconds)
+            val result = transcriber.transcribe(pcm, ctx.settings.speechLanguage, seconds, speechHints)
             val current = check?.takeIf { it.capture.id == id } ?: return@launch
             check = when (result) {
                 is OnDeviceTranscriber.Result.Text -> {

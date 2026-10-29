@@ -95,8 +95,28 @@ class DefinitionLibrary(decks: List<DeckDefinition>, spreads: List<SpreadDefinit
         get() = spread(SpreadDefinition.FREEFORM_ID)
             ?: SpreadDefinition(SpreadDefinition.FREEFORM_ID, "Freeform", emptyList(), emptyList(), openEnded = true)
 
+    /**
+     * Words and phrases a speech recognizer should expect in a reading: deck, card, spread and
+     * hexagram names plus the words the parser listens for. Passed as biasing strings so names
+     * like "Mystagogos" or "Kun" aren't heard as everyday words.
+     */
+    fun speechHints(): List<String> {
+        val out = LinkedHashSet<String>()
+        fun add(s: String) { s.trim().takeIf { it.length > 1 }?.let(out::add) }
+        READING_WORDS.forEach(::add)
+        decks.forEach { d -> add(d.name); d.aliases.forEach(::add); d.cards.forEach { c -> add(c.name); c.aliases.forEach(::add) } }
+        spreads.forEach { s -> add(s.name); s.aliases.forEach(::add); s.positions.forEach { add(it.label) } }
+        yijing.aliases.forEach(::add)
+        yijing.hexagrams.forEach { add(it.pinyin); add(it.name) }
+        return out.toList()
+    }
+
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
+        private val READING_WORDS = listOf(
+            "reversed", "upright", "question", "Yi Jing", "I Ching", "hexagram", "changing lines",
+            "changing line", "moving lines", "becomes", "coins", "yarrow", "omen", "spread", "card", "cards",
+        )
 
         fun load(source: DefinitionSource): DefinitionLibrary {
             fun files(dir: String) = source.list(dir).filter { it.endsWith(".json") }.sorted().map { "$dir/$it" }

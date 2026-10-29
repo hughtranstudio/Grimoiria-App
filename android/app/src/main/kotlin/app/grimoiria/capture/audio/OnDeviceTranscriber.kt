@@ -19,7 +19,9 @@ import kotlin.coroutines.resume
 
 /**
  * Transcribes a finished recording on the phone with Android's on-device recognizer, fed from
- * the PCM file (nothing is sent to a server). If it can't run, the capture still goes out with
+ * the PCM file at the pace it was spoken (nothing is sent to a server). Handing the recognizer
+ * the whole file at once made it drop audio it couldn't keep up with, so only the end came out
+ * right. If it can't run, the capture still goes out with
  * its audio and the Mac transcribes it with Whisper instead.
  */
 class OnDeviceTranscriber(private val context: Context) {
@@ -30,25 +32,27 @@ class OnDeviceTranscriber(private val context: Context) {
 
     fun isAvailable(): Boolean = SpeechRecognizer.isOnDeviceRecognitionAvailable(context)
 
-    suspend fun transcribe(pcm: File, language: String, seconds: Double): Result {
+    suspend fun transcribe(pcm: File, language: String, seconds: Double, hints: List<String> = emptyList()): Result {
         if (!isAvailable()) return Result.Unavailable("On-device speech recognition isn't available on this phone")
-        val timeoutMs = (seconds * 3_000).toLong().coerceAtLeast(30_000)
+        val timeoutMs = (seconds * 1_000 / PACE + 30_000).toLong()
         return withContext(Dispatchers.Main) {
-            withTimeoutOrNull(timeoutMs) { run(pcm, language) }
+            withTimeoutOrNull(timeoutMs) { run(pcm, language, hints) }
                 ?: Result.Unavailable("Speech recognition timed out")
         }
     }
 
-    private suspend fun run(pcm: File, language: String): Result = suspendCancellableCoroutine { cont ->
+    private suspend fun run(pcm: File, language: String, hints: List<String>): Result = suspendCancellableCoroutine { cont ->
         val main = Handler(Looper.getMainLooper())
         val recognizer = SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
-        val pfd = ParcelFileDescriptor.open(pcm, ParcelFileDescriptor.MODE_READ_ONLY)
+        val (pfd, sink) = ParcelFileDescriptor.createPipe()
+        val feeder = feed(pcm, sink)
         val segments = mutableListOf<String>()
         var done = false
 
         fun finish(result: Result) {
             if (done) return
             done = true
+            feeder.interrupt()
             main.post { recognizer.destroy(); runCatching { pfd.close() } }
             if (cont.isActive) cont.resume(result)
         }
@@ -75,7 +79,7 @@ class OnDeviceTranscriber(private val context: Context) {
                 finish(Result.Unavailable(describe(error), modelMissing = missing))
             }
         })
-        cont.invokeOnCancellation { main.post { recognizer.destroy(); runCatching { pfd.close() } } }
+        cont.invokeOnCancellation { feeder.interrupt(); main.post { recognizer.destroy(); runCatching { pfd.close() } } }
         recognizer.startListening(intent(language).apply {
             putExtra(RecognizerIntent.EXTRA_AUDIO_SOURCE, pfd)
             putExtra(RecognizerIntent.EXTRA_AUDIO_SOURCE_CHANNEL_COUNT, 1)
@@ -84,8 +88,33 @@ class OnDeviceTranscriber(private val context: Context) {
             // One session for the whole file, split into segments at pauses.
             putExtra(RecognizerIntent.EXTRA_SEGMENTED_SESSION, RecognizerIntent.EXTRA_AUDIO_SOURCE)
             putExtra(RecognizerIntent.EXTRA_ENABLE_FORMATTING, RecognizerIntent.FORMATTING_OPTIMIZE_QUALITY)
+            if (hints.isNotEmpty()) putStringArrayListExtra(RecognizerIntent.EXTRA_BIASING_STRINGS, ArrayList(hints))
         })
+        feeder.start()
     }
+
+    /**
+     * Copies the recording into the recognizer's pipe in 100 ms chunks at [PACE] times real time,
+     * then adds a second of silence so the last words are finalised before the stream ends.
+     */
+    private fun feed(pcm: File, sink: ParcelFileDescriptor) = Thread({
+        val chunk = ByteArray(WavRecorder.SAMPLE_RATE * 2 / 10)
+        val chunkMs = (100 / PACE).toLong()
+        runCatching {
+            ParcelFileDescriptor.AutoCloseOutputStream(sink).use { out ->
+                pcm.inputStream().buffered().use { input ->
+                    while (true) {
+                        val n = input.readNBytes(chunk, 0, chunk.size)
+                        if (n <= 0) break
+                        out.write(chunk, 0, n)
+                        Thread.sleep(chunkMs)
+                    }
+                }
+                chunk.fill(0)
+                repeat(10) { out.write(chunk); Thread.sleep(chunkMs) }
+            }
+        }
+    }, "TranscriberFeed")
 
     /** Asks the system to download the offline speech model for `language`. */
     fun downloadModel(language: String) {
@@ -98,6 +127,11 @@ class OnDeviceTranscriber(private val context: Context) {
         putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         putExtra(RecognizerIntent.EXTRA_LANGUAGE, language)
         putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
+    }
+
+    companion object {
+        /** How much faster than real time the recording is fed; above ~1.5 the recognizer starts losing words. */
+        const val PACE = 1.25
     }
 
     private fun describe(error: Int): String = when (error) {
