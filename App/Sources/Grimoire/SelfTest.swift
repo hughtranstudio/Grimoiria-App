@@ -1,0 +1,185 @@
+import AppKit
+import Foundation
+import GrimoireAppKit
+import GrimoireCore
+
+/// Self-test for agents: runs the app's real functions on a test store,
+/// prints PASS or FAIL per check, and quits with exit code 0 or 1.
+///   APP_STORE=/tmp/Grimoire-self.store ~/Applications/Grimoire.app/Contents/MacOS/Grimoire --selftest
+/// (tools/selftest.sh does this, then relaunches with --selftest-reopen for the relaunch checks.)
+enum SelfTest {
+    static var requested: Bool { CommandLine.arguments.contains("--selftest") || reopen }
+    static var reopen: Bool { CommandLine.arguments.contains("--selftest-reopen") }
+    /// Read by AppDelegate.applicationWillTerminate.
+    static var exitCode: Int32 = 0
+    private static var failures = 0
+    private static var count = 0
+
+    static func runIfRequested(model: AppModel) {
+        guard requested else { return }
+        setvbuf(stdout, nil, _IOLBF, 0)
+        guard Store.isOverridden else {
+            print("SELFTEST refused: set APP_STORE to a file in /tmp")
+            finish(code: 1)
+            return
+        }
+        Task {
+            try? await Task.sleep(for: .seconds(0.5))
+            if reopen { await relaunchChecks(model) } else { await firstRunChecks(model) }
+            print(failures == 0 ? "SELFTEST PASS \(count) checks" : "SELFTEST FAIL \(failures) of \(count) checks")
+            finish(code: failures == 0 ? 0 : 1)
+        }
+    }
+
+    // MARK: First run
+
+    private static func firstRunChecks(_ model: AppModel) async {
+        // M1: definitions
+        check("definitions validate at launch", model.definitionsReport?.isValid == true, model.definitionsError ?? "")
+        check("4 decks and 4 spreads", model.library.decks.count == 4 && model.library.spreads.count == 4)
+        check("Quareia and Mystagogos are placeholders",
+              model.library.deck("quareia")?.status == .placeholder && model.library.deck("mystagogos")?.status == .placeholder)
+        check("definitions copied to the store folder", FileManager.default.fileExists(atPath: Store.definitions.appending(path: "yijing.json").path))
+
+        // M2: one of each non-divination type, with tags, a page and a link
+        let vol = Volume(name: "Volume III")
+        model.repository.save(vol)
+        var ids: [ULID] = []
+        for (i, t) in EntryType.creatable.enumerated() {
+            var e = model.newEntry(t, body: "Self-test \(t.rawValue)", tags: [TagPath("selftest/\(t.rawValue)")])
+            e.physicalRef = PhysicalRef(volumeId: vol.id, page: String(38 + i * 2))
+            if let prev = ids.last { e.links = [Link(.related, to: prev)] }
+            model.stage(e)
+            ids.append(e.id)
+        }
+        model.flushEdits()
+        check("created one record of each of the 8 types", Set(model.timelineEntries.map(\.type)).count == 8)
+        check("timing computed at save", model.timelineEntries.allSatisfy { $0.timing != nil })
+        check("parent tag finds children", model.search("#selftest").count == 8)
+        check("tag autocomplete", model.tagTree.suggestions(for: "selftest/dr").first?.path == "selftest/dream")
+        check("backlinks", model.repository.backlinks(to: ids[0]).first?.source == ids[1])
+
+        // M3: compound Inquiry, 1-week reminder, outcome
+        let inq = model.newInquiry(question: "Self-test: will the move go ahead?", reminder: .preset(.oneWeek))
+        var i = inq
+        i.divinations = [
+            Divination(system: .cards, deckId: "rws-tarot", spreadId: "three-card", performedAt: inq.askedAt, order: 0,
+                       draws: [Draw(cardId: "cups-03", positionKey: "past", orientation: .reversed),
+                               Draw(cardId: "maj-16", positionKey: "present"), Draw(cardId: "wands-11", positionKey: "future")]),
+            Divination(system: .yijing, performedAt: inq.askedAt, order: 1, cast: try? YiJingCast(quick: "789677")),
+        ]
+        i.synthesis = Synthesis(body: "Upheaval, then news.", writtenAt: inq.askedAt, confidence: 3)
+        model.stage(i)
+        model.flushEdits()
+        let reminder = model.data.reminders.first { $0.targetId == inq.id }
+        check("1-week reminder saved", reminder?.dueOn == ReminderPreset.oneWeek.dueOn(from: inq.askedAt.day))
+        let weekLater = ReminderPreset.oneWeek.dueOn(from: model.today)!
+        check("Needs outcome lists it when due", model.repository.needsOutcome(today: weekLater).contains { $0.targetId == inq.id })
+        check("cast hexagrams 1 → …", model.inquiry(inq.id)?.divinations[1].cast?.primaryHexagram(in: model.library.yijing) != nil)
+        check("card names are searchable", model.search("tower").contains(.inquiry(inq.id)))
+        model.addOutcome(to: inq.id, Outcome(recordedAt: model.now(), body: "It went ahead.", fulfilled: .yes))
+        model.addOutcome(to: inq.id, Outcome(recordedAt: model.now(), body: "Moved in.", fulfilled: .yes))
+        check("outcomes stack and status moves to revisited",
+              model.inquiry(inq.id)?.outcomes.count == 2 && model.inquiry(inq.id)?.status == .revisited)
+        if let r = reminder {
+            model.snooze(r.id)
+            check("snooze moves the reminder 3 days", model.data.reminders.first { $0.id == r.id }?.status == .snoozed)
+        }
+
+        // M4: quick log
+        let started = Date.now
+        let omen = model.quickSave(.omen, text: "Crow on the gate", tags: ["entity/ally/crow"])
+        check("quick omen with one tag", omen.flatMap(model.entry)?.tags == ["entity/ally/crow"] && omen.flatMap(model.entry)?.mode == .quick)
+        check("quick log saves in under 20 s", Date.now.timeIntervalSince(started) < 20)
+        let draw = model.quickSave(.cardDraw, text: "3 cups r, tower", tags: [], deckId: "rws-tarot", spreadId: "three-card")
+        check("quick draw parses two cards", draw.flatMap(model.inquiry)?.divinations.first?.draws.map(\.cardId) == ["cups-03", "maj-16"])
+        let cast = model.quickSave(.yijing, text: "789677", tags: [])
+        check("quick cast", cast.flatMap(model.inquiry)?.divinations.first?.cast?.lines == [7, 8, 9, 6, 7, 7])
+
+        // M5: volumes and page ranges
+        let inRange = model.search("Volume III pp. 40–50")
+        check("Volume III pp. 40–50 finds pages 40 to 50", inRange.count == 6, "found \(inRange.count)")
+        check("volume page list", model.records(in: vol.id, pages: 40...50).count == 6)
+
+        // M6: export, byte-stable
+        let vault = Store.folder.appending(path: "Vault/Grimoire")
+        try? FileManager.default.removeItem(at: vault)
+        let first = model.exportNow(to: vault, quiet: true)
+        check("export writes files", (first?.written.count ?? 0) > 10)
+        let note = (try? FileManager.default.contentsOfDirectory(atPath: vault.appending(path: "Inquiries").path))?.first
+        let text = note.flatMap { try? String(contentsOf: vault.appending(path: "Inquiries/\($0)"), encoding: .utf8) } ?? ""
+        check("notes start with YAML frontmatter", text.hasPrefix("---\n") && text.dropFirst(4).contains("\n---\n"))
+        check("grimoire.jsonl written", FileManager.default.fileExists(atPath: vault.appending(path: "grimoire.jsonl").path))
+        let second = model.exportNow(to: vault, quiet: true)
+        check("second export writes 0 files", second?.written.isEmpty == true, "\(second?.written ?? [])")
+
+        // M7: ingest, no duplicates, nothing filed before Confirm
+        await ingestChecks(model)
+    }
+
+    private static func ingestChecks(_ model: AppModel) async {
+        let folder = URL(fileURLWithPath: model.settings.ingestFolders[0])
+        let incoming = folder.appending(path: "incoming")
+        try? FileManager.default.createDirectory(at: incoming, withIntermediateDirectories: true)
+        let id = "20261028-081400-4821"
+        // The spoken RWS example from GrimoireCore's capture fixture.
+        let spokenRWS = "Question: will the move go ahead? Deck Rider-Waite, three card: three of cups reversed, the Tower, page of wands."
+        func drop() {
+            let sidecar = #"{"contract_version":1,"id":"\#(id)","captured_at":"2026-10-28T08:14:00-07:00","device":"iPhone","kind_hint":"draw","audio":"\#(id).m4a"}"#
+            try? Data(sidecar.utf8).write(to: incoming.appending(path: "\(id).json"))
+            try? Data(repeating: 1, count: 2048).write(to: incoming.appending(path: "\(id).m4a"))
+            try? Data(spokenRWS.utf8).write(to: incoming.appending(path: "\(id).txt"))
+        }
+        let filedBefore = model.data.entries.count
+        drop()
+        var outcomes: [InboxIngestor.Outcome] = []
+        for _ in 0..<6 where !outcomes.contains(.ingested(captureId: id)) {
+            outcomes = await IngestCoordinator.shared.scanOnce()
+            try? await Task.sleep(for: .seconds(1.2))
+        }
+        check("capture lands in the Inbox", model.data.inbox.contains { $0.entry.captureId == id }, "\(outcomes)")
+        let item = model.data.inbox.first { $0.entry.captureId == id }
+        check("transcript read", item?.entry.transcript?.contains("three of cups") == true)
+        check("spoken RWS example gives 3 draft draws", item?.draft?.divinations.first?.draws.count == 3)
+        check("nothing filed before Confirm", model.data.entries.count == filedBefore)
+        drop()
+        let again = await IngestCoordinator.shared.scanOnce()
+        check("dropping it again makes no duplicate",
+              again.contains(.duplicate(captureId: id)) && model.data.inbox.filter { $0.entry.captureId == id }.count == 1)
+        if let item, var draft = item.draft {
+            // A card left empty: Confirm refuses until it is chosen.
+            var empty = draft
+            empty.divinations[0].draws[1].cardId = .missing
+            check("Confirm refuses a missing card", (try? model.confirm(item.id, corrected: empty, entryType: nil)) == nil)
+            check("refused capture stays in the Inbox", model.data.inbox.contains { $0.id == item.id })
+            // Correct one orientation, as a person would in the Inbox.
+            draft.divinations[0].draws[2].orientation = Parsed(.reversed, confidence: .high)
+            let filed = try? model.confirm(item.id, corrected: draft, entryType: nil)
+            check("Confirm files the Inquiry", filed.flatMap(model.inquiry)?.divinations.first?.draws.count == 3)
+            check("Inbox empties after Confirm", !model.data.inbox.contains { $0.id == item.id })
+            check("correction logged", model.data.corrections.contains { $0.field == "orientation" })
+        }
+    }
+
+    // MARK: After relaunch
+
+    private static func relaunchChecks(_ model: AppModel) async {
+        check("all 8 types still present after relaunch", Set(model.timelineEntries.map(\.type)).count == 8)
+        check("inquiries still present", model.data.inquiries.contains { $0.question.hasPrefix("Self-test") })
+        check("volume still present", model.data.volumes.contains { $0.name == "Volume III" })
+        check("filed capture still present", model.data.entries.contains { $0.captureId == "20261028-081400-4821" })
+    }
+
+    private static func check(_ name: String, _ ok: Bool, _ detail: String = "") {
+        count += 1
+        if !ok { failures += 1 }
+        print(ok ? "PASS \(name)" : "FAIL \(name)\(detail.isEmpty ? "" : ": \(detail)")")
+    }
+
+    /// Quits through NSApp.terminate, never exit(), and closes sheets first.
+    static func finish(code: Int32) {
+        exitCode = code
+        for window in NSApp.windows { if let sheet = window.attachedSheet { window.endSheet(sheet) } }
+        NSApp.terminate(nil)
+    }
+}
