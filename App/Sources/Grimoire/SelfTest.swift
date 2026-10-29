@@ -135,6 +135,17 @@ enum SelfTest {
 
         // M7: ingest, no duplicates, nothing filed before Confirm
         await ingestChecks(model)
+
+        // Import documents into the Inbox, never filed directly
+        let doc = Store.folder.appending(path: "Magical diary.md")
+        try? Data("# Magical diary\n\n## 3/4/2025\nLesser banishing at dawn.\n\n## 3/5/2025\nDrew the Tower and three of cups reversed.\n".utf8).write(to: doc)
+        let inboxBefore = model.data.inbox.count, filedNow = model.data.entries.count
+        model.importDocuments([doc])
+        check("import splits a document into 2 Inbox entries", model.data.inbox.count == inboxBefore + 2)
+        check("import files nothing", model.data.entries.count == filedNow)
+        check("import reads month-first dates", model.data.inbox.contains { $0.entry.occurredAt.day == "2025-03-04" })
+        let reimport = model.importDocuments([doc])
+        check("importing again makes no duplicates", reimport.allSatisfy { if case .duplicate = $0 { true } else { false } } && model.data.inbox.count == inboxBefore + 2)
     }
 
     private static func ingestChecks(_ model: AppModel) async {

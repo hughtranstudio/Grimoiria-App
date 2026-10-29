@@ -54,6 +54,7 @@ enum Sheet: Identifiable {
     case addOutcome(ULID)
     case newVolume
     case indexPages(ULID?)
+    case importDocuments
 
     var id: String {
         switch self {
@@ -61,6 +62,7 @@ enum Sheet: Identifiable {
         case .addOutcome(let id): "outcome-\(id)"
         case .newVolume: "newVolume"
         case .indexPages: "indexPages"
+        case .importDocuments: "importDocuments"
         }
     }
 }
@@ -86,6 +88,8 @@ final class AppModel {
     var searchText = ""
     /// A short line shown at the bottom of the window, like "Exported 12 files".
     var notice: String?
+    /// Files the last import couldn't read, shown on the Inbox page.
+    var importProblems: [String] = []
     /// Settings reopens on the last tab. Test and snapshot runs leave it alone.
     var settingsTab: SettingsTab = SettingsTab(rawValue: UserDefaults.standard.string(forKey: "settings.tab") ?? "") ?? .general {
         didSet { if !Store.isOverridden { UserDefaults.standard.set(settingsTab.rawValue, forKey: "settings.tab") } }

@@ -10,9 +10,10 @@ struct InboxList: View {
     var body: some View {
         @Bindable var model = model
         List(selection: $model.selection) {
-            if !IngestCoordinator.shared.problems.isEmpty {
+            let problems = IngestCoordinator.shared.problems + model.importProblems
+            if !problems.isEmpty {
                 Section("Problems") {
-                    ForEach(IngestCoordinator.shared.problems, id: \.self) {
+                    ForEach(problems, id: \.self) {
                         Label($0, systemImage: "exclamationmark.triangle").foregroundStyle(.red)
                     }
                 }
@@ -35,12 +36,23 @@ struct InboxList: View {
             }
         }
         .overlay {
-            if model.data.inbox.isEmpty && IngestCoordinator.shared.problems.isEmpty {
+            if model.data.inbox.isEmpty && IngestCoordinator.shared.problems.isEmpty && model.importProblems.isEmpty {
                 ContentUnavailableView("Inbox Is Empty", systemImage: "tray",
-                                       description: Text("Phone captures appear here to check before they are filed."))
+                                       description: Text("Phone captures and imported documents appear here to check before they are filed."))
             }
         }
+        // Drop downloaded Google Docs, Markdown or text files here to import them.
+        .dropDestination(for: URL.self) { urls, _ in
+            let docs = urls.filter { $0.hasDirectoryPath || ImportDocument.supportedExtensions[$0.pathExtension.lowercased()] != nil }
+            guard !docs.isEmpty else { return false }
+            model.importDocuments(docs, tags: [TagPath("source/import")])
+            return true
+        }
         .toolbar {
+            ToolbarItem {
+                Button("Import Documents…", systemImage: "doc.badge.plus") { model.sheet = .importDocuments }
+                    .help("Import downloaded Google Docs, Markdown or text files (Command-Shift-I)")
+            }
             ToolbarItem {
                 Button("Check Folders", systemImage: "arrow.clockwise") { IngestCoordinator.shared.scanAll() }
                     .help("Look for new captures now (Command-Shift-R)")
@@ -118,8 +130,10 @@ struct InboxDetail: View {
 
     private func form(_ item: InboxItem) -> some View {
         Form {
-            if !draft.warnings.isEmpty {
-                Section { ForEach(draft.warnings, id: \.self) { Label($0, systemImage: "exclamationmark.triangle").foregroundStyle(.orange) } }
+            if !draft.warnings.isEmpty || !(item.notes ?? []).isEmpty {
+                Section {
+                    ForEach(draft.warnings + (item.notes ?? []), id: \.self) { Label($0, systemImage: "exclamationmark.triangle").foregroundStyle(.orange) }
+                }
             }
             if let error {
                 Section { Label(error, systemImage: "xmark.octagon").foregroundStyle(.red) }

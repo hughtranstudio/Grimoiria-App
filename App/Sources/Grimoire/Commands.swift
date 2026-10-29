@@ -27,6 +27,8 @@ struct AppCommands: Commands {
                 .keyboardShortcut("l", modifiers: [.command, .option])
         }
         CommandGroup(after: .importExport) {
+            Button("Import Documents…") { model.sheet = .importDocuments }
+                .keyboardShortcut("i", modifiers: [.command, .shift])
             Button("Import Deck…") { model.importDeck() }
             Button("Export to Obsidian") { model.exportNow() }
                 .keyboardShortcut("e", modifiers: [.command, .shift])
