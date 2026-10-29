@@ -69,6 +69,7 @@ public struct ObsidianExporter: Sendable {
         ]
         if let d = t.planetaryDay { m.append(("planetary_day", .string(d.rawValue))) }
         if let h = t.planetaryHour { m.append(("planetary_hour", .string(h.rawValue))) }
+        if let n = t.planetaryHourNumber { m.append(("planetary_hour_number", .int(n))) }
         if t.nearCusp { m.append(("near_cusp", .bool(true))) }
         return [("timing", .map(m))]
     }
