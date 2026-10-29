@@ -32,6 +32,7 @@ struct InboxList: View {
                     }
                 }
                 .padding(.vertical, Space.xs)
+                .font(Typo.body)
                 .tag(Selection.inbox(item.id))
             }
         }

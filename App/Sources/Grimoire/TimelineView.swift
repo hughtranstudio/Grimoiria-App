@@ -36,8 +36,8 @@ struct TimelineList: View {
                 Section(day) {
                     ForEach(items) { item in
                         switch item {
-                        case .entry(let e): EntryRow(entry: e).tag(Selection.entry(e.id)).contextMenu { DeleteButton(id: e.id) }
-                        case .inquiry(let i): InquiryRow(inquiry: i).tag(Selection.inquiry(i.id)).contextMenu { DeleteButton(id: i.id) }
+                        case .entry(let e): EntryRow(entry: e).font(Typo.body).tag(Selection.entry(e.id)).contextMenu { DeleteButton(id: e.id) }
+                        case .inquiry(let i): InquiryRow(inquiry: i).font(Typo.body).tag(Selection.inquiry(i.id)).contextMenu { DeleteButton(id: i.id) }
                         }
                     }
                 }
@@ -130,6 +130,7 @@ struct TodayList: View {
                             }
                             .controlSize(.small)
                         }
+                        .font(Typo.body)
                         .tag(Selection.inquiry(i.id))
                     }
                 }
@@ -138,8 +139,8 @@ struct TodayList: View {
                 if todays.isEmpty && todaysInquiries.isEmpty {
                     Text("Nothing logged yet today.").foregroundStyle(.secondary).selectionDisabled()
                 }
-                ForEach(todaysInquiries) { i in InquiryRow(inquiry: i).tag(Selection.inquiry(i.id)) }
-                ForEach(todays) { e in EntryRow(entry: e).tag(Selection.entry(e.id)) }
+                ForEach(todaysInquiries) { i in InquiryRow(inquiry: i).font(Typo.body).tag(Selection.inquiry(i.id)) }
+                ForEach(todays) { e in EntryRow(entry: e).font(Typo.body).tag(Selection.entry(e.id)) }
             }
         }
         .toolbar { ToolbarItem { NewEntryMenu() } }

@@ -29,6 +29,7 @@ struct CorrespondenceList: View {
                                 Text(e.glyph ?? "•").foregroundStyle(.tint)
                             }
                             .padding(.vertical, Space.xs)
+                            .font(Typo.body)
                             .tag(Selection.correspondence(e.id))
                         }
                     }

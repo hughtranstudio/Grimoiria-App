@@ -64,22 +64,26 @@ struct PatternList: View {
         let p = model.patterns
         List(selection: $model.selection) {
             Section {
-                Label("Overview", systemImage: "chart.bar.xaxis").tag(Selection.pattern("overview"))
+                Label("Overview", systemImage: "chart.bar.xaxis").font(Typo.body).tag(Selection.pattern("overview"))
                 ForEach(p.decksUsed, id: \.key) { d in
                     Label(model.library.deck(d.key)?.name ?? d.key, systemImage: "rectangle.stack")
                         .badge(d.count)
+                        .font(Typo.body)
                         .tag(Selection.pattern("deck:\(d.key)"))
                 }
                 if !p.hexagrams.isEmpty {
                     Label("Yi Jing", systemImage: "circle.grid.2x1").badge(p.hexagramCounts().reduce(0) { $0 + $1.count })
+                        .font(Typo.body)
                         .tag(Selection.pattern("yijing"))
                 }
                 Label("Kept Coming Back", systemImage: "arrow.triangle.2.circlepath").badge(p.recurrences().count)
+                    .font(Typo.body)
                     .tag(Selection.pattern("recurring"))
-                Label("Moon and Planetary Day", systemImage: "moon.stars").tag(Selection.pattern("timing"))
+                Label("Moon and Planetary Day", systemImage: "moon.stars").font(Typo.body).tag(Selection.pattern("timing"))
                 Label("Outcomes", systemImage: "checkmark.seal").badge(p.outcomes().answered)
+                    .font(Typo.body)
                     .tag(Selection.pattern("outcomes"))
-                Label("Practice and Tags", systemImage: "tag").tag(Selection.pattern("tags"))
+                Label("Practice and Tags", systemImage: "tag").font(Typo.body).tag(Selection.pattern("tags"))
             } header: {
                 Text("\(p.inquiries.count) readings · \(p.entries.count) other entries")
             }

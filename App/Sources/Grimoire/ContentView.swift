@@ -58,6 +58,7 @@ struct ContentView: View {
         return List(selection: $model.page) {
             ForEach(SidebarPage.allCases) { page in
                 Label(page.title, systemImage: page.symbol)
+                    .font(Typo.label)
                     .badge(badge(for: page))
                     .tag(page)
             }

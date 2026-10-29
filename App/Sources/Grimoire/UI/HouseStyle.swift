@@ -13,8 +13,8 @@ import SwiftUI
 final class HouseStyleStore {
     static let shared = HouseStyleStore()
 
-    /// The style the app ships with. One line to change once Hugh approves one.
-    static let defaultID = "system"
+    /// The style the app ships with: A · Codex, Hugh's pick (10-29-2026).
+    static let defaultID = "a"
 
     var styleID: String {
         didSet { UserDefaults.standard.set(styleID, forKey: "appearance.style") }
@@ -92,6 +92,8 @@ enum Typo {
 
     /// Writing: entry text, transcripts, questions.
     static var body: Font { serifFallback(style.textFont, S.body, .body, .body) }
+    /// Labels outside your writing: the sidebar, list headings. Apple's under B.
+    static var label: Font { serifFallback(style.labelFont, S.body, .body, .body) }
     static var callout: Font { serifFallback(style.labelFont, S.callout, .callout, .callout) }
     static var caption: Font { serifFallback(style.labelFont, S.caption, .caption, .caption) }
     static var caption2: Font { serifFallback(style.labelFont, S.caption - 1, .caption2, .caption2) }

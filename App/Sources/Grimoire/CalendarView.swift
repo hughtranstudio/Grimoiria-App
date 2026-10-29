@@ -77,6 +77,7 @@ struct CalendarList: View {
             }
             ForEach(days, id: \.day) { d in
                 CalendarDayRow(day: d, isToday: d.day == model.today)
+                    .font(Typo.body)
                     .tag(Selection.day(d.day))
             }
         }

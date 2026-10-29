@@ -22,6 +22,7 @@ struct DeckList: View {
                         Text(subtitle(d)).font(Typo.caption).foregroundStyle(.secondary)
                     }
                     .padding(.vertical, Space.xs)
+                    .font(Typo.body)
                     .tag(Selection.deck(d.id))
                 }
             }

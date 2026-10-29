@@ -1,8 +1,9 @@
 # House style (DRAFT)
 
 The HT Press house style for Grimoire, as one token file and three options
-for Hugh to compare. **DRAFT: nothing here is approved.** The app ships with
-the System style (today's look) until Hugh picks an option and says ship.
+for Hugh to compare. **Hugh chose A · Codex on 10-29-2026**, and the app now
+opens in it. B, C and System stay in Settings for comparison. It stays a DRAFT
+until Hugh says ship.
 
 ## Files
 
@@ -34,10 +35,13 @@ another checks every text colour against WCAG AA on its ground.
 - From a terminal: `APP_STYLE=a ~/Applications/Grimoire.app/Contents/MacOS/Grimoire`.
 - Snapshots: `APP_STYLE=a tools/snap.sh` (and `b`, `c`).
 
-## Approve one
+## The default
 
-Change `HouseStyleStore.defaultID` in `UI/HouseStyle.swift` to the option's
-id. Then drop the `DRAFT` labels here, in `tokens.json` and in Settings.
+`HouseStyleStore.defaultID` in `UI/HouseStyle.swift` (now "a"). On ship, drop
+the `DRAFT` labels here, in `tokens.json` and in Settings.
+
+Apple's pickers, date fields and toggles keep San Francisco in every style:
+they are AppKit controls and do not take a custom font.
 
 ## Still to come
 
