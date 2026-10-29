@@ -43,11 +43,11 @@ class LibraryViewModel(app: Application) : AndroidViewModel(app) {
     val upcoming: List<CheckIn> get() = CheckIns.upcoming(library, checkInState, today)
 
     init {
-        viewModelScope.launch { ctx.records.collect { setLibrary(it) } }
+        viewModelScope.launch { ctx.records.collect { applyLibrary(it) } }
         refresh()
     }
 
-    private fun setLibrary(lib: Library) {
+    private fun applyLibrary(lib: Library) {
         library = lib
         search = LibrarySearch(lib, ctx.library)
         checkInState = ctx.settings.checkIns
