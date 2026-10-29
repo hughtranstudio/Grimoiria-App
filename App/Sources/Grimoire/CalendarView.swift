@@ -71,9 +71,12 @@ struct CalendarList: View {
         let days = model.calendarDays
         List(selection: $model.selection) {
             if model.settings.home == nil {
-                Label("Set a home location in Settings > General for sunrise, sunset and planetary hours.", systemImage: "location.slash")
-                    .font(Typo.body)
-                    .foregroundStyle(.secondary)
+                Label {
+                    Text("Set a home location in Settings > General for sunrise, sunset and planetary hours.").font(Typo.body)
+                } icon: {
+                    Image(systemName: "location.slash")
+                }
+                .foregroundStyle(.secondary)
                     .selectionDisabled()
             }
             ForEach(days, id: \.day) { d in
