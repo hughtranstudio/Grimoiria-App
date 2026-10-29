@@ -69,6 +69,7 @@ struct InboxDetail: View {
     @State private var draft = DraftReading()
     @State private var entryType: EntryType = .journal
     @State private var error: String?
+    @State private var transcribing = false
 
     var body: some View {
         Group {
@@ -110,6 +111,19 @@ struct InboxDetail: View {
             VStack(alignment: .leading, spacing: Space.md) {
                 if let audio = item.entry.attachments.first(where: { $0.kind == .audio }) {
                     AudioPlayerRow(url: Store.attachments.appending(path: audio.path))
+                    Button(transcribing ? "Transcribing…" : "Transcribe Again", systemImage: "waveform.badge.magnifyingglass") {
+                        transcribing = true
+                        Task {
+                            if let updated = await model.retranscribe(itemId) {
+                                self.item = updated
+                                draft = updated.draft ?? DraftReading()
+                            }
+                            transcribing = false
+                        }
+                    }
+                    .disabled(transcribing)
+                    .keyboardShortcut("t", modifiers: [.command, .shift])
+                    .help("Run speech to text on this recording again and re-read the cards (Command-Shift-T)")
                 }
                 if item.entry.body.isEmpty {
                     Label("No transcript. Listen to the audio and fill in the fields.", systemImage: "waveform.slash")

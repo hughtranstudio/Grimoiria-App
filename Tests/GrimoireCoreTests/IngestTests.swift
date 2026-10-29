@@ -150,3 +150,34 @@ final class IngestTests: XCTestCase {
         XCTAssertNoThrow(try CaptureSidecar.decode(Data(#"{"contract_version":1,"id":"a","captured_at":"2026-10-28T08:14:00Z"}"#.utf8)))
     }
 }
+
+final class RetranscribeTests: XCTestCase {
+    func testSpeechHintsMatchTheAndroidList() {
+        let lib = TestSupport.library
+        let hints = lib.speechHints()
+        XCTAssertEqual(hints.count, Set(hints).count)
+        XCTAssertTrue(hints.contains("reversed"))
+        for d in lib.decks { XCTAssertTrue(hints.contains(d.name)); for c in d.cards { XCTAssertTrue(hints.contains(c.name)) } }
+        for h in lib.yijing.hexagrams { XCTAssertTrue(hints.contains(h.pinyin)) }
+        XCTAssertLessThan(lib.speechHints(aliases: false).count, hints.count)
+    }
+
+    func testRetranscribeReplacesTextAndReparses() {
+        let at = TestSupport.date("2026-10-28T08:14:00-07:00")
+        let heard = "Deck rider way. Three card: three of cops reversed"
+        let item = InboxItem(entry: Entry(type: .divination, occurredAt: at, body: heard, status: .inbox, transcript: heard),
+                             draft: TestSupport.parser.parse(heard), source: "phone:iphone")
+        let again = item.retranscribed("Deck Rider-Waite, three card: three of cups reversed, the Tower, page of wands.", parser: TestSupport.parser)
+        XCTAssertEqual(again.entry.transcript, "Deck Rider-Waite, three card: three of cups reversed, the Tower, page of wands.")
+        XCTAssertEqual(again.entry.body, again.entry.transcript)
+        XCTAssertEqual(again.draft?.divinations.first?.draws.map(\.cardId.value), ["cups-03", "maj-16", "wands-11"])
+        XCTAssertEqual(again.id, item.id)
+        XCTAssertEqual(again.entry.status, .inbox)
+
+        // Typed text before the old transcript is kept.
+        let typed = InboxItem(entry: Entry(type: .omen, occurredAt: at, body: "Crow.\n\nold words", status: .inbox, transcript: "old words"),
+                              draft: nil, source: "phone:pixel")
+        XCTAssertEqual(typed.retranscribed("new words", parser: TestSupport.parser).entry.body, "Crow.\n\nnew words")
+        XCTAssertNil(typed.retranscribed("new words", parser: TestSupport.parser).draft)
+    }
+}

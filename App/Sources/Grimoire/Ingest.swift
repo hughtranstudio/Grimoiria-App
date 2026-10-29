@@ -112,7 +112,32 @@ final class IngestCoordinator {
     }
 
     func makeTranscriber(_ choice: String) -> Transcriber {
-        choice == "sidecar" ? SidecarTextTranscriber() : AppleSpeechTranscriber()
+        choice == "sidecar" ? SidecarTextTranscriber() : AppleSpeechTranscriber(hints: AppModel.shared.library.speechHints(aliases: false))
+    }
+}
+
+extension AppModel {
+    /// Runs speech to text again on an Inbox item's audio (after installing the speech model, or
+    /// when the first pass misheard) and parses the reading again. The item stays in the Inbox.
+    func retranscribe(_ itemId: ULID) async -> InboxItem? {
+        guard let item = data.inbox.first(where: { $0.id == itemId }),
+              let audio = item.entry.attachments.first(where: { $0.kind == .audio }) else { return nil }
+        let url = Store.attachments.appending(path: audio.path)
+        let transcriber = IngestCoordinator.shared.makeTranscriber(settings.whisperModel == "sidecar" ? "apple" : settings.whisperModel)
+        do {
+            let text = try await transcriber.transcribe(url)
+            guard !text.isEmpty else {
+                show("Nothing was heard. Is the speech model installed (Settings > Inbox)?")
+                return nil
+            }
+            let updated = item.retranscribed(text, parser: ReadingParser(library: library))
+            repository.addToInbox(updated)
+            show("Transcribed again")
+            return updated
+        } catch {
+            show("Couldn’t transcribe: \(error.localizedDescription)")
+            return nil
+        }
     }
 }
 
@@ -134,14 +159,22 @@ nonisolated private final class Delivered: @unchecked Sendable {
 }
 
 /// On-device speech to text with Apple's SpeechAnalyzer. A transcript file
-/// beside the audio (<id>.txt) wins when present.
+/// beside the audio (<id>.txt) wins when present. `hints` are deck, card, spread and
+/// hexagram names, so "Mystagogos" or "Kun" aren't heard as everyday words.
 nonisolated struct AppleSpeechTranscriber: Transcriber {
+    var hints: [String] = []
+
     nonisolated func transcribe(_ audio: URL) async throws -> String {
         if let text = try? await SidecarTextTranscriber().transcribe(audio), !text.isEmpty { return text }
         let module = SpeechTranscriber(locale: Locale(identifier: "en-US"), preset: .transcription)
         // Without the model the capture still lands in the Inbox, with its audio and no transcript.
         guard await AssetInventory.status(forModules: [module]) == .installed else { return "" }
         let analyzer = SpeechAnalyzer(modules: [module])
+        if !hints.isEmpty {
+            let context = AnalysisContext()
+            context.contextualStrings[.general] = hints
+            try? await analyzer.setContext(context)
+        }
         let file = try AVAudioFile(forReading: audio)
         let collect = Task {
             var text = ""
