@@ -101,6 +101,10 @@ final class SessionTests: XCTestCase {
         rec.setPhase(.closing, at: t0 + 1800)
         rec.finish(at: t0 + 2140, after: StateCheck(energy: 4, calm: 4, focus: 4), outcome: "Came back calm.")
         let late = rec.observe(.insight, "The door was the same as last week's", at: t0 + 4000)
+        rec.finish(at: t0 + 5000, after: StateCheck(energy: 5), outcome: "Calm, then sleepy.")
+        XCTAssertEqual(rec.session.duration, 2140)
+        XCTAssertEqual(rec.session.outcome, "Calm, then sleepy.")
+        XCTAssertEqual(rec.session.after?.energy, 5)
 
         let s = rec.session
         XCTAssertEqual(s.phases.map(\.phase), [.opening, .working, .closing])

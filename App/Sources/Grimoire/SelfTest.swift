@@ -169,6 +169,40 @@ enum SelfTest {
         check("correspondences loaded", model.library.correspondences?.search("iron").first?.id == "planet:mars")
         check("Mars has the Tower", model.library.cards(for: model.library.correspondences!.entry("planet:mars")!).first?.card.id == "maj-16")
         check("importing again makes no duplicates", reimport.allSatisfy { if case .duplicate = $0 { true } else { false } } && model.data.inbox.count == inboxBefore + 2)
+
+        await sessionChecks(model)
+    }
+
+    /// Session recording: clock and observations, Inbox first, then filed with its log.
+    private static func sessionChecks(_ model: AppModel) async {
+        let session = SessionController.shared
+        session.type = .vision
+        session.intention = "Self-test vision"
+        session.recordAudio = false
+        await session.start(model: model)
+        check("session starts running", session.isRunning)
+        session.setPhase(.working)
+        session.mark()
+        session.kind = .entity
+        session.text = "A crow at the gate"
+        session.addObservation(vocabulary: model.vocabulary)
+        check("typed observation gets vocabulary tags", session.session?.observations.last?.tags.map(\.path) == ["entity/animal/crow", "place/gate"])
+        session.end()
+        session.outcome = "Came back calm."
+        let filedBefore = model.data.entries.count
+        let itemId = await session.save(model: model)
+        check("session goes to the Inbox, not filed", itemId.map { id in model.data.inbox.contains { $0.id == id } } == true && model.data.entries.count == filedBefore)
+        guard let itemId else { return }
+        let filed = try? model.confirm(itemId, corrected: nil, entryType: nil)
+        let entry = filed.flatMap { model.entry($0) }
+        check("confirmed session keeps its observations", entry?.session?.observations.count == 2 && entry?.session?.outcome == "Came back calm.")
+        check("observations are searchable", model.search("crow at the gate").contains(.entry(itemId)))
+        if let entry, let crow = entry.session?.observations.last {
+            let contact = model.makeEntry(from: crow, in: entry, as: .contact)
+            check("contact entry from an observation", model.entry(contact)?.fields.being?.path == "entity/animal/crow")
+        }
+        let export = try? MLExporter(library: model.library).files(for: model.data)
+        check("ML export has the observation rows", export?["ML/observations.csv"]?.contains("A crow at the gate") == true)
     }
 
     private static func ingestChecks(_ model: AppModel) async {

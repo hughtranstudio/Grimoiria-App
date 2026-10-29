@@ -49,6 +49,11 @@ struct EntryEditor: View {
                 TagField(tags: entry.tags)
             }
             PhysicalRefSection(ref: entry.physicalRef)
+            if let session = Binding(entry.session) {
+                SessionSection(session: session) { observation, type in
+                    model.makeEntry(from: observation, in: entry.wrappedValue, as: type)
+                }
+            }
             LinksSection(ownerId: entryId, links: entry.links)
             if let transcript = entry.wrappedValue.transcript, !transcript.isEmpty {
                 Section("Transcript") { Text(transcript).textSelection(.enabled).foregroundStyle(.secondary) }

@@ -29,6 +29,15 @@ struct GrimoireApp: App {
         .windowToolbarStyle(.unified)
         .commands { AppCommands(model: model) }
 
+        Window("Session", id: "session") {
+            SessionWindow()
+                .environment(model)
+                .themed()
+        }
+        .modelContainer(model.container)
+        .windowResizability(.contentSize)
+        .defaultPosition(.topTrailing)
+
         Settings {
             SettingsView()
                 .environment(model)

@@ -86,6 +86,7 @@ final class IngestCoordinator {
             ingestor.defaultTimeZone = TimeZone.current.identifier
             ingestor.location = model.settings.home
             ingestor.attachmentsFolder = Store.attachments
+            ingestor.vocabulary = model.vocabulary
             let known = KnownCaptures(model.data)
             let box = Delivered()
             let outcomes = await Self.run(ingestor, known: known, box: box)
@@ -124,6 +125,22 @@ extension AppModel {
               let audio = item.entry.attachments.first(where: { $0.kind == .audio }) else { return nil }
         let url = Store.attachments.appending(path: audio.path)
         let transcriber = IngestCoordinator.shared.makeTranscriber(settings.whisperModel == "sidecar" ? "apple" : settings.whisperModel)
+        if item.entry.session != nil {
+            do {
+                let segments = try await transcriber.timedSegments(url)
+                guard !segments.isEmpty else {
+                    show("Nothing was heard. Is the speech model installed (Settings > Inbox)?")
+                    return nil
+                }
+                let updated = SessionAssembler.retranscribed(item, segments: segments, extractor: ObservationExtractor(vocabulary: vocabulary))
+                repository.addToInbox(updated)
+                show("Transcribed again")
+                return updated
+            } catch {
+                show("Couldn’t transcribe: \(error.localizedDescription)")
+                return nil
+            }
+        }
         do {
             let text = try await transcriber.transcribe(url)
             guard !text.isEmpty else {
@@ -161,14 +178,28 @@ nonisolated private final class Delivered: @unchecked Sendable {
 /// On-device speech to text with Apple's SpeechAnalyzer. A transcript file
 /// beside the audio (<id>.txt) wins when present. `hints` are deck, card, spread and
 /// hexagram names, so "Mystagogos" or "Kun" aren't heard as everyday words.
-nonisolated struct AppleSpeechTranscriber: Transcriber {
+nonisolated struct AppleSpeechTranscriber: SegmentingTranscriber {
     var hints: [String] = []
 
     nonisolated func transcribe(_ audio: URL) async throws -> String {
         if let text = try? await SidecarTextTranscriber().transcribe(audio), !text.isEmpty { return text }
+        return try await analyze(audio).map(\.text).joined().trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// Each finished phrase with the time it starts in the recording, for session observations.
+    nonisolated func segments(_ audio: URL) async throws -> [TranscriptSegment] {
+        if let text = try? await SidecarTextTranscriber().transcribe(audio), !text.isEmpty { return TimedTranscript.parse(text) }
+        return try await analyze(audio).compactMap { s in
+            let t = s.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            return t.isEmpty ? nil : TranscriptSegment(offset: s.offset, text: t)
+        }
+    }
+
+    /// Runs the on-device model over the file. Empty when the model is not installed.
+    nonisolated private func analyze(_ audio: URL) async throws -> [TranscriptSegment] {
         let module = SpeechTranscriber(locale: Locale(identifier: "en-US"), preset: .transcription)
         // Without the model the capture still lands in the Inbox, with its audio and no transcript.
-        guard await AssetInventory.status(forModules: [module]) == .installed else { return "" }
+        guard await AssetInventory.status(forModules: [module]) == .installed else { return [] }
         let analyzer = SpeechAnalyzer(modules: [module])
         if !hints.isEmpty {
             let context = AnalysisContext()
@@ -177,18 +208,19 @@ nonisolated struct AppleSpeechTranscriber: Transcriber {
         }
         let file = try AVAudioFile(forReading: audio)
         let collect = Task {
-            var text = ""
+            var parts: [TranscriptSegment] = []
             for try await result in module.results where result.isFinal {
-                text += String(result.text.characters)
+                let start = result.range.start.seconds
+                parts.append(TranscriptSegment(offset: start.isFinite ? start : 0, text: String(result.text.characters)))
             }
-            return text
+            return parts
         }
         if let last = try await analyzer.analyzeSequence(from: file) {
             try await analyzer.finalizeAndFinish(through: last)
         } else {
             await analyzer.cancelAndFinishNow()
         }
-        return try await collect.value.trimmingCharacters(in: .whitespacesAndNewlines)
+        return try await collect.value
     }
 
     /// Downloads Apple's on-device speech model once, when the person asks.

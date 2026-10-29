@@ -24,6 +24,7 @@ struct SettingsView: View {
             case .general: GeneralSettings()
             case .export: ExportSettings()
             case .inbox: InboxSettings()
+            case .tags: TagSettings()
             case .appearance: AppearanceSettings()
             }
         }
@@ -35,7 +36,7 @@ struct SettingsView: View {
 
 /// The Settings tabs. Snapshot mode walks through every case.
 enum SettingsTab: String, CaseIterable, Identifiable {
-    case general, export, inbox, appearance
+    case general, export, inbox, tags, appearance
 
     var id: String { rawValue }
 
@@ -44,6 +45,7 @@ enum SettingsTab: String, CaseIterable, Identifiable {
         case .general: "General"
         case .export: "Export"
         case .inbox: "Inbox"
+        case .tags: "Tags"
         case .appearance: "Appearance"
         }
     }
@@ -53,6 +55,7 @@ enum SettingsTab: String, CaseIterable, Identifiable {
         case .general: "gearshape"
         case .export: "square.and.arrow.up"
         case .inbox: "tray"
+        case .tags: "tag"
         case .appearance: "paintpalette"
         }
     }

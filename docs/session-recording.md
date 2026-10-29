@@ -30,17 +30,23 @@ Three rules follow from that goal:
    the clock and the microphone.
 2. **During.** The window stays small and quiet. You can:
    - just speak: everything is recorded and later split into observations;
-   - press **Space** to drop a marker ("something happened here") without opening your eyes;
-   - type an observation, choosing its kind with a key (I imagery, E entity, P place, S sensation,
-     M message, F feeling, Y symbol, N note) and tags;
-   - change phase: preparation → opening → working → closing (⌘1…⌘4 in the window).
-3. **Stop.** Rate how you feel coming out, add a short outcome, press Save. Grimoire transcribes the
+   - press **⌘K** to drop a marker ("something happened here") without opening your eyes;
+   - type an observation and press Return. Pick its kind with ⌃⌥ and a letter (I imagery,
+     E entity, P place, Y symbol, M message, H sound, S sensation, F feeling, T insight, O omen,
+     V event, A action, N note). Leave the tags empty and they are suggested from the words;
+   - change phase: preparation → opening → working → closing (⌃⌥1…⌃⌥4).
+   All of these are in the **Session** menu. End the session with ⌥⌘E.
+3. **Stop.** Rate how you feel coming out, add a short outcome and anything else you remember,
+   press Send to Inbox. Grimoire transcribes the
    audio on the Mac, splits the transcript into timed observations, suggests tags from the
    vocabulary, and puts the session in the **Inbox**.
 4. **Review.** In the Inbox the session shows as a timeline. Fix kinds, text and tags, delete what
    isn't an observation, then Confirm. It is filed as a ritual, meditation or vision entry.
-5. **Later.** Observations can be added afterwards (marked *recalled*), and an observation can be
-   turned into its own Contact or Omen entry, linked back to the session.
+5. **Later.** On the filed entry, observations can be edited or added (marked *recalled*), and an
+   observation can be turned into its own Contact or Omen entry, linked back to the session.
+
+Speaking during the session also works for structure: "phase working", "now closing" or
+"closing now" set the phase, and "mark" on its own drops a marker.
 
 ### On the Pixel
 
@@ -149,7 +155,8 @@ Each term has aliases ("raven" also suggests `entity/animal/raven`; "angelic" ma
 
 The vocabulary lives in a JSON file (`tag-vocabulary.json` in the app's data folder) so it can grow
 without an app update. Terms are only ever added or aliased, never renamed, so old exports stay
-comparable.
+comparable. **Settings > Tags** lists the free tags in use, most used first, with an Add to
+Vocabulary button, and opens the file for bigger edits.
 
 ## Exports for analysis
 

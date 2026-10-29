@@ -60,7 +60,23 @@ enum SeedData {
         vis.setting = "meditation"
         vis.clarity = 3
         vis.beings = ["entity/ally/crow"]
-        _ = entry(.vision, nil, "A grey landscape and a gate with no wall around it.", 8, tags: ["vision/gate"], page: "52", fields: vis)
+        var v = entry(.vision, nil, "A grey landscape and a gate with no wall around it.", 8, tags: ["vision/gate"], page: "52", fields: vis)
+        // A recorded session: phases, spoken and typed observations, one marker, one written after.
+        let start = v.occurredAt
+        v.session = PracticeSession(
+            startedAt: start, endedAt: ZonedDate(start.instant.addingTimeInterval(32 * 60), timeZone: start.timeZone),
+            phases: [PhaseMark(.opening, at: 0), PhaseMark(.working, at: 240), PhaseMark(.closing, at: 1680)],
+            observations: [
+                Observation(offset: 312, kind: .place, text: "A grey landscape, flat to the horizon", tags: ["place/desert", "color/grey"], clarity: 3, capture: .spoken),
+                Observation(offset: 470, kind: .symbol, text: "A gate standing alone with no wall", tags: ["symbol/door", "place/gate"], intensity: 4, capture: .spoken),
+                Observation(offset: 655, kind: .entity, text: "A crow on the gatepost, watching", tags: ["entity/animal/crow"], intensity: 3, capture: .live),
+                Observation(offset: 900, capture: .marker),
+                Observation(offset: 1120, kind: .sensation, text: "Heat in the hands, pressure at the brow", tags: ["sense/heat", "sense/pressure"], capture: .spoken),
+                Observation(offset: 1920, phase: .aftermath, kind: .insight, text: "The gate is the same one as in the dream of the library", tags: ["theme/threshold"], capture: .recalled),
+            ],
+            before: StateCheck(energy: 2, calm: 3, focus: 3), after: StateCheck(energy: 4, calm: 4, focus: 4),
+            outcome: "Came back slowly; the crow stayed with me.")
+        repo.save(v)
 
         // A compound Inquiry: three cards and a Yi Jing cast, synthesis and an outcome.
         let asked = at(9, 21)

@@ -1,9 +1,12 @@
+import GrimoireAppKit
 import GrimoireCore
 import SwiftUI
 
 /// The menu bar. Every action has a menu item and a keyboard shortcut.
 struct AppCommands: Commands {
     let model: AppModel
+    @Environment(\.openWindow) private var openWindow
+    private var session: SessionController { SessionController.shared }
 
     var body: some Commands {
         SidebarCommands()
@@ -25,6 +28,8 @@ struct AppCommands: Commands {
             Divider()
             Button("Quick Log…") { QuickLogController.shared.toggle() }
                 .keyboardShortcut("l", modifiers: [.command, .option])
+            Button("Record Session…") { openWindow(id: "session") }
+                .keyboardShortcut("r", modifiers: [.command, .option])
         }
         CommandGroup(after: .importExport) {
             Button("Import Documents…") { model.sheet = .importDocuments }
@@ -55,6 +60,30 @@ struct AppCommands: Commands {
             Divider()
             Button("Fill Timing on Older Records") { model.fillMissingTiming() }
             Button("Add Check-ins to Past Readings") { model.backfillCheckIns() }
+        }
+        CommandMenu("Session") {
+            Button("Record Session…") { openWindow(id: "session") }
+            Button("Mark This Moment") { session.mark() }
+                .keyboardShortcut("k")
+                .disabled(!session.isRunning)
+            Menu("Phase") {
+                ForEach(Array(SessionPhase.live.enumerated()), id: \.offset) { i, p in
+                    Button(p.title) { session.setPhase(p) }
+                        .keyboardShortcut(KeyEquivalent(Character(String(i + 1))), modifiers: [.control, .option])
+                }
+            }
+            .disabled(!session.isRunning)
+            Menu("Observation Kind") {
+                ForEach(ObservationKind.allCases, id: \.self) { k in
+                    Button(k.title) { session.kind = k }
+                        .keyboardShortcut(KeyEquivalent(k.key), modifiers: [.control, .option])
+                }
+            }
+            .disabled(session.stage == .setup)
+            Divider()
+            Button("End Session") { session.end() }
+                .keyboardShortcut("e", modifiers: [.command, .option])
+                .disabled(!session.isRunning)
         }
         CommandMenu("Go") {
             ForEach(SidebarPage.allCases) { page in

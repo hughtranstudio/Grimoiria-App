@@ -55,15 +55,17 @@ public struct SessionRecorder: Sendable {
                                intensity: intensity, clarity: clarity, capture: recalled ? .recalled : .live))
     }
 
+    /// Takes an observation back out.
+    public mutating func remove(_ id: ULID) { session.observations.removeAll { $0.id == id } }
+
     private mutating func add(_ o: Observation) -> Observation {
         session.add(o)
         return session.observations.first { $0.id == o.id } ?? o
     }
 
-    /// Stops the clock.
+    /// Stops the clock. Called again later, it keeps the end time and updates the closing notes.
     public mutating func finish(at date: Date, after: StateCheck? = nil, outcome: String? = nil, interrupted: Bool = false) {
-        guard !isFinished else { return }
-        session.endedAt = ZonedDate(date, timeZone: session.startedAt.timeZone)
+        if !isFinished { session.endedAt = ZonedDate(date, timeZone: session.startedAt.timeZone) }
         session.after = after?.isEmpty == true ? nil : after
         let o = outcome?.trimmingCharacters(in: .whitespacesAndNewlines)
         session.outcome = o?.isEmpty == true ? nil : o
