@@ -93,6 +93,8 @@ final class AppModel {
     let settings = AppSettings()
     /// Decks, spreads and Yi Jing from Application Support.
     var library: DefinitionLibrary
+    /// The controlled tag vocabulary: GrimoireCore's plus your own tag-vocabulary.json.
+    var vocabulary = TagVocabulary.standard
     var definitionsReport: ValidationReport?
     var definitionsError: String?
     /// Everything filed, refreshed after each write.
@@ -128,6 +130,7 @@ final class AppModel {
         repository = SwiftDataRepository(context: container.mainContext)
         library = DefinitionLibrary(decks: [], spreads: [], yijing: YiJingDefinition.empty)
         loadDefinitions()
+        loadVocabulary()
         data = repository.data
         repository.didChange = { [weak self] in
             guard let self else { return }

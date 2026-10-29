@@ -53,8 +53,10 @@ public extension GrimoireRepository {
         for e in data.entries where !readingsOnly && (q.includeInbox || e.status == .filed) {
             guard q.types.isEmpty || q.types.contains(e.type) else { continue }
             let f = e.fields
-            guard textMatch([e.title, e.body, e.extraNotes, e.transcript, f.intention, f.observations, f.interpretation, f.communication, f.result, f.steps])
-                , tagMatch(e.tags), physMatch(e.physicalRef), dateMatch(e.occurredAt.instant) else { continue }
+            let observed = e.session?.observations ?? []
+            guard textMatch([e.title, e.body, e.extraNotes, e.transcript, f.intention, f.observations, f.interpretation, f.communication, f.result, f.steps,
+                             e.session?.outcome] + observed.map(\.text))
+                , tagMatch(e.tags + observed.flatMap(\.tags)), physMatch(e.physicalRef), dateMatch(e.occurredAt.instant) else { continue }
             hits.append((e.occurredAt.instant, .entry(e.id)))
         }
         if q.types.isEmpty || q.types.contains(.divination) {

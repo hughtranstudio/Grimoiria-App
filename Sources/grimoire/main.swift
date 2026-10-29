@@ -21,6 +21,14 @@ usage: grimoire <command> [options]
         corrections: --deck D=ID --card D.N=CARD --orientation D.N=upright|reversed
                      --lines D=789676 --question "text"   (D, N count from 1)
   add <type> "<body>" [--title T] [--tag T]... [--lat N --lon N]
+  session <ritual|meditation|vision> --transcript FILE [--start ISO] [--end ISO] [--tz Zone] [--intention T] [--technique T]
+          [--tag T]... [--lat N --lon N]   a recorded session from a timed transcript ("[mm:ss] text" lines) into the Inbox
+  observe <entry id> <kind> "<text>" [--at mm:ss] [--tag T]... [--intensity 1-5] [--clarity 1-5]
+                                          add an observation to a session (no --at: recalled afterwards)
+        kinds: imagery entity place symbol message sound sensation emotion insight omen event action note
+  observations [--type T] [--kind K] [--tag T]... [--from yyyy-MM-dd] [--to yyyy-MM-dd] [--json]
+                                          every observation in filed sessions, oldest first
+  vocab ["<text>"] [--free]               the tag vocabulary, tags suggested for a text, or (--free) free tags in use
   timing-fill [--lat N --lon N] [--overwrite]
                                           fill moon phase and planetary day/hour on records missing it
   search [text] [--tag T]... [--type T] [--volume NAME] [--pages 40-50]
@@ -46,6 +54,17 @@ usage: grimoire <command> [options]
 """
 
 struct CLIError: Error, CustomStringConvertible { let description: String }
+
+extension Optional {
+    func orThrow(_ message: String) throws -> Wrapped {
+        guard let v = self else { throw CLIError(description: message) }
+        return v
+    }
+}
+
+enum TagInputFormat {
+    static func join(_ tags: [TagPath]) -> String { tags.map(\.path).joined(separator: ", ") }
+}
 
 struct Args {
     var positional: [String] = []
@@ -273,6 +292,90 @@ func run() async throws {
         store.save(e)
         try store.flush()
         print(e.id)
+
+    case "session":
+        let store = try openStore(args)
+        guard let type = args.positional.first.flatMap(EntryType.init), EntryType.sessionTypes.contains(type) else {
+            throw CLIError(description: "session needs a type: ritual, meditation or vision")
+        }
+        guard let file = args.one("transcript") else { throw CLIError(description: "session needs --transcript FILE") }
+        let segments = TimedTranscript.parse(try String(contentsOfFile: file, encoding: .utf8))
+        let start = try args.one("start").map { s in try ZonedDate.parse(s, timeZone: args.one("tz")).orThrow("--start must be ISO 8601 with offset") } ?? ZonedDate(Date())
+        var rec = SessionRecorder(type: type, startedAt: start, intention: args.one("intention"), technique: args.one("technique"),
+                                  tags: args.all("tag").map { TagPath($0) })
+        let end = try args.one("end").map { s in try ZonedDate.parse(s).orThrow("--end must be ISO 8601 with offset").instant }
+        rec.finish(at: end ?? start.instant.addingTimeInterval(segments.map(\.offset).max() ?? 0))
+        let item = SessionAssembler.retranscribed(
+            rec.inboxItem(recording: nil, extractor: ObservationExtractor(), timing: TimingContext.compute(at: start, location: location(args)), source: "cli:\(file)"),
+            segments: segments, extractor: ObservationExtractor())
+        store.addToInbox(item)
+        try store.flush()
+        print("\(item.id)  \(type.rawValue) in the Inbox with \(item.entry.session?.observations.count ?? 0) observation(s); check them, then: grimoire confirm \(item.id)")
+
+    case "observe":
+        let store = try openStore(args)
+        guard args.positional.count >= 3, let id = ULID(args.positional[0]) else { throw CLIError(description: "observe needs an entry id, a kind and text") }
+        guard let kind = ObservationKind(rawValue: args.positional[1]) else {
+            throw CLIError(description: "kind must be one of \(ObservationKind.allCases.map(\.rawValue).joined(separator: ", "))")
+        }
+        let inInbox = store.data.inbox.first { $0.id == id }
+        guard var entry = store.entry(id) ?? inInbox?.entry, var session = entry.session else { throw CLIError(description: "\(args.positional[0]) is not a recorded session") }
+        let vocab = TagVocabulary.standard
+        var tags = args.all("tag").map { vocab.canonical(TagPath($0)) }.filter { !$0.isEmpty }
+        if tags.isEmpty { tags = vocab.suggest(in: args.positional[2]) }
+        func scale(_ k: String) throws -> Int? {
+            guard let v = args.one(k) else { return nil }
+            guard let n = Int(v), (1...5).contains(n) else { throw CLIError(description: "--\(k) must be 1–5") }
+            return n
+        }
+        let at = try args.one("at").map { a -> Double in
+            guard let (t, _) = TimedTranscript.stamp("[\(a)]") else { throw CLIError(description: "--at must be mm:ss or h:mm:ss") }
+            return t
+        }
+        let o = Observation(offset: at ?? session.duration ?? 0, phase: at == nil ? .aftermath : nil, kind: kind, text: args.positional[2], tags: tags,
+                            intensity: try scale("intensity"), clarity: try scale("clarity"), capture: at == nil ? .recalled : .live)
+        session.add(o)
+        entry.session = session
+        entry.updatedAt = Date()
+        if var item = inInbox { item.entry = entry; store.addToInbox(item) } else { store.save(entry) }
+        try store.flush()
+        print("\(o.id)  \(TimedTranscript.clock(o.offset))  \(kind.rawValue)  \(TagInputFormat.join(tags))")
+
+    case "observations":
+        let store = try openStore(args)
+        var data = store.data
+        data.entries = data.entries.filter { e in
+            (args.one("type").map { e.type.rawValue == $0 } ?? true)
+                && (args.one("from").map { e.occurredAt.day >= $0 } ?? true) && (args.one("to").map { e.occurredAt.day <= $0 } ?? true)
+        }
+        let want = args.all("tag").map { TagPath($0) }
+        let rows = SessionExporter().observationRows(data).filter { r in
+            if let k = args.one("kind"), r["kind"] != .string(k) { return false }
+            guard case .list(let tags) = r["tags"] ?? .null else { return want.isEmpty }
+            return want.allSatisfy { w in tags.contains { TagPath($0).isUnder(w) } }
+        }
+        if args.has("json") { try printJSON(rows) }
+        else {
+            for r in rows {
+                func v(_ k: String) -> String { if case .string(let s) = r[k] ?? .null { return s }; if case .double(let d) = r[k] ?? .null { return TimedTranscript.clock(d) }; return "" }
+                var tags = ""
+                if case .list(let l) = r["tags"] ?? .null { tags = l.joined(separator: ", ") }
+                print("\(v("session_day"))  \(v("session_type"))  \(v("offset_s"))  \(v("kind"))  \(v("text"))" + (tags.isEmpty ? "" : "  [\(tags)]"))
+            }
+        }
+
+    case "vocab":
+        let vocab = TagVocabulary.standard
+        if args.has("free") {
+            let store = try openStore(args)
+            let all = store.data.entries.flatMap { $0.tags + ($0.session?.observations.flatMap(\.tags) ?? []) }
+            let free = Dictionary(grouping: all.map(vocab.canonical).filter { !vocab.isControlled($0) }, by: \.path).mapValues(\.count)
+            for (tag, n) in free.sorted(by: { ($1.value, $0.key) < ($0.value, $1.key) }) { print("\(n)  \(tag)") }
+        } else if let text = args.positional.first {
+            for t in vocab.suggest(in: text) { print(t) }
+        } else {
+            for t in vocab.terms { print(t.path.path + (t.aliases.isEmpty ? "" : "  (\(t.aliases.joined(separator: ", ")))")) }
+        }
 
     case "search":
         let lib = try loadLibrary(args)

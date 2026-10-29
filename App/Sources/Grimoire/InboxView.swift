@@ -87,7 +87,8 @@ struct InboxDetail: View {
             draft = item?.draft ?? DraftReading()
             entryType = item?.entry.type ?? .journal
         }
-        .navigationTitle("Check Capture")
+        .onDisappear { saveSession() }
+        .navigationTitle(item?.entry.session == nil ? "Check Capture" : "Check Session")
         .toolbar {
             ToolbarItem {
                 Button("Confirm", systemImage: "checkmark.circle") { confirm() }
@@ -125,7 +126,14 @@ struct InboxDetail: View {
                     .keyboardShortcut("t", modifiers: [.command, .shift])
                     .help("Run speech to text on this recording again and re-read the cards (Command-Shift-T)")
                 }
-                if item.entry.body.isEmpty {
+                if item.entry.session != nil {
+                    if let t = item.entry.transcript, !t.isEmpty {
+                        Text(t).textSelection(.enabled)
+                    } else {
+                        Label("No transcript yet. Listen to the audio, or Transcribe Again once the speech model is installed.", systemImage: "waveform.slash")
+                            .foregroundStyle(.secondary)
+                    }
+                } else if item.entry.body.isEmpty {
                     Label("No transcript. Listen to the audio and fill in the fields.", systemImage: "waveform.slash")
                         .foregroundStyle(.secondary)
                 } else {
@@ -165,6 +173,10 @@ struct InboxDetail: View {
                         .flagged(draft.question.confidence < .high && draft.question.value != nil)
                 }
             }
+            if item.entry.session != nil {
+                SessionSection(session: Binding(get: { self.item?.entry.session ?? item.entry.session! },
+                                                set: { self.item?.entry.session = $0 }))
+            }
             ForEach(draft.divinations.indices, id: \.self) { i in
                 DraftDivinationSection(divination: $draft.divinations[i], number: i + 1) { draft.divinations.remove(at: i) }
             }
@@ -183,7 +195,15 @@ struct InboxDetail: View {
         .formStyle(.grouped)
     }
 
+    /// Keeps the session's checked observations, so leaving and coming back loses nothing.
+    private func saveSession() {
+        guard let item, item.entry.session != nil,
+              let stored = model.data.inbox.first(where: { $0.id == itemId }), stored != item else { return }
+        model.updateInbox(item)
+    }
+
     private func confirm() {
+        saveSession()
         do {
             let id = try model.confirm(itemId, corrected: draft.divinations.isEmpty ? nil : draft, entryType: draft.divinations.isEmpty ? entryType : nil)
             error = nil

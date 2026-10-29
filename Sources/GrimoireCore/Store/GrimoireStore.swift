@@ -107,7 +107,7 @@ public extension GrimoireRepository {
     }
 
     var tagTree: TagTree {
-        var all: [TagPath] = data.entries.flatMap(\.tags)
+        var all: [TagPath] = data.entries.flatMap(\.tags) + data.entries.flatMap { $0.session?.observationTags ?? [] }
         for i in data.inquiries {
             all += i.tags
             if let c = i.category { all.append(c) }

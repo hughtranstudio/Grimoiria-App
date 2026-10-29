@@ -142,3 +142,32 @@ func tempFolder() -> URL {
     #expect(throws: DeckSaveError.self) { try DefinitionsFolder.save(deck, in: lib, folder: dest) }
     #expect(try DefinitionLibrary.load(from: dest).deck("rws-tarot")?.cards.count == 78)
 }
+
+@Test func observationKindKeysAreUnique() {
+    let keys = ObservationKind.allCases.map(\.key)
+    #expect(Set(keys).count == keys.count)
+    #expect(ObservationKind.forKey("E") == .entity)
+    #expect(ObservationKind.forKey("q") == nil)
+}
+
+@Test("Session clock", arguments: [(0.0, "0:00"), (65.4, "1:05"), (3725, "1:02:05")])
+func sessionClock(_ seconds: Double, expected: String) {
+    #expect(SessionText.clock(seconds) == expected)
+}
+
+@Test func typedObservationTags() {
+    let v = TagVocabulary.standard
+    #expect(SessionText.tags(typed: "", text: "A crow at the gate", vocabulary: v).map(\.path) == ["entity/animal/crow", "place/gate"])
+    #expect(SessionText.tags(typed: "crow, my/tag", text: "ignored", vocabulary: v).map(\.path) == ["entity/animal/crow", "my/tag"])
+}
+
+@Test func freeTagCounts() {
+    var data = GrimoireData()
+    let at = ZonedDate(Date(timeIntervalSince1970: 0), timeZone: "UTC")
+    var e = Entry(type: .vision, occurredAt: at, tags: ["my/tag", "color/red"])
+    e.session = PracticeSession(startedAt: at, observations: [Observation(offset: 1, tags: ["my/tag", "other"])])
+    data.entries = [e]
+    let counts = FreeTags.counts(data, vocabulary: .standard)
+    #expect(counts.map(\.tag.path) == ["my/tag", "other"])
+    #expect(counts.first?.count == 2)
+}
