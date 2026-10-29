@@ -70,6 +70,9 @@ enum Snapshot {
         case .search: nil
         case .volumes: model.data.volumes.first.map { .volume($0.id) }
         case .decks: .deck("rws-tarot")
+        case .patterns: .pattern("overview")
+        case .calendar: .day(model.today)
+        case .correspondences: .correspondence("planet:mars")
         }
     }
 

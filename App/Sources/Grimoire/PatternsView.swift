@@ -241,8 +241,10 @@ struct PatternDetail: View {
         Section("Planetary hour") {
             TallyChart(rows: p.timing(.planetaryHour).map { ($0.key.capitalized, $0.count) }, vertical: true)
         }
-        Section("Moon sign") {
+        Section {
             TallyChart(rows: p.timing(.moonSign).map { ($0.key.capitalized, $0.count) }, vertical: true)
+        } header: {
+            Text("Moon sign")
         } footer: {
             Text("Readings by when they were asked, other entries by when they happened. Planetary days and hours need a home location.")
         }
