@@ -45,20 +45,30 @@ public struct TimingContext: Codable, Hashable, Sendable {
     /// Nil when no location is set or in polar day/night.
     public var planetaryDay: Planet?
     public var planetaryHour: Planet?
+    /// 1…24 counted from sunrise: 1–12 are the day hours, 13–24 the night hours.
+    public var planetaryHourNumber: Int?
     /// True if the Moon or Sun is within 0.5° of a sign boundary (low-precision ephemeris).
     public var nearCusp: Bool
+    /// Where the planetary day and hour were reckoned, so a record can be recomputed or audited.
+    public var location: GeoLocation?
 
-    public init(moonPhase: MoonPhase, moonIllumination: Int, moonSign: ZodiacSign, sunSign: ZodiacSign, planetaryDay: Planet?, planetaryHour: Planet?, nearCusp: Bool) {
+    public init(moonPhase: MoonPhase, moonIllumination: Int, moonSign: ZodiacSign, sunSign: ZodiacSign, planetaryDay: Planet?, planetaryHour: Planet?, nearCusp: Bool,
+                planetaryHourNumber: Int? = nil, location: GeoLocation? = nil) {
         self.moonPhase = moonPhase
         self.moonIllumination = moonIllumination
         self.moonSign = moonSign
         self.sunSign = sunSign
         self.planetaryDay = planetaryDay
         self.planetaryHour = planetaryHour
+        self.planetaryHourNumber = planetaryHourNumber
         self.nearCusp = nearCusp
+        self.location = location
     }
 
-    public static func compute(at date: ZonedDate, location: GeoLocation?) -> TimingContext {
+    public var isNightHour: Bool? { planetaryHourNumber.map { $0 > 12 } }
+
+    /// `timeKnown: false` (a dated note with no time) keeps the planetary day but drops the hour.
+    public static func compute(at date: ZonedDate, location: GeoLocation?, timeKnown: Bool = true) -> TimingContext {
         let sun = Astronomy.sunLongitude(date.instant)
         let moon = Astronomy.moonLongitude(date.instant)
         let elong = Astronomy.norm360(moon - sun)
@@ -66,16 +76,23 @@ public struct TimingContext: Codable, Hashable, Sendable {
         func cusp(_ lon: Double) -> Bool { let r = lon.truncatingRemainder(dividingBy: 30); return r < 0.5 || r > 29.5 }
         var day: Planet?
         var hour: Planet?
-        if let loc = location, let ph = planetaryHour(at: date.instant, location: loc, zone: date.zone) {
-            day = ph.day; hour = ph.hour
+        var number: Int?
+        if let loc = location, let ph = planetaryHourDetail(at: date.instant, location: loc, zone: date.zone) {
+            day = ph.day
+            if timeKnown { hour = ph.hour; number = ph.number }
         }
         return TimingContext(moonPhase: .of(elongation: elong), moonIllumination: illum, moonSign: .of(longitude: moon),
-                             sunSign: .of(longitude: sun), planetaryDay: day, planetaryHour: hour, nearCusp: cusp(sun) || cusp(moon))
+                             sunSign: .of(longitude: sun), planetaryDay: day, planetaryHour: hour, nearCusp: cusp(sun) || cusp(moon),
+                             planetaryHourNumber: number, location: location)
+    }
+
+    public static func planetaryHour(at instant: Date, location: GeoLocation, zone: TimeZone) -> (day: Planet, hour: Planet)? {
+        planetaryHourDetail(at: instant, location: location, zone: zone).map { ($0.day, $0.hour) }
     }
 
     /// Planetary day and hour. The magical day runs sunrise to sunrise; day and night are each
     /// split into 12 unequal hours, and hours follow the Chaldean order from the day's ruler.
-    public static func planetaryHour(at instant: Date, location: GeoLocation, zone: TimeZone) -> (day: Planet, hour: Planet)? {
+    public static func planetaryHourDetail(at instant: Date, location: GeoLocation, zone: TimeZone) -> (day: Planet, hour: Planet, number: Int)? {
         var cal = Calendar(identifier: .gregorian)
         cal.timeZone = zone
         func times(_ d: Date) -> (rise: Date, set: Date)? {
@@ -97,6 +114,6 @@ public struct TimingContext: Codable, Hashable, Sendable {
         let length = periodEnd.timeIntervalSince(periodStart) / 12
         let n = min(11, Int(instant.timeIntervalSince(periodStart) / length)) + (isNight ? 12 : 0)
         let start = Planet.chaldean.firstIndex(of: ruler)!
-        return (ruler, Planet.chaldean[(start + n) % 7])
+        return (ruler, Planet.chaldean[(start + n) % 7], n + 1)
     }
 }

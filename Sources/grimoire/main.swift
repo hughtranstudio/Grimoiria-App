@@ -17,17 +17,24 @@ usage: grimoire <command> [options]
   import <file or folder>... [--tz Zone] [--lat N --lon N] [--dmy] [--tag T]... [--attachments DIR] [--dry-run]
                                           split .docx/.md/.txt records into Inbox items
   inbox                                   list Inbox items waiting for confirm
-  confirm <id> [corrections] [--reminder none|1w|1m|3m]
+  confirm <id> [corrections] [--reminder 7-30-90|none|1w|1m|3m]   (default 7-30-90)
         corrections: --deck D=ID --card D.N=CARD --orientation D.N=upright|reversed
                      --lines D=789676 --question "text"   (D, N count from 1)
-  add <type> "<body>" [--title T] [--tag T]...
+  add <type> "<body>" [--title T] [--tag T]... [--lat N --lon N]
+  timing-fill [--lat N --lon N] [--overwrite]
+                                          fill moon phase and planetary day/hour on records missing it
   search [text] [--tag T]... [--type T] [--volume NAME] [--pages 40-50]
   show <id>
   inquiries [--open]
   needs-outcome [--today yyyy-MM-dd]
+  outcome <inquiry id> "<what happened>" --fulfilled yes|partly|no|unclear [--date ISO]
+                                          stack an outcome; due check-ins roll on to the next step
+  remind <inquiry id> [--preset 7-30-90|1w|1m|3m] [--stop]
+  remind-backfill [--today yyyy-MM-dd]    check-ins for open inquiries that have none (old notes)
   export --out DIR                        Obsidian Markdown + grimoire.jsonl
 
   Global: --store PATH (default $GRIMOIRE_STORE or ./grimoire-store.json)
+          home location for --lat/--lon defaults: $GRIMOIRE_HOME="lat,lon"
 """
 
 struct CLIError: Error, CustomStringConvertible { let description: String }
@@ -70,6 +77,13 @@ func loadLibrary(_ args: Args) throws -> DefinitionLibrary {
 func openStore(_ args: Args) throws -> JSONFileRepository {
     let path = args.one("store") ?? ProcessInfo.processInfo.environment["GRIMOIRE_STORE"] ?? "grimoire-store.json"
     return try JSONFileRepository(url: URL(fileURLWithPath: path))
+}
+
+/// --lat/--lon, else $GRIMOIRE_HOME ("lat,lon").
+func location(_ args: Args) -> GeoLocation? {
+    if let la = args.one("lat").flatMap(Double.init), let lo = args.one("lon").flatMap(Double.init) { return GeoLocation(latitude: la, longitude: lo) }
+    let home = (ProcessInfo.processInfo.environment["GRIMOIRE_HOME"] ?? "").split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
+    return home.count == 2 ? GeoLocation(latitude: home[0], longitude: home[1]) : nil
 }
 
 func today(_ tz: TimeZone = .current) -> String { GrimoireDateFormat.day(Date(), in: tz) }
@@ -152,9 +166,7 @@ func run() async throws {
 
     case "timing":
         guard let s = args.positional.first, let z = ZonedDate.parse(s, timeZone: args.one("tz")) else { throw CLIError(description: "timing needs an ISO 8601 date with offset") }
-        var loc: GeoLocation?
-        if let la = args.one("lat").flatMap(Double.init), let lo = args.one("lon").flatMap(Double.init) { loc = GeoLocation(latitude: la, longitude: lo) }
-        try printJSON(TimingContext.compute(at: z, location: loc))
+        try printJSON(TimingContext.compute(at: z, location: location(args)))
 
     case "ingest":
         let lib = try loadLibrary(args)
@@ -163,7 +175,7 @@ func run() async throws {
         let ingestor = InboxIngestor(root: URL(fileURLWithPath: folder), transcriber: SidecarTextTranscriber(), parser: ReadingParser(library: lib))
         if let s = args.one("stable-seconds").flatMap(Double.init) { ingestor.stableSeconds = s }
         if let tz = args.one("tz") { ingestor.defaultTimeZone = tz }
-        if let la = args.one("lat").flatMap(Double.init), let lo = args.one("lon").flatMap(Double.init) { ingestor.location = GeoLocation(latitude: la, longitude: lo) }
+        ingestor.location = location(args)
         let outcomes = await ingestor.scan(isKnown: store.knowsCapture, deliver: store.addToInbox)
         try store.flush()
         for o in outcomes { print(o) }
@@ -174,7 +186,7 @@ func run() async throws {
         let store = try openStore(args)
         var importer = DocumentImporter(parser: ReadingParser(library: lib))
         if let tz = args.one("tz") { importer.timeZone = tz }
-        if let la = args.one("lat").flatMap(Double.init), let lo = args.one("lon").flatMap(Double.init) { importer.location = GeoLocation(latitude: la, longitude: lo) }
+        importer.location = location(args)
         if args.has("dmy") { importer.slashOrder = .dayFirst }
         importer.tags = args.all("tag").map { TagPath($0) }
         let dryRun = args.has("dry-run")
@@ -236,7 +248,7 @@ func run() async throws {
             draft?.divinations[d].cast?.lines = Parsed(v.compactMap(\.wholeNumberValue), confidence: .high)
         }
         if let q = args.one("question") { draft?.question = Parsed(q, confidence: .high) }
-        let preset = ReminderPreset(rawValue: args.one("reminder") ?? "none") ?? .none
+        guard let preset = ReminderPreset(rawValue: args.one("reminder") ?? "7-30-90") else { throw CLIError(description: "--reminder must be 7-30-90, none, 1w, 1m or 3m") }
         let result = try store.confirm(id, corrected: draft, library: lib, reminder: preset)
         try store.flush()
         print("filed entry \(result.entry.id)" + (result.inquiry.map { " and inquiry \($0.id): \($0.question)" } ?? ""))
@@ -249,7 +261,7 @@ func run() async throws {
         }
         let now = ZonedDate(Date())
         let e = Entry(type: type, title: args.one("title"), occurredAt: now, body: args.positional[1],
-                      tags: args.all("tag").map { TagPath($0) }, timing: TimingContext.compute(at: now, location: nil), mode: .quick)
+                      tags: args.all("tag").map { TagPath($0) }, timing: TimingContext.compute(at: now, location: location(args)), mode: .quick)
         store.save(e)
         try store.flush()
         print(e.id)
@@ -291,6 +303,38 @@ func run() async throws {
             let q = store.inquiry(r.targetId)?.question ?? store.entry(r.targetId)?.displayTitle ?? r.targetId.string
             print("\(r.dueOn)  \(q)" + (r.prompt.map { "  — \($0)" } ?? ""))
         }
+
+    case "outcome":
+        let store = try openStore(args)
+        guard args.positional.count >= 2, let id = ULID(args.positional[0]) else { throw CLIError(description: "outcome needs an inquiry id and what happened") }
+        guard let f = Outcome.Fulfilled(rawValue: args.one("fulfilled") ?? "") else { throw CLIError(description: "--fulfilled must be yes, partly, no or unclear") }
+        var when = ZonedDate(Date())
+        if let d = args.one("date") { guard let z = ZonedDate.parse(d) else { throw CLIError(description: "--date needs ISO 8601 with offset") }; when = z }
+        let inq = try store.addOutcome(Outcome(recordedAt: when, body: args.positional[1], fulfilled: f), to: id)
+        try store.flush()
+        let next = store.data.reminders.first { $0.targetId == id && $0.status != .done }
+        print("\(inq.status.rawValue), \(inq.outcomes.count) outcome(s)" + (next.map { "; next check-in \($0.dueOn)" } ?? "; no more check-ins"))
+
+    case "remind":
+        let store = try openStore(args)
+        guard let raw = args.positional.first, let id = ULID(raw), let inq = store.inquiry(id) else { throw CLIError(description: "remind needs an inquiry id") }
+        if args.has("stop") { store.stopReminders(for: id); try store.flush(); print("stopped"); break }
+        guard let preset = ReminderPreset(rawValue: args.one("preset") ?? "7-30-90") else { throw CLIError(description: "--preset must be 7-30-90, 1w, 1m or 3m") }
+        if let r = store.scheduleOutcomeCheckIn(for: inq, preset: preset, today: today(inq.askedAt.zone)) { try store.flush(); print("\(r.dueOn)  \(r.prompt ?? "")") }
+        else { print("already has an open reminder") }
+
+    case "remind-backfill":
+        let store = try openStore(args)
+        let made = store.backfillOutcomeCheckIns(today: args.one("today") ?? today())
+        try store.flush()
+        for r in made { print("\(r.dueOn)  day \(r.step ?? 0)  \(store.inquiry(r.targetId)?.question ?? r.targetId.string)") }
+        print("\(made.count) check-in(s) scheduled")
+
+    case "timing-fill":
+        let store = try openStore(args)
+        let n = store.fillTiming(location: location(args), overwrite: args.has("overwrite"))
+        try store.flush()
+        print("updated \(n) record(s)")
 
     case "export":
         let lib = try loadLibrary(args)

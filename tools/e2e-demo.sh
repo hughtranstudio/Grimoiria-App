@@ -16,11 +16,18 @@ $B ingest "$W/GrimoireInbox" --stable-seconds 0
 echo "== inbox"
 $B inbox
 ID=$($B inbox | head -1 | cut -d' ' -f1)
-echo "== confirm with a 1 week reminder"
-$B confirm "$ID" --reminder 1w
+echo "== confirm (outcome check-ins at 7, 30 and 90 days)"
+$B confirm "$ID"
 $B inquiries --open
 echo "== needs outcome on 2026-11-05"
 $B needs-outcome --today 2026-11-05
+INQ=$($B inquiries | head -1 | cut -d' ' -f1)
+echo "== log an outcome; the ladder rolls on to the 30-day check-in"
+$B outcome "$INQ" "Plans changed as the reading suggested" --fulfilled partly --date 2026-11-05T09:00:00-08:00
+$B needs-outcome --today 2026-11-05
+echo "== fill astro context on a manual entry"
+$B add journal "Evening LBRP, felt settled"
+$B timing-fill --lat 37.77 --lon -122.42
 echo "== search 'tower'"
 $B search tower
 echo "== export twice (second run should change nothing)"

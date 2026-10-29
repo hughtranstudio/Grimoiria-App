@@ -109,8 +109,7 @@ public struct DocumentImporter: Sendable {
             else if draft != nil { type = .divination }
             else { type = doc.type ?? .journal; if doc.type == nil { notes.append("Type not stated; set to journal") } }
 
-            var timing = TimingContext.compute(at: occurred, location: location)
-            if !timeKnown { timing.planetaryHour = nil }
+            let timing = TimingContext.compute(at: occurred, location: location, timeKnown: timeKnown)
 
             var tags = doc.tags + self.tags + Self.hashtags(in: body)
             tags = tags.reduce(into: [TagPath]()) { if !$0.contains($1) { $0.append($1) } }
