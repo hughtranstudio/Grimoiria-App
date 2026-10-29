@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Check-ins copied into a calendar kept on this phone only; asked for when turned on in Settings. -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <!-- No INTERNET permission: captures never leave the phone except through the sync folder. -->
 
     <queries>
@@ -32,6 +35,8 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="app.grimoiria.capture.RECORD" />
+                <action android:name="app.grimoiria.capture.SESSION" />
+                <action android:name="app.grimoiria.capture.TODAY" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <meta-data

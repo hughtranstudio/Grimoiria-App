@@ -71,6 +71,13 @@ class LibraryTest {
     }
 
     @Test
+    fun checksumMatchesTheMac() {
+        // Values from PhoneLibrary.checksum in Swift (FNV-1a 64).
+        assertEquals("0-cbf29ce484222325", Library.checksum(ByteArray(0)))
+        assertEquals("3-e71fa2190541574b", Library.checksum("abc".toByteArray()))
+    }
+
+    @Test
     fun manifestReads() {
         val m = assertNotNull(Library.parseManifest("""{"library_version":1,"exported_at":"2026-10-29T21:30:00-07:00","entries":2,"inquiries":1,"reminders":1,"checksum":"9-abc"}"""))
         assertEquals("9-abc", m.checksum)

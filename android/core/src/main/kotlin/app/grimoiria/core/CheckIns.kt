@@ -10,6 +10,7 @@ data class CheckIn(val reminder: LibReminder, val inquiry: LibInquiry?, val entr
     val prompt: String get() = reminder.prompt ?: "What actually happened?"
 }
 
+@kotlinx.serialization.Serializable
 data class PhoneCheckInState(
     /** Inquiry id → the day (yyyy-MM-dd) an outcome for it was sent from the phone. */
     val answered: Map<String, String> = emptyMap(),

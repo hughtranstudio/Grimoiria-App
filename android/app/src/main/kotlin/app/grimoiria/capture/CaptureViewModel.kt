@@ -17,6 +17,8 @@ import app.grimoiria.core.CaptureKind
 import app.grimoiria.core.CaptureStore
 import app.grimoiria.core.DraftEditor
 import app.grimoiria.core.DraftReading
+import app.grimoiria.core.Fulfilled
+import app.grimoiria.core.PhoneReading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -30,6 +32,27 @@ sealed interface Screen {
     data class Check(val id: String) : Screen
     data object Outbox : Screen
     data object Settings : Screen
+    data object Library : Screen
+    /** A reading or entry from the library. */
+    data class Item(val id: String) : Screen
+    data object Decks : Screen
+    data class Deck(val id: String) : Screen
+    data class Card(val deckId: String, val cardId: String) : Screen
+    data class Hexagram(val number: Int) : Screen
+    data object Session : Screen
+    data object Today : Screen
+}
+
+/** The bottom bar. Each tab's root screen starts a fresh back stack. */
+enum class Tab(val label: String, val root: Screen) {
+    CAPTURE("Capture", Screen.Home),
+    LIBRARY("Library", Screen.Library),
+    SESSION("Session", Screen.Session),
+    TODAY("Today", Screen.Today);
+
+    companion object {
+        fun of(s: Screen): Tab? = entries.firstOrNull { it.root == s }
+    }
 }
 
 /** The capture being checked, with the words it was parsed from. */
@@ -42,17 +65,25 @@ data class CheckState(
     val words: String get() = if (capture.audioFile != null) capture.transcript.orEmpty() else capture.text.orEmpty()
 }
 
+/** Free tag on readings cast or drawn on the phone, so analysis can tell them from physical ones. */
+const val PHONE_CAST_TAG = "method/phone-cast"
+
 class CaptureViewModel(app: Application) : AndroidViewModel(app) {
     private val ctx = app.grimoire
     val library get() = ctx.library
     val editor by lazy { DraftEditor(ctx.library) }
+    private val phoneReading by lazy { PhoneReading(ctx.library) }
     private val store get() = ctx.store
     private val transcriber = OnDeviceTranscriber(app)
     private val speechHints by lazy { ctx.library.speechHints() }
     private val deliverLock = Mutex()
 
-    var screen by mutableStateOf<Screen>(Screen.Home)
-        private set
+    /** Back stack; the last screen is showing. Never empty. */
+    private var stack by mutableStateOf<List<Screen>>(listOf(Screen.Home))
+    val screen: Screen get() = stack.last()
+    val canGoBack: Boolean get() = stack.size > 1 || screen != Screen.Home
+    /** The tab whose stack is showing. */
+    val tab: Tab get() = stack.firstNotNullOfOrNull { Tab.of(it) } ?: Tab.CAPTURE
     var kind by mutableStateOf(CaptureKind.fromHint(ctx.settings.lastKind))
         private set
     var tags by mutableStateOf("")
@@ -73,7 +104,10 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
         refresh()
         deliver()
         viewModelScope.launch {
-            Recorder.state.collect { s -> if (s is Recorder.State.Finished || s is Recorder.State.Failed) onRecordingDone(s) }
+            Recorder.state.collect { s ->
+                // Session recordings belong to the Session tab.
+                if ((s is Recorder.State.Finished && !s.session) || (s is Recorder.State.Failed && !s.session)) onRecordingDone(s)
+            }
         }
     }
 
@@ -85,9 +119,20 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { captures = withContext(Dispatchers.IO) { store.all() } }
     }
 
+    /** Tab roots replace the stack; anything else opens on top of what is showing. */
     fun go(s: Screen) {
-        screen = s
+        stack = if (Tab.of(s) != null) listOf(s) else stack.filterNot { it == s } + s
         if (s == Screen.Home || s == Screen.Outbox) refresh()
+    }
+
+    /** Swaps the screen showing for another, e.g. stepping through hexagrams without growing the stack. */
+    fun replaceTop(s: Screen) {
+        stack = stack.dropLast(1) + s
+    }
+
+    fun back() {
+        stack = if (stack.size > 1) stack.dropLast(1) else listOf(Screen.Home)
+        if (screen == Screen.Home) refresh()
     }
 
     fun selectKind(k: CaptureKind) {
@@ -103,7 +148,10 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
     // Recording
 
     fun startRecording() {
-        if (Recorder.state.value is Recorder.State.Recording) return
+        if (Recorder.state.value is Recorder.State.Recording) {
+            if ((Recorder.state.value as Recorder.State.Recording).session) message = "A session is recording; stop it first"
+            return
+        }
         val now = OffsetDateTime.now()
         val id = CaptureIds.newId(now)
         val folder = store.draftFolder(id)
@@ -174,11 +222,45 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
         if (c.draft != null) openCheck(CheckState(c)) else commit(c)
     }
 
+    // Readings cast or drawn on the phone
+
+    /** A card draw or Yi Jing cast made on the phone instead of spoken: opens the check screen ready to draw. */
+    fun startPhoneReading(k: CaptureKind) {
+        val now = OffsetDateTime.now()
+        selectKind(k)
+        val empty = DraftReading()
+        val draft = if (k == CaptureKind.YIJING) editor.addYiJing(empty) else editor.addCards(empty, null)
+        val c = newCapture(CaptureIds.newId(now), now).copy(kind = k.hint, draft = draft, tags = tagList() + PHONE_CAST_TAG)
+        store.saveDraft(c)
+        tags = ""
+        openCheck(CheckState(c))
+    }
+
+    fun drawOnPhone(div: Int) = edit { phoneReading.drawInto(it, div) }
+    fun castOnPhone(div: Int) = edit { phoneReading.castInto(it, div) }
+
+    // Outcomes for readings in the library
+
+    /** Sends an outcome for a reading to the Mac's Inbox, where Confirm adds it to the reading. */
+    fun sendOutcome(inquiryId: String, text: String, fulfilled: Fulfilled) {
+        val body = text.trim()
+        if (body.isEmpty()) return
+        val now = OffsetDateTime.now()
+        val c = newCapture(CaptureIds.newId(now), now).copy(kind = CaptureKind.OUTCOME.hint, text = body,
+            inquiryId = inquiryId, fulfilled = fulfilled, tags = emptyList())
+        store.saveDraft(c)
+        store.commit(c)
+        val st = ctx.settings.checkIns
+        ctx.settings.checkIns = st.copy(answered = st.answered + (inquiryId to now.toLocalDate().toString()))
+        message = "Outcome sent to the Mac’s Inbox"
+        deliver()
+    }
+
     // Check (confirm and correct)
 
     private fun openCheck(s: CheckState) {
         check = s
-        screen = Screen.Check(s.capture.id)
+        go(Screen.Check(s.capture.id))
     }
 
     fun resume(id: String) {
@@ -225,7 +307,8 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
     private fun commit(c: Capture) {
         store.commit(c)
         check = null
-        screen = Screen.Home
+        // Back to wherever the capture was started from.
+        stack = stack.filterNot { it is Screen.Check }.ifEmpty { listOf(Screen.Home) }
         message = "Saved to the Inbox"
         deliver()
     }
@@ -234,7 +317,8 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
         val c = check?.capture ?: return
         store.discardDraft(c.id)
         check = null
-        go(Screen.Home)
+        stack = stack.filterNot { it is Screen.Check }.ifEmpty { listOf(Screen.Home) }
+        refresh()
     }
 
     fun deleteSent(id: String) {

@@ -44,7 +44,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun HomeScreen(vm: CaptureViewModel, onRecord: () -> Unit, modifier: Modifier = Modifier) {
     val rec by Recorder.state.collectAsState()
-    val recording = rec as? Recorder.State.Recording
+    val recording = (rec as? Recorder.State.Recording)?.takeIf { !it.session }
 
     Column(
         modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -63,7 +63,7 @@ fun HomeScreen(vm: CaptureViewModel, onRecord: () -> Unit, modifier: Modifier = 
 
         Text("What is this?", style = MaterialTheme.typography.titleMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            for (k in CaptureKind.entries) {
+            for (k in CaptureKind.entries.filter { it.pickable }) {
                 FilterChip(selected = vm.kind == k, onClick = { vm.selectKind(k) }, label = { Text(k.label) }, enabled = recording == null)
             }
         }
@@ -94,6 +94,12 @@ fun HomeScreen(vm: CaptureViewModel, onRecord: () -> Unit, modifier: Modifier = 
         }
 
         if (recording == null) {
+            Text("No deck to hand?", style = MaterialTheme.typography.titleMedium)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = { vm.startPhoneReading(CaptureKind.DRAW) }) { Text("Draw cards") }
+                OutlinedButton(onClick = { vm.startPhoneReading(CaptureKind.YIJING) }) { Text("Cast Yi Jing") }
+            }
+
             Text("Or type", style = MaterialTheme.typography.titleMedium)
             OutlinedTextField(
                 value = vm.note, onValueChange = { vm.note = it }, modifier = Modifier.fillMaxWidth(), minLines = 3,

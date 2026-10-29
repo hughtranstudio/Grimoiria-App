@@ -13,7 +13,7 @@ final class PhoneLibraryTests: XCTestCase {
         var inq = Inquiry(id: ULID("01JBQ8Y5X0AAAAAAAAAAAAAAAA")!, question: "Will the move go ahead?", askedAt: asked,
                           context: "Flat on Elm Street", tags: ["question/home", "theme/threshold"], createdAt: created)
         inq.divinations = [
-            Divination(id: ULID("01JBQ8Y5X0AAAAAAAAAAAAAAAB")!, system: .cards, deckId: "rws", spreadId: "three-card", performedAt: asked, order: 0,
+            Divination(id: ULID("01JBQ8Y5X0AAAAAAAAAAAAAAAB")!, system: .cards, deckId: "rws-tarot", spreadId: "three-card", performedAt: asked, order: 0,
                        draws: [Draw(id: ULID("01JBQ8Y5X0AAAAAAAAAAAAAAAC")!, cardId: "cups-03", positionKey: "past", orientation: .reversed),
                                Draw(id: ULID("01JBQ8Y5X0AAAAAAAAAAAAAAAD")!, cardId: "maj-16", positionKey: "present"),
                                Draw(id: ULID("01JBQ8Y5X0AAAAAAAAAAAAAAAE")!, cardId: "wands-11", positionKey: "future")]),
@@ -106,6 +106,12 @@ final class PhoneLibraryTests: XCTestCase {
         XCTAssertEqual(inq.status, .revisited)
         XCTAssertTrue(repo.data.inbox.isEmpty)
         XCTAssertTrue(repo.data.entries.isEmpty, "the carrier entry is not filed")
+    }
+
+    /// The phone checks library files with the same hash (android/core LibraryTest).
+    func testChecksumIsFNV1a64() {
+        XCTAssertEqual(PhoneLibrary.checksum(""), "0-cbf29ce484222325")
+        XCTAssertEqual(PhoneLibrary.checksum("abc"), "3-e71fa2190541574b")
     }
 
     func testOutcomeWithoutAReadingIsRejected() {

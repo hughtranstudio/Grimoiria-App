@@ -197,6 +197,13 @@ class Library(
 
         val json = Json { ignoreUnknownKeys = true; explicitNulls = false; coerceInputValues = true }
 
+        /** Same as PhoneLibrary.checksum on the Mac: byte count, then FNV-1a 64 of the UTF-8 bytes in hex. */
+        fun checksum(bytes: ByteArray): String {
+            var h = 0xcbf29ce484222325uL
+            for (b in bytes) h = (h xor (b.toUByte().toULong())) * 0x100000001b3uL
+            return "${bytes.size}-${h.toString(16)}"
+        }
+
         fun parseManifest(text: String): LibraryManifest? = runCatching { json.decodeFromString(LibraryManifest.serializer(), text) }.getOrNull()
 
         /** Reads `grimoire.jsonl`. Records the phone doesn't know (volumes, future types) are skipped. */

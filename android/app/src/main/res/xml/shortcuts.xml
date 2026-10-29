@@ -11,4 +11,15 @@
             android:targetClass="app.grimoiria.capture.MainActivity"
             android:targetPackage="app.grimoiria.capture" />
     </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_capture"
+        android:shortcutId="session"
+        android:shortcutLongLabel="@string/shortcut_session_long"
+        android:shortcutShortLabel="@string/shortcut_session_short">
+        <intent
+            android:action="app.grimoiria.capture.SESSION"
+            android:targetClass="app.grimoiria.capture.MainActivity"
+            android:targetPackage="app.grimoiria.capture" />
+    </shortcut>
 </shortcuts>

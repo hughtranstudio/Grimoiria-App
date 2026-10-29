@@ -1,6 +1,10 @@
-# Grimoire Capture for Android (Pixel)
+# Grimoire for Android (Pixel)
 
-A small capture app for the phone. It writes into the same Inbox folder the Mac app watches, using the same files as the iPhone Shortcut (sidecar contract v1), so the Mac side doesn't change.
+Started as a capture app; now four tabs: **Capture**, **Library**, **Session** and **Today**. The
+capture flow below is unchanged. What the other tabs do, and the files behind them, are at the end
+of this page and in [phone-library.md](phone-library.md).
+
+The capture app It writes into the same Inbox folder the Mac app watches, using the same files as the iPhone Shortcut (sidecar contract v1), so the Mac side doesn't change.
 
 ## What it does
 
@@ -72,3 +76,41 @@ The id is `yyyyMMdd-HHmmss-NNNN`, the same shape the Shortcut uses. Sidecar fiel
 ## Not in this version
 
 Browsing past entries, decks with no card list yet (Mystagogos: the phone flags it and the cards are entered on the Mac until its card list exists), location, photos of notebook pages.
+
+
+## Library, sessions and check-ins (the grimoire on the phone)
+
+The Syncthing folder now carries files both ways. The Mac writes a read-only copy of everything
+filed into `GrimoireInbox/library/` (see [phone-library.md](phone-library.md)); the phone writes
+captures, sessions and outcomes into `incoming/` as before. Nothing else links the two, and the phone
+still has no internet permission.
+
+- **Library**: every reading and entry filed on the Mac, newest first. Search by words (questions,
+  card and hexagram names, outcomes, observations), `#tag` (a parent finds its children), or tap a
+  card or hexagram in a reading to see every reading it appears in. Filter chips by type. **Decks**
+  lists the cards of each deck with their meanings (Quareia has them; RWS and Mystagogos have none
+  yet) and the 64 hexagrams. Pull down to look for a newer library.
+- **Readings without a deck**: on Capture, **Draw cards** or **Cast Yi Jing** opens the check
+  screen with an empty reading; **Draw on phone** shuffles the chosen deck into the spread, **Cast
+  on phone** throws three coins per line (or uses yarrow odds). They are tagged `method/phone-cast`
+  and still go through check on the phone and Confirm on the Mac.
+- **Session**: ritual, meditation or vision. Set intention, technique and how you feel going in,
+  then **Begin**. The microphone runs throughout (screen can be locked; stop from the
+  notification). A big **Mark** button drops "something happened here", phase chips mark
+  preparation, opening, working and closing, and **Write an observation** adds a typed one with a
+  kind and tags. **End session**, rate how you feel coming out, add an outcome, **Save to Inbox**.
+  The Mac transcribes the audio with timestamps, turns it into timed observations and puts the
+  session in its Inbox (docs/session-recording.md). A session in progress survives the app closing.
+- **Today**: check-ins due (7, 30 and 90 days after a reading), from the Mac's reminders. **Add
+  outcome** sends a short outcome (with yes / partly / no / unclear) to the Mac's Inbox; Confirm there
+  adds it to the reading. **In 3 days** puts one off on the phone only. A notification each morning
+  at about 9 says when something is due (Settings can turn it off).
+- **Calendar** (Settings, off by default): check-ins as all-day events in a "Grimoire" calendar
+  that lives only on the phone. Google Calendar shows it, but it is a local calendar, so nothing
+  syncs to the Google account.
+- **Look**: HT Press house style, A · Codex: vellum ground, EB Garamond text, Cormorant Garamond
+  titles, square corners, rubric red only for marks. Fonts are bundled (SIL OFL, `android/fonts-license/`).
+
+To see the library on the phone, the Mac app needs the matching update (PR with `PhoneLibrary`),
+with **Settings → Inbox → Share a read-only library with the phone** on (the default) and
+`~/GrimoireInbox` as an ingest folder.

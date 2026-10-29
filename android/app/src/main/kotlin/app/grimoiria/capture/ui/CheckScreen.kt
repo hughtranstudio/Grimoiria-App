@@ -73,7 +73,7 @@ fun CheckScreen(vm: CaptureViewModel, state: CheckState, modifier: Modifier = Mo
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Picker("Kind", c.captureKind.label, app.grimoiria.core.CaptureKind.entries.map { it.label to it }) { vm.changeKind(it) }
+                Picker("Kind", c.captureKind.label, app.grimoiria.core.CaptureKind.entries.filter { it.pickable }.map { it.label to it }) { vm.changeKind(it) }
                 Text(c.capturedAt.take(16).replace('T', ' '), style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -190,7 +190,11 @@ private fun CardsCard(vm: CaptureViewModel, index: Int, d: DraftDivination) {
                 }
             }
             if (deck?.isPlaceholder == false) {
-                TextButton(onClick = { vm.edit { vm.editor.addDraw(it, index) } }) { Text("Add card") }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(onClick = { vm.edit { vm.editor.addDraw(it, index) } }) { Text("Add card") }
+                    // Shuffles the deck on the phone and fills the empty positions.
+                    TextButton(onClick = { vm.drawOnPhone(index) }) { Text("Draw on phone") }
+                }
             }
         }
     }
@@ -248,6 +252,7 @@ private fun YiJingCard(vm: CaptureViewModel, index: Int, d: DraftDivination) {
                         label = { Text(m.name.lowercase()) })
                 }
             }
+            TextButton(onClick = { vm.castOnPhone(index) }) { Text(if (lines.isEmpty()) "Cast on phone" else "Cast again on phone") }
             // Drawn top line first, as on paper; values are entered bottom to top.
             for (line in 5 downTo 0) {
                 val v = lines.getOrNull(line)

@@ -20,6 +20,7 @@ class RecordingService : Service() {
             Recorder.stop(this)
             return START_NOT_STICKY
         }
+        val session = intent?.getBooleanExtra(EXTRA_SESSION, false) == true
         val nm = getSystemService(NotificationManager::class.java)
         nm.createNotificationChannel(NotificationChannel(CHANNEL, "Recording", NotificationManager.IMPORTANCE_LOW))
         val open = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java)
@@ -28,8 +29,8 @@ class RecordingService : Service() {
             PendingIntent.FLAG_IMMUTABLE)
         val notification = Notification.Builder(this, CHANNEL)
             .setSmallIcon(R.drawable.ic_capture)
-            .setContentTitle("Recording a capture")
-            .setContentText("Tap to open, or stop here")
+            .setContentTitle(if (session) "Recording a session" else "Recording a capture")
+            .setContentText(if (session) "Tap to open and mark what happens" else "Tap to open, or stop here")
             .setContentIntent(open)
             .setOngoing(true)
             .addAction(Notification.Action.Builder(null, "Stop", stop).build())
@@ -40,6 +41,7 @@ class RecordingService : Service() {
 
     companion object {
         const val ACTION_STOP = "app.grimoiria.capture.STOP_RECORDING"
+        const val EXTRA_SESSION = "session"
         private const val CHANNEL = "recording"
         private const val NOTIFICATION_ID = 1
     }
