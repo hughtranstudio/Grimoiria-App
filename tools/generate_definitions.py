@@ -261,9 +261,8 @@ def yijing():
 
 if __name__ == "__main__":
     write("decks/rws-tarot.json", rws())
-    write("decks/quareia.json", placeholder(
-        "quareia", "Quareia Deck", ["quareia", "quarea", "quaria", "korea", "chorea"],
-        "PLACEHOLDER: card list and significations to be generated from Hugh's Quareia deck repository."))
+    # decks/quareia.json and spreads/quareia-*.json are curated by hand from the
+    # Quareia deckbook (see docs/quareia-deck.md); this script leaves them alone.
     write("decks/mystagogos.json", placeholder(
         "mystagogos", "Mystagogos Deck", ["mystagogos", "mystagogus", "mystagogue", "mista gogos"],
         "PLACEHOLDER: card list and significations to be generated from Hugh's Mystagogos deck repository."))

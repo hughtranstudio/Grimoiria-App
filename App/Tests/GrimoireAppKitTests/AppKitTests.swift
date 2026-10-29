@@ -89,7 +89,7 @@ func tempFolder() -> URL {
     let lib = try DefinitionsFolder.install(from: bundledDefinitions(), to: dest)
     #expect(lib.validate().isValid)
     #expect(lib.decks.count == 4)
-    #expect(lib.spreads.count == 4)
+    #expect(lib.spreads.count == 8)
     // A second install keeps edits.
     var deck = lib.deck("custom-template")!
     deck.name = "My deck"
@@ -111,6 +111,26 @@ func tempFolder() -> URL {
     #expect(lib.spread("celtic-cross") != nil)
     // Saving a deck keeps the table.
     #expect(try DefinitionsFolder.save(lib.deck("custom-template")!, in: lib, folder: dest).correspondences != nil)
+}
+
+@Test func installReplacesAnEmptyPlaceholderDeck() throws {
+    let dest = tempFolder()
+    defer { try? FileManager.default.removeItem(at: dest.deletingLastPathComponent()) }
+    let lib = try DefinitionsFolder.install(from: bundledDefinitions(), to: dest)
+    // An older install still has the empty Quareia placeholder.
+    var old = lib.deck("quareia")!
+    old.status = .placeholder
+    old.cards = []
+    _ = try DefinitionsFolder.save(old, in: lib, folder: dest)
+    #expect(try DefinitionLibrary.load(from: dest).deck("quareia")?.cards.isEmpty == true)
+    let upgraded = try DefinitionsFolder.install(from: bundledDefinitions(), to: dest)
+    #expect(upgraded.deck("quareia")?.cards.count == 81)
+    // A placeholder the user has started filling in is kept.
+    var mine = upgraded.deck("quareia")!
+    mine.status = .placeholder
+    mine.cards = [DeckDefinition.Card(id: "my-card", name: "My card")]
+    _ = try DefinitionsFolder.save(mine, in: upgraded, folder: dest)
+    #expect(try DefinitionsFolder.install(from: bundledDefinitions(), to: dest).deck("quareia")?.cards.count == 1)
 }
 
 @Test func invalidDeckIsNotSaved() throws {

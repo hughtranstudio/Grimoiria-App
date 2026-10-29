@@ -71,4 +71,4 @@ The id is `yyyyMMdd-HHmmss-NNNN`, the same shape the Shortcut uses. Sidecar fiel
 
 ## Not in this version
 
-Browsing past entries, decks with no card list yet (Quareia, Mystagogos: the phone flags them and the cards are entered on the Mac until their card lists exist), location, photos of notebook pages.
+Browsing past entries, decks with no card list yet (Mystagogos: the phone flags it and the cards are entered on the Mac until its card list exists), location, photos of notebook pages.

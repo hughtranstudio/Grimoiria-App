@@ -51,7 +51,8 @@ swift run grimoire timing 2026-10-28T08:14:00-07:00 --lat 37.77 --lon -122.42 --
 **Done and tested (Linux, Swift 6.1):** definitions and validation, all models, Yi Jing derivation, voice/quick-draw parser, confirm-and-correct, folder ingest rules (stable size, iCloud placeholders, idempotency, failed/ with reasons), Obsidian and JSONL export (byte-stable re-export), timing context (moon phase and sign, planetary day and hour, auto-filled on records), outcome check-ins at 7/30/90 days with backfill for old readings and "Needs outcome", search including Volume + page range, CLI, importing Google Docs and local .docx/.md/.txt records into the Inbox (both routes give the same items).
 
 **Placeholders:**
-- **Quareia and Mystagogos decks** have no cards yet (`status: placeholder`). Their card lists, attributes and significations should be generated from Hugh's deck repositories by extending `tools/generate_definitions.py`. Every RWS card and hexagram already has an empty `significations` slot for the same merge.
+- **Mystagogos deck** has no cards yet (`status: placeholder`). Its card list, attributes and significations should be merged in from Hugh's Mystagogus notes. Every RWS card and hexagram already has an empty `significations` slot for the same merge.
+- **Quareia deck** is complete: 81 cards with the deckbook's mundane meanings and a magical summary, plus the book's four layouts as spreads. See [`docs/quareia-deck.md`](docs/quareia-deck.md).
 - **Transcription** uses `SidecarTextTranscriber` (reads `<id>.txt`) off the Mac. The app plugs in WhisperKit or whisper.cpp through the `Transcriber` protocol.
 
 **Mac app (needs macOS 26 + Xcode 26):** Timeline, Inquiries, Inbox with Transcribe Again, Volumes with page photos, Search and browse by tag, card and hexagram, Patterns, Calendar with planetary hours, Correspondences, Obsidian export, and the agent CLI and MCP server. See [`docs/bama-spec.md`](docs/bama-spec.md).

@@ -519,7 +519,18 @@
             "value" : "quareia"
           },
           "draws" : [
-
+            {
+              "cardId" : {
+                "confidence" : "high",
+                "heard" : "weaver",
+                "value" : "weaver-of-creation"
+              },
+              "orientation" : {
+                "confidence" : "high",
+                "value" : "upright"
+              },
+              "positionKey" : "1"
+            }
           ],
           "heard" : "quareia the weaver",
           "spreadId" : {
@@ -563,10 +574,10 @@
         "value" : "the new house"
       },
       "unparsed" : [
-        "weaver"
+
       ],
       "warnings" : [
-        "Deck quareia has no card list yet; draws must be entered by hand"
+
       ]
     },
     "input" : "Question: the new house. Deck Rider-Waite, single, the Star. Deck Quareia, the weaver. I Ching 789676.",

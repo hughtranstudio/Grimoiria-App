@@ -36,9 +36,9 @@ enum SelfTest {
     private static func firstRunChecks(_ model: AppModel) async {
         // M1: definitions
         check("definitions validate at launch", model.definitionsReport?.isValid == true, model.definitionsError ?? "")
-        check("4 decks and 4 spreads", model.library.decks.count == 4 && model.library.spreads.count == 4)
-        check("Quareia and Mystagogos are placeholders",
-              model.library.deck("quareia")?.status == .placeholder && model.library.deck("mystagogos")?.status == .placeholder)
+        check("4 decks and 8 spreads", model.library.decks.count == 4 && model.library.spreads.count == 8)
+        check("Quareia has 81 cards and Mystagogos is a placeholder",
+              model.library.deck("quareia")?.cards.count == 81 && model.library.deck("mystagogos")?.status == .placeholder)
         check("definitions copied to the store folder", FileManager.default.fileExists(atPath: Store.definitions.appending(path: "yijing.json").path))
 
         // M2: one of each non-divination type, with tags, a page and a link

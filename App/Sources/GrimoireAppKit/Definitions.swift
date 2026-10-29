@@ -7,7 +7,8 @@ public enum DefinitionsFolder {
     /// Copies `bundled` to `destination` when the destination has no
     /// definitions yet, then loads from the destination. Existing files are
     /// never overwritten, so edits survive app updates; files a newer app
-    /// adds (a new spread, the correspondences table) are copied in.
+    /// adds (a new spread, the correspondences table) are copied in, and an
+    /// empty placeholder deck is replaced once the app ships its card list.
     @discardableResult
     public static func install(from bundled: URL, to destination: URL) throws -> DefinitionLibrary {
         let fm = FileManager.default
@@ -30,10 +31,19 @@ public enum DefinitionsFolder {
             guard (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) != true else { continue }
             let rel = String(url.standardizedFileURL.path.dropFirst(base.count)).trimmingCharacters(in: CharacterSet(charactersIn: "/"))
             let target = destination.appendingPathComponent(rel)
-            guard !fm.fileExists(atPath: target.path) else { continue }
+            if fm.fileExists(atPath: target.path) {
+                guard rel.hasPrefix("decks/"), isEmptyPlaceholder(target), !isEmptyPlaceholder(url) else { continue }
+                try fm.removeItem(at: target)
+            }
             try fm.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
             try fm.copyItem(at: url, to: target)
         }
+    }
+
+    /// A deck file still marked placeholder with no cards: nothing in it can be the user's work.
+    static func isEmptyPlaceholder(_ url: URL) -> Bool {
+        guard let data = try? Data(contentsOf: url), let deck = try? JSONDecoder().decode(DeckDefinition.self, from: data) else { return false }
+        return deck.status == .placeholder && deck.cards.isEmpty
     }
 
     /// Writes one deck back as JSON, but only when the whole library still

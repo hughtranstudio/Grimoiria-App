@@ -1,21 +1,1240 @@
 {
   "id": "quareia",
-  "name": "Quareia Deck",
-  "version": 0,
+  "name": "Quareia: The Magician's Deck",
+  "version": 1,
   "system": "oracle",
-  "status": "placeholder",
+  "status": "complete",
   "reversalsAllowed": true,
   "aliases": [
     "quareia",
     "quarea",
     "quaria",
     "korea",
-    "chorea"
+    "chorea",
+    "magician's deck",
+    "magicians deck",
+    "lxxxi"
   ],
   "attributes": [
+    "order",
     "number",
-    "group"
+    "rootPower",
+    "realm",
+    "chapter",
+    "group",
+    "element",
+    "direction",
+    "gender",
+    "page"
   ],
-  "source": "PLACEHOLDER: card list and significations to be generated from Hugh's Quareia deck repository.",
-  "cards": []
+  "source": "LXXXI—Quareia The Magician's Deck (Beanland, Littlejohn, McCarthy), card meanings by Josephine McCarthy, second edition 2017. 'mundane' is the book's Mundane Divination text verbatim; 'magical' is a condensed summary of the book's main card text. 'order' is the book's order (cards carry no printed number except the ten root powers, I–X, in 'number'). 'page' is the deckbook page. The book gives no reversed meanings.",
+  "cards": [
+    {
+      "id": "star-father",
+      "name": "Star Father",
+      "order": 1,
+      "number": 1,
+      "rootPower": true,
+      "realm": "divine",
+      "chapter": "I",
+      "group": "The Divine Realm",
+      "page": 14,
+      "significations": {
+        "mundane": "The very beginning of something before it becomes fully formed, the first step on a new path, the conception, an idea, the new direction, a new phase of something.",
+        "magical": "A new, still unformed potential of Divine power beginning to express itself: the first breath, utterance or spark that seeks a new expression. 'Father' means a power that outputs, not gender. Surrounding cards show how the potential will manifest."
+      }
+    },
+    {
+      "id": "creator-of-time",
+      "name": "Creator of Time",
+      "aliases": [
+        "keeper of time"
+      ],
+      "order": 2,
+      "number": 2,
+      "rootPower": true,
+      "realm": "divine",
+      "chapter": "I",
+      "group": "The Divine Realm",
+      "page": 15,
+      "significations": {
+        "mundane": "Incubation, the formation of boundaries for a new beginning, a line of fate forming, a new fate path that has formed itself, the beginning of a new round of events, being given more time, a new period of time in which to accomplish something.",
+        "magical": "The Divine power that takes the spark into pattern and manifestation by creating time. Something is taking form and a new time line or cycle of fate is being formed for the subject; can also be read literally as time being added to something."
+      }
+    },
+    {
+      "id": "holder-of-light",
+      "name": "Holder of Light",
+      "order": 3,
+      "number": 3,
+      "rootPower": true,
+      "realm": "divine",
+      "chapter": "I",
+      "group": "The Divine Realm",
+      "page": 16,
+      "significations": {
+        "mundane": "Something returning to source after completion, going into hibernation, withdrawing in the deepest sense, completion, hiding one’s light, remaining hidden and safe.",
+        "magical": "The pattern to which light returns after manifestation. Something has withdrawn completely from the inner and outer realms and rejoined its Divine source: complete in the Divine sense, laid to rest, protected, the deepest sanctuary."
+      }
+    },
+    {
+      "id": "archon-and-the-aion",
+      "name": "Archon and the Aion",
+      "aliases": [
+        "archon",
+        "aion",
+        "archon and aion"
+      ],
+      "order": 4,
+      "realm": "divine",
+      "chapter": "I",
+      "group": "The Divine Realm",
+      "page": 17,
+      "significations": {
+        "mundane": "There is a danger ahead, so wait. You are reaching the limit of something at this time, and a temporary barrier is there for your own good; wait and watch. The limit could be physical, mental, energetic, economic, or a limit of distance. Whatever you are doing a reading for, when this card turns up in a prominent or ‘path ahead’ position, the message is that you need to pause and rethink, or at least wait.",
+        "magical": "The two archangelic threshold keepers of Divinity (shield and cup). A dangerous threshold has been reached that must not be crossed yet; the power beyond is too great. Advice: stop and wait."
+      }
+    },
+    {
+      "id": "abyss",
+      "name": "Abyss",
+      "order": 5,
+      "realm": "inner",
+      "chapter": "II",
+      "group": "Abyss and Root Powers",
+      "page": 20,
+      "significations": {
+        "mundane": "A potential for destruction: something destructive can be released if you are not careful. In health readings it can depict pain and sickness that can get out of control. It is a card that tells of ‘reaching rock bottom’ before the dawn finally arrives. If it appears prominently in a reading or at its end, then it can be a warning: in such a case, use divination to look at alternative actions that would change the future path.",
+        "magical": "The highway of power and time running from the Divine through all realms down to the depths of the Underworld (listed in the Inner Realm but given a black Underworld border). In a magical reading: a major, irreversible turning point, the choice to step into the unknown or step back; also openings that let destructive beings surface, or times of danger and disease."
+      }
+    },
+    {
+      "id": "keeper-of-the-abyss",
+      "name": "Keeper of the Abyss",
+      "aliases": [
+        "keeper of abyss"
+      ],
+      "order": 6,
+      "realm": "inner",
+      "chapter": "II",
+      "group": "Abyss and Root Powers",
+      "page": 23,
+      "significations": {
+        "mundane": "This card can appear in mundane divination when the subject of the reading is being protected from stepping forward at the wrong time, when their fate is being protected.",
+        "magical": "An archangelic bridge across the Abyss that keeps everything in its place and mediates future life potentials towards manifestation. Deep formative powers are crossing a threshold; a major crossroads where one must choose wisely; protection or guardianship of the magician on matters of the Abyss."
+      }
+    },
+    {
+      "id": "light-bearer",
+      "name": "Light Bearer",
+      "aliases": [
+        "lightbearer"
+      ],
+      "order": 7,
+      "number": 4,
+      "rootPower": true,
+      "realm": "inner",
+      "chapter": "II",
+      "group": "Abyss and Root Powers",
+      "page": 24,
+      "significations": {
+        "mundane": "Forging ahead with a new path. A new path is being prepared and energized. This card can also indicate a power or person who is a ‘trailblazer,’ or a new beginning coming into formation. It is also a power that guides the soul through the darkness in its search for light.",
+        "magical": "The first root power of the Inner Realm, an archangelic being that forges the path of the Divine Spark into life: the Opener of the Way. A pure essence or original impulse, a new path forged with Divine assistance, light at the end of the tunnel; it opens the way but does not interact with the magician directly."
+      }
+    },
+    {
+      "id": "imprisoner",
+      "name": "Imprisoner",
+      "order": 8,
+      "number": 5,
+      "rootPower": true,
+      "realm": "inner",
+      "chapter": "II",
+      "group": "Abyss and Root Powers",
+      "page": 25,
+      "significations": {
+        "mundane": "Restriction, holding back or being withheld, imprisonment, suppression, the removal of time. Something is stopped from happening.",
+        "magical": "The angelic power of restriction that opposes the Light Bearer: it closes paths, withholds light, slows power so it can take form, and traps beings that should be out of circulation (key word: Strength). Suggests a need to withhold or put something in hibernation, withholding active in magical life, or magical bindings that may need dealing with."
+      }
+    },
+    {
+      "id": "pure-balance",
+      "name": "Pure Balance",
+      "order": 9,
+      "number": 6,
+      "rootPower": true,
+      "realm": "inner",
+      "chapter": "II",
+      "group": "Abyss and Root Powers",
+      "page": 26,
+      "significations": {
+        "mundane": "When this card appears in a mundane reading, it can indicate things coming into balance. It is a card of harmony and success; but the power of balance is often accompanied by heavy responsibilities. It falls to you to maintain this newly-found balance and nurture it.",
+        "magical": "The angel at the fulcrum between Light Bearer and Imprisoner, most identified with root deities. Pure balance or the power of a root deity; shows where deep balance is needed or has been achieved, and warns to tread carefully as such balance is delicate. Difficult cards around it may be part of the balancing. Closely connected to the Keeper of Justice."
+      }
+    },
+    {
+      "id": "grindstone",
+      "name": "Grindstone",
+      "aliases": [
+        "grind stone"
+      ],
+      "order": 10,
+      "number": 7,
+      "rootPower": true,
+      "realm": "inner",
+      "chapter": "II",
+      "group": "Abyss and Root Powers",
+      "page": 29,
+      "significations": {
+        "mundane": "A period of intense work, learning, or development. A hardship you cannot avoid, as it is developing you. Evolution through hard work; evolution through understanding that emotions should not govern you. Developing focus, power, strength, endurance. It can indicate a period of hardship, but it is something that you can cope with if you learn the lessons within the struggle.",
+        "magical": "A lower octave of the Light Bearer, connected with Saturn and the magical sword: boundaries and limitations that push a person to achieve. A period of intense work, necessary hardship or limitation that polishes and develops; a call for self-discipline. Balanced against the Unraveller."
+      }
+    },
+    {
+      "id": "unraveller",
+      "name": "Unraveller",
+      "aliases": [
+        "unraveler"
+      ],
+      "order": 11,
+      "number": 8,
+      "rootPower": true,
+      "realm": "inner",
+      "chapter": "II",
+      "group": "Abyss and Root Powers",
+      "page": 30,
+      "significations": {
+        "mundane": "Loss of discipline, loss of control, self-indulgence, greed, loosening of restrictions, unravelling a knotted situation, relaxing of tight restrictions, something in the early stages of decay and dissolution.",
+        "magical": "Power and substance unchecked: it gives enough rope to hang ourselves to see whether we self-limit. Points to what is out of control or self-indulgent; in a gentler form it loosens and releases what is too tightly bound, but left unchecked it destroys."
+      }
+    },
+    {
+      "id": "threshold-guardian",
+      "name": "Threshold Guardian",
+      "aliases": [
+        "threshold keeper"
+      ],
+      "order": 12,
+      "number": 9,
+      "rootPower": true,
+      "realm": "inner",
+      "chapter": "II",
+      "group": "Abyss and Root Powers",
+      "page": 31,
+      "significations": {
+        "mundane": "This card represents a flow of energy, ideas, and creativity, and sometimes new life, new inspired experiences, and new works.",
+        "magical": "A vast angel bridging the inner worlds and the physical realm; it guards the inner realms and opens imagination, vision and dreams, an angel of alchemy and conception. Heralds a period of creative, imaginative and mental alchemy, a special pregnancy, or a new creative power about to flow into life."
+      }
+    },
+    {
+      "id": "protector-of-souls",
+      "name": "Protector of Souls",
+      "order": 13,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 34,
+      "significations": {
+        "mundane": "A place of safety and shelter. This card tells of being shielded from events, of rest and regeneration, and the spirit seeking solace and quiet. This is the guardianship of the Mother who will tend to you when you truly need her care, offering you protection and solace.",
+        "magical": "A female goddess power (resonant with Isis) who holds souls that need to sleep. The message is 'wait': rest and regenerate before a final step, as moving forward now would be unsafe. A compassionate barrier; she can be turned to in deep exhaustion."
+      }
+    },
+    {
+      "id": "weaver-of-creation",
+      "name": "Weaver of Creation",
+      "aliases": [
+        "weaver"
+      ],
+      "order": 14,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 35,
+      "significations": {
+        "mundane": "This card can represent the creative power, or laying the ground for a new creative project. In a health reading, this card can also show the potential for conception or indicate pregnancy. It is a card of creativity, new projects, and new paths in life being formed. Occasionally it can also literally indicate someone who weaves.",
+        "magical": "The goddess (Neith, Ananke) who weaves the threads of power into the patterns of the physical world. Complex dynamics coming together in formation; the creator of something; a massive project, a child or a long-lasting lodge; a long-term pattern forming unseen. Its position shows what kind of creation."
+      }
+    },
+    {
+      "id": "hidden-knowledge",
+      "name": "Hidden Knowledge",
+      "order": 15,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 36,
+      "significations": {
+        "mundane": "When this card appears in a mundane reading, it can indicate an unknown element that needs to be there but remains hidden. It can indicate something you are not seeing, or a need to trust, or that the true knowledge of something is hidden deep within you.",
+        "magical": "The vast angelic filter through which Divine consciousness passes into form. Heralds a deep mystical revelation, quiet or sudden; or something that must remain a mystery; a hidden element that cannot yet be understood but is active."
+      }
+    },
+    {
+      "id": "inner-temple",
+      "name": "Inner Temple",
+      "order": 16,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 37,
+      "significations": {
+        "mundane": "There are deep inner dynamics at work even in a mundane situation. It can mean that inner voices of intuition are to be followed, that the person or situation is being guided by something greater than themselves. It signals that outer life events are being overseen by the gods, and that there is a hidden, deeper dynamic at work.",
+        "magical": "All inner temples and the place of deep inner contacts, inner priesthoods and ancient deities. The powers and contacts of the inner temples are active in the magician's work; can mark the beginning of work with an ancient deity and a move from everyday magic into deeper mystical magic."
+      }
+    },
+    {
+      "id": "inner-librarian",
+      "name": "Inner Librarian",
+      "aliases": [
+        "librarian",
+        "inner library"
+      ],
+      "order": 17,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 38,
+      "significations": {
+        "mundane": "Someone of integrity who will guide and teach you. A new period of learning. Listen to your heart and instincts, as a power is guiding you. This card can also appear in mundane readings to indicate formal study, going back to school, or learning new skills.",
+        "magical": "The keeper of human knowledge who resides in the Inner Library. A call to work in the Inner Library; a new phase of learning with inner guidance; intensive study; a new teacher coming."
+      }
+    },
+    {
+      "id": "inner-companion",
+      "name": "Inner Companion",
+      "aliases": [
+        "companion"
+      ],
+      "order": 18,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 39,
+      "significations": {
+        "mundane": "You are not alone: a power greater than you is watching over you and guiding you.",
+        "magical": "An inner contact (usually angelic, known in Kabbalah as Sandalphon) who guides seekers granted access to the Desert. The subject is part of a larger developmental process and inner guidance is at their side; it will not do things for you, but helps you learn."
+      }
+    },
+    {
+      "id": "guardians-of-the-inner-desert",
+      "name": "Guardians of the Inner Desert",
+      "aliases": [
+        "desert guardians",
+        "desert guardian",
+        "guardians"
+      ],
+      "order": 19,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 40,
+      "significations": {
+        "mundane": "You have reached a limit, or your way ahead is being blocked for good reason, as what lies beyond the guardians is dangerous. When this card appears in a mundane reading, pay attention to what in your life is being blocked. Do not try to move beyond this block, as it is there for your own good. It is a security barrier, a protective wall.",
+        "magical": "The guardian that blocks passage to the deeper inner worlds until the seeker is ready. A warning to stop and think: danger ahead, tread slowly. Depending on position, can also show the magician is protected by inner guardians."
+      }
+    },
+    {
+      "id": "utterer",
+      "name": "Utterer",
+      "order": 20,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 41,
+      "significations": {
+        "mundane": "Important news or information is coming; or it can indicate ‘important speech’ such as teaching, lecturing, or writing, or otherwise conveying information that is important.",
+        "magical": "The angel who mediates utterance, whispering Divine words to humanity and carrying human words to the gods. 'Pay attention': something is being uttered that affects you; an important message may be coming; guard your words."
+      }
+    },
+    {
+      "id": "keeper-of-justice",
+      "name": "Keeper of Justice",
+      "aliases": [
+        "justice"
+      ],
+      "order": 21,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 42,
+      "significations": {
+        "mundane": "In a mundane reading, the appearance of this card can mean balance, the restoration of equilibrium, or literally Justice. It can represent the law, law courts, or the dispensing of Justice.",
+        "magical": "The blindfolded angel who is the fulcrum of the scales of Ma'at. Divine justice as cause and effect, not morality: a rebalancing of the scales or a period of balance unfolding or on its way."
+      }
+    },
+    {
+      "id": "chariot",
+      "name": "Chariot",
+      "order": 22,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 43,
+      "significations": {
+        "mundane": "In a mundane reading, the Chariot can appear when one will go on an important journey, as the Chariot is connected to the Wheel of Fate. It can also literally indicate a ‘car’ or mode of transport.",
+        "magical": "Archangelic beings, connected with Metatron and the Wheels of Fate, that lift the human to the threshold of Divinity. Mundanely travel, inner or outer; magically, an imminent mystical experience of ascent into the Divine realm."
+      }
+    },
+    {
+      "id": "wheel-of-fate",
+      "name": "Wheel of Fate",
+      "aliases": [
+        "wheel"
+      ],
+      "order": 23,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 44,
+      "significations": {
+        "mundane": "Change is coming. The Wheel heralds change, for good or bad. Whatever the Wheel brings will enable a new path to be trodden, a new phase in one’s life to unfold.",
+        "magical": "The power that burns up outmoded patterns and gives change its momentum. Heralds a major change in the area shown by its position; do not fear or fight it. Read with the Fates if they appear."
+      }
+    },
+    {
+      "id": "fate-giver",
+      "name": "Fate Giver",
+      "order": 24,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 45,
+      "significations": {
+        "mundane": "A new cycle begins, be it a new path in life or a major change that has been triggered. New directions, a major new phase of life.",
+        "magical": "The first of the three Fates: she fixes the time and place of conception and birth and sets new lives, nations and patterns in motion. A starting point has been set and a fate pattern is active; the original potential or purpose of the subject; a new cycle or life."
+      }
+    },
+    {
+      "id": "fate-holder",
+      "name": "Fate Holder",
+      "aliases": [
+        "measurer"
+      ],
+      "order": 25,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 46,
+      "significations": {
+        "mundane": "A cycle is in progress, things are being held in place, all is well.",
+        "magical": "The Measurer, who sets a lifespan and keeps fate events in time. Where fate is being measured and held; a period within which something should be tackled; a protected lifespan; work still in progress. A card of continuation."
+      }
+    },
+    {
+      "id": "fate-taker",
+      "name": "Fate Taker",
+      "order": 26,
+      "realm": "inner",
+      "chapter": "III",
+      "group": "Other Powers and Contacts",
+      "page": 47,
+      "significations": {
+        "mundane": "The end of something, completion, clearing the way for something new.",
+        "magical": "The goddess who cuts the thread of fate. The end of a life, way of life, organization or cycle that will not return. In an inner or distant-future position the ending is set but not yet manifest; in a physical position it shows where the ending expresses."
+      }
+    },
+    {
+      "id": "mother-earth",
+      "name": "Mother Earth",
+      "order": 27,
+      "number": 10,
+      "rootPower": true,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 50,
+      "significations": {
+        "mundane": "This is a success card, a completion card. It can also indicate a literal land. How you read it depends on the question: if you were reading about moving house and you wanted to look at a prospective place, then the appearance of this card would indicate that you have found the right place for you.",
+        "magical": "The tenth root power: the land and the vessel of creation (Malkuth). A land, natural place or our relationship with it; the land may be asking for help. Often an 'all is well', 'yes' or 'job done' completion card."
+      }
+    },
+    {
+      "id": "sol",
+      "name": "Sol",
+      "aliases": [
+        "sun"
+      ],
+      "order": 28,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 51,
+      "significations": {
+        "mundane": "Success, energy, heat, and evolution. Where this card falls, it brings with it tales of victory, large reserves of energy, and visible success.",
+        "magical": "The raw, vast elemental and deity power of the sun. Great success or access to a vast reserve of power; in health readings, burning or too much fire in one area."
+      }
+    },
+    {
+      "id": "luna",
+      "name": "Luna",
+      "aliases": [
+        "moon"
+      ],
+      "order": 29,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 52,
+      "significations": {
+        "mundane": "In a mundane reading this card can indicate that you are not seeing the full picture, that there is a hidden element, or that something that has not yet developed enough for you to see it clearly. It can indicate foggy thinking, being overly dramatic, being lied to, and being untruthful with yourself.",
+        "magical": "The changeable power of the moon (a lower octave of the Threshold Guardian): psychic sight, tides, fertility, shadows. Casts confusion, depth and illusion over neighbouring cards: you are not seeing the whole story. Can warn of losing one's sanity by pushing the mind too far; brings unpredictability and inspiration."
+      }
+    },
+    {
+      "id": "place-of-healing",
+      "name": "Place of Healing",
+      "order": 30,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 53,
+      "significations": {
+        "mundane": "When this card appears in a mundane reading, it can indicate a mental or physical healing process, or simply that the worst is over. The subject of the reading is in a ‘healing place’ either literally or figuratively.",
+        "magical": "The healing spring and the domain of healing spirits. A body healing, rest and regeneration after hard work, a sanctuary; for land readings, possibly a literal healing spring; in magical work, the need to work with water for healing."
+      }
+    },
+    {
+      "id": "inspiration",
+      "name": "Inspiration",
+      "aliases": [
+        "waterfall"
+      ],
+      "order": 31,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 54,
+      "significations": {
+        "mundane": "This card is one of coolness, water, inspiration, creativity, and a move towards health. In a health reading it is the flow of fluids in the body that heal and regenerate. It is the life-giving water, the holy water, and the flow of energy that is productive, healthy, and creative.",
+        "magical": "The waterfall of inspiration upheld by two angels: a creative force from a deeper well than one's own mind, to be mediated through art, music, writing and so on. Also the 'cold refreshment' that cools destructive fire. A very good card."
+      }
+    },
+    {
+      "id": "temple-of-ancestors",
+      "name": "Temple of Ancestors",
+      "aliases": [
+        "ancestral temple"
+      ],
+      "order": 32,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 55,
+      "significations": {
+        "mundane": "In a mundane reading this card can point to traditional skills, old ways and wisdoms, and family ancestors keeping an eye on you and trying to help. It can also represent a very old or ancient organization whose outer expression has faded in the minds of most people, but is still active nevertheless.",
+        "magical": "A stone circle beside the river of ancestors: the collective knowledge of those who went before, an outer version of the Inner Library. Access to ancestral wisdom where it falls; an ancestor trying to teach or help, which may help or hinder."
+      }
+    },
+    {
+      "id": "magical-temple",
+      "name": "Magical Temple",
+      "order": 33,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 56,
+      "significations": {
+        "mundane": "In a mundane reading, this card can represent an organization with skills that affect the person doing the reading. For example, it can represent a hospital where skills are used in a specific way, or a government organization that has an effect or influence on the reader. It is a card of organized structure and skill, like a university, government, medical organization, and so forth.",
+        "magical": "The outer court of magic: training, practice, a magical community, form and structure. Well placed, a structure that lets magic flow; badly placed, clinging to outdated forms, a glamorous cage. Can also mean the inner structure of a magical system."
+      }
+    },
+    {
+      "id": "river-of-dreams",
+      "name": "River of Dreams",
+      "order": 34,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 57,
+      "significations": {
+        "mundane": "This card represents the dream state, sleep, meditations, and deep creative expression. If it appears in a reading, then depending on the question and context it may indicate a need to spend more time sleeping, or that you should keep a dream diary to spot the messages your deeper self is trying to tell you.",
+        "magical": "The inner river from the Underworld carrying ancient memory, where dream contact happens. Working magically in sleep, a need for more sleep for contact or prophetic sight, a need for visionary work or for working in the rivers of the Underworld."
+      }
+    },
+    {
+      "id": "gate-of-the-past",
+      "name": "Gate of the Past",
+      "aliases": [
+        "gate"
+      ],
+      "order": 35,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 58,
+      "significations": {
+        "mundane": "Something is moving into the past, or something from the past is having an effect on the present and potential future. If this card appears in a position which may be difficult, then it can be a clue that the resolution to the problem lies with the past: either bringing something to a conclusion, or letting the past go.",
+        "magical": "A doorway, not a being: something is now in the past, or the past is affecting the present or future. In a difficult position, hanging on to the past; for magicians, possibly a need to work in the Underworld."
+      }
+    },
+    {
+      "id": "home-and-hearth",
+      "name": "Home and Hearth",
+      "aliases": [
+        "hearth"
+      ],
+      "order": 36,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 59,
+      "significations": {
+        "mundane": "This is the card of home and family, and will appear when such a thing is important in your life at that time. It can also, depending on layout and position, indicate that something important is connected with your home or family. It can be literally your house, your family, or where you feel most at home. It can also point to more time being spent at home on mundane things, rest, and recuperation.",
+        "magical": "Home, family, domesticity and one's tribe. A period of rest, or the group that feels like family; also a warning against becoming too comfortable and ceasing the quest."
+      }
+    },
+    {
+      "id": "path-of-hercules",
+      "name": "Path of Hercules",
+      "aliases": [
+        "hercules"
+      ],
+      "order": 37,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 60,
+      "significations": {
+        "mundane": "The Path of Hercules shows in mundane readings when a new path is opening up, or when a path ahead has been cleared, ready for the person to walk it. It shows new potentials, and literally the way ahead. It is a positive card, and can show the light at the end of the tunnel for people who have been struggling.",
+        "magical": "The way ahead into the short-term future, heading magically south. The best way forward, or a new path that leads to new cycles of fate; full of new potential and the path to adepthood."
+      }
+    },
+    {
+      "id": "challenge-of-the-gods",
+      "name": "Challenge of the Gods",
+      "order": 38,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 61,
+      "significations": {
+        "mundane": "In mundane readings this card can mean that adversity lies ahead, but it promises a good conclusion. It is the struggle before success, the light before the dawn. It is the challenge of life that strengthens you. If the card appears in a health reading, then the person needs a close eye keeping on them: some struggles are worth it, and some are not. If this card appears and other options look worse, then the path indicated by this card will be a struggle, but ultimately successful.",
+        "magical": "A 'wild card': a fate path moved directly by deities, often unseen. A positive but tough card: trials and struggle that make the magician grow, fated and not faced alone."
+      }
+    },
+    {
+      "id": "inner-sanctum",
+      "name": "Inner Sanctum",
+      "aliases": [
+        "sanctum"
+      ],
+      "order": 39,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 62,
+      "significations": {
+        "mundane": "If this card appears in a mundane reading, it may indicate a need to turn within and be still, a need to take time out and rest, or a special safe place.",
+        "magical": "The vessel holding the pure Divine spark: a truly sacred place, or the stillness within. A sacred place or a need to go to one for refuge and communion; for a person, a need to withdraw and meditate; Divine protection that may isolate."
+      }
+    },
+    {
+      "id": "resources",
+      "name": "Resources",
+      "order": 40,
+      "realm": "physical",
+      "chapter": "IV",
+      "group": "Physical Structures and Natural Features",
+      "page": 63,
+      "significations": {
+        "mundane": "Depending on the position of the card, it can indicate that money, food, energy, or some other kind of help is available for you to achieve something. If it is in a withheld position, then it is warning you that your resources are low or less available than you may currently think, and that caution is advised.",
+        "magical": "Personal inner and outer resources (health, vital force, wealth, inner sight, fertility) within one's fate. Shows where resources are being used; in a difficult position, resources used up for a cycle; in a future position, resources coming; in a withheld position, not fully resourced."
+      }
+    },
+    {
+      "id": "spirit-guide",
+      "name": "Spirit Guide",
+      "aliases": [
+        "white horse"
+      ],
+      "order": 41,
+      "realm": "physical",
+      "chapter": "V",
+      "group": "Beings and Powers",
+      "page": 66,
+      "significations": {
+        "mundane": "This card, in a mundane reading, shows when a guide or guardian is active in the life of someone or in a place. It can represent advice given in dreams, or a recently dead friend or family member who is keeping an eye on you to help you. Or it can indicate that a nature spirit is watching over you.",
+        "magical": "An ancient inner contact appearing as a white horse that guides and carries humans through the inner worlds and the land's inner landscape. A spirit willing to work with you as contact, guide or guardian, or a new round of learning in another inner realm."
+      }
+    },
+    {
+      "id": "goblin-queen",
+      "name": "Goblin Queen",
+      "order": 42,
+      "realm": "physical",
+      "chapter": "V",
+      "group": "Beings and Powers",
+      "page": 67,
+      "significations": {
+        "mundane": "A woman who is more powerful than she appears, who is complex, skilled, and not above destroying someone or something to protect what she holds precious. This card represents a woman who is often not beholden to social or cultural norms and who will often confuse or confront people, but who is always true to the rule of nature. She is a human embodiment of nature in full tooth and claw.",
+        "magical": "Tribal faerie beings or established lines of land beings: territory, generations of control, confident power. A powerful faerie or land contact involved in the situation; in a dangerous reading, offence caused that needs amends. Can also be an ancient female deity power or a woman carrying it."
+      }
+    },
+    {
+      "id": "faerie-king",
+      "name": "Faerie King",
+      "aliases": [
+        "fairy king"
+      ],
+      "order": 43,
+      "realm": "physical",
+      "chapter": "V",
+      "group": "Beings and Powers",
+      "page": 70,
+      "significations": {
+        "mundane": "Someone who is unreliable, who can cause trouble, or who suffers from mental instability. It can also indicate a period of unease or unbalance in the mental or physical health of the subject.",
+        "magical": "The trickster male aspect of faerie consciousness, spirits of forest, valley and moor. Faerie interference in human life, or a faerie being willing to work with the magician (tread carefully); the forces of the land influencing you."
+      }
+    },
+    {
+      "id": "blood-ancestor",
+      "name": "Blood Ancestor",
+      "order": 44,
+      "realm": "physical",
+      "chapter": "V",
+      "group": "Beings and Powers",
+      "page": 71,
+      "significations": {
+        "mundane": "Inherited dynamics, skills, or genetics.",
+        "magical": "The primal ancestor and the ancient Sleepers who stay in the land and dream the future. An ancient ancestor active in the land or a distant blood ancestor working around the magician, usually to protect and guide, sometimes to interfere; inherited dynamics from ancestral or magical lineage."
+      }
+    },
+    {
+      "id": "ghost",
+      "name": "Ghost",
+      "order": 45,
+      "realm": "physical",
+      "chapter": "V",
+      "group": "Beings and Powers",
+      "page": 72,
+      "significations": {
+        "mundane": "Someone is not as they seem, or some hidden person in your life is affecting you from the shadows. It can also literally mean a haunting.",
+        "magical": "The dead who have not moved on and cling to the living. Literally a ghost, but more often illusions, beings masquerading as something they are not, or not seeing someone as they truly are (Luna is our own illusion; Ghost is others'). Step back and reassess."
+      }
+    },
+    {
+      "id": "parasite",
+      "name": "Parasite",
+      "order": 46,
+      "realm": "physical",
+      "chapter": "V",
+      "group": "Beings and Powers",
+      "page": 73,
+      "significations": {
+        "mundane": "This card can be a health warning: something may be draining you. Or someone may be using you to get something they want. It can indicate ‘hangers on,’ people who profess to be your friend but only wish to take from you; or it can indicate people or places that drain you. Such parasitical situations are not dangerous, but they can be exhausting and time consuming to deal with.",
+        "magical": "Beings that feed on energy and emotion and push people to out-of-character behaviour; also parasitic illness or an energy-draining person. Something is feeding off you or keeping a food source going; identify the emotion and starve it; a place may need cleaning."
+      }
+    },
+    {
+      "id": "premonition",
+      "name": "Premonition",
+      "aliases": [
+        "bean sidhe",
+        "banshee",
+        "washer by the ford"
+      ],
+      "order": 47,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 76,
+      "significations": {
+        "mundane": "Something potentially unpleasant, some life situation, event, or illness is on the horizon, and needs to be identified and dealt with to avoid it. The card can also indicate a person who has the ‘second sight,’ who can see future events in flashes—usually disastrous events. In general, this is a warning card representing a threat that can be avoided if you use your instincts and common sense.",
+        "magical": "The Bean-sídhe, the Washer by the Ford. A warning of a potential disaster that can be averted; its position shows the source. Also unbalanced workings, looming illness, depression, or overwork that needs cutting back."
+      }
+    },
+    {
+      "id": "glamour",
+      "name": "Glamour",
+      "order": 48,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 77,
+      "significations": {
+        "mundane": "When this card appears, you are being fooled by something or someone, or you are fooling yourself. By being taken in by a glamour, you are being distracted from seeing the reality of some situation, or your focus is being diverted away from where it needs to be.",
+        "magical": "Being seduced by what is not real and has no power content: grades, toys, costumes, self-importance. You are fooling yourself or being fooled; lies, illusions, distraction from what matters. Its position shows the type of glamour."
+      }
+    },
+    {
+      "id": "temptation",
+      "name": "Temptation",
+      "order": 49,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 78,
+      "significations": {
+        "mundane": "Similar to the magical meanings of this card, the mundane meaning highlights a weakness in the person or situation being read about. This could be an emotional, physical, or energetic weakness, or even simply making a bad decision.",
+        "magical": "A weakness that needs working on; its position shows the type of temptation and surrounding cards the outcome of not tackling it. Can also be a health weakness or a weak point in a magical pattern."
+      }
+    },
+    {
+      "id": "scapegoat",
+      "name": "Scapegoat",
+      "order": 50,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 79,
+      "significations": {
+        "mundane": "Being scapegoated in a situation, or carrying burden or blame. It can also show the positive carrying of burdens to relieve the sufferings of others. The context will indicate whether this card should be interpreted positively or negatively.",
+        "magical": "Shifting the consequences of an action onto another, consciously or not; magical scapegoating; carrying a burden that is not yours. Also natural load-sharing, energy taken by a loved one or a magical pattern, which resolves in time."
+      }
+    },
+    {
+      "id": "disease",
+      "name": "Disease",
+      "aliases": [
+        "sickness",
+        "illness"
+      ],
+      "order": 51,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 80,
+      "significations": {
+        "mundane": "When this card appears, it can indicate a period of sickness, or warn that a sickness is coming. Most often it indicates minor illnesses of short duration, and warns you to look after yourself and let your body heal.",
+        "magical": "A conscious destructive power that brings disease where there is imbalance. May simply mean illness that passes; in a powerful position with destructive cards, reassess how you live and work and get medical care. Can indicate the long-term 'magical disease' that forces self-limitation."
+      }
+    },
+    {
+      "id": "magical-attack",
+      "name": "Magical Attack",
+      "aliases": [
+        "attack"
+      ],
+      "order": 52,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 81,
+      "significations": {
+        "mundane": "Hostilities, heated arguments, and attacks that could be physical emotional or energetic. Use yes/no layouts (Tree of Life is a good one, featured in the layouts chapter) to pinpoint the details of how the attack will affect you and what is the best course of action to take.",
+        "magical": "A magical attack on a person, place or group, or hostility from nature spirits or deities. Warns against counter-attack (it keeps the line open and feeds parasites); remove the magic each time and ignore its source. In health, inflammation or an immune fight."
+      }
+    },
+    {
+      "id": "giver-of-gifts",
+      "name": "Giver of Gifts",
+      "aliases": [
+        "gift giver",
+        "gifts"
+      ],
+      "order": 53,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 84,
+      "significations": {
+        "mundane": "The giving or receiving of what is needed. This can be resources like food or money, or property, or a gift that makes a difference to your life. In a health reading it can also represent necessary medicine: being given what you need in order to get better.",
+        "magical": "A minor card of giving and receiving, and of balancing needs (not wants). You will receive what you need, or should give a gift or tend to a being, deity or person."
+      }
+    },
+    {
+      "id": "bailiff",
+      "name": "Bailiff",
+      "order": 54,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 85,
+      "significations": {
+        "mundane": "Paying dues, paying fines, necessary or unavoidable loss.",
+        "magical": "The opposite of the Giver of Gifts: what is due is taken. Loss, dues, theft; usually loss that restores balance; a fate pattern taken away. In health readings with Death or Bridge of Death, reassess treatment."
+      }
+    },
+    {
+      "id": "wise-teacher",
+      "name": "Wise Teacher",
+      "aliases": [
+        "teacher"
+      ],
+      "order": 55,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 86,
+      "significations": {
+        "mundane": "An older teacher, or wisdom that comes with age. It can also indicate an elder in a family or group.",
+        "magical": "A wise and honourable teacher, helper and friend, often in unexpected form. Someone near the subject is a potential guide; a teacher in general; old age or maturing; your own wisdom gained from experience."
+      }
+    },
+    {
+      "id": "fellowship",
+      "name": "Fellowship",
+      "order": 56,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 87,
+      "significations": {
+        "mundane": "When this card appears in a mundane reading, it can indicate friends and family who are quietly supporting you or watching over you. It shows friendships, companions, family, and a group of like-minded people with your best interests at heart. If this card is badly placed, then it could indicate a group of people coming together to harm or interfere with you in some way. Read this card in context.",
+        "magical": "A collaborative group of like-minded people, perhaps scattered but connected through the stream of magic, or an inner fellowship of contacts. Badly placed, a group working against you."
+      }
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "order": 57,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 88,
+      "significations": {
+        "mundane": "Letters, telephone calls, communication of importance, learning, writing, study. If this card appears in a mundane reading, then it can herald an important communication that needs your full attention—often one that is subtle and easily missed. The card’s appearance tells you to pay attention to communications around you, or that some form of communication around you is of greater importance than it first appears to be.",
+        "magical": "Writing, transcription of knowledge, record keeping. A need to write, study and record; a scribe; occasionally communication from inner contacts (especially with the Oracle)."
+      }
+    },
+    {
+      "id": "seclusion",
+      "name": "Seclusion",
+      "order": 58,
+      "realm": "physical",
+      "chapter": "VI",
+      "group": "Powers and Dynamics That Flow Through Humanity",
+      "page": 89,
+      "significations": {
+        "mundane": "A need for seclusion, healing, withdrawal, and introspection.",
+        "magical": "You need to withdraw, wait, take time out and rest; stay away from the bustle of life, sometimes until a disruptive energy recedes."
+      }
+    },
+    {
+      "id": "limiter",
+      "name": "Limiter",
+      "aliases": [
+        "sword"
+      ],
+      "order": 59,
+      "realm": "physical",
+      "chapter": "VII",
+      "group": "The Elemental Magical Tools",
+      "element": "air",
+      "direction": "east",
+      "page": 92,
+      "significations": {
+        "mundane": "Limitation, suppression, withholding, slowing something down. Perhaps natural limitation in reaction to something, such as a limb being limited because of injury or illness, or a life path being limited. This may be happening for the person’s own good, or it may be holding them back unnecessarily: the card has to be read in context of the question and layout.",
+        "magical": "The magical sword, a lower octave of the Grindstone: air, east, utterance. Guarding, limiting, boundaries; a need to contain or hold something back; hostile limiting utterances in an attack reading; something not flowing."
+      }
+    },
+    {
+      "id": "staff-of-the-gods",
+      "name": "Staff of the Gods",
+      "aliases": [
+        "staff",
+        "wand"
+      ],
+      "order": 60,
+      "realm": "physical",
+      "chapter": "VII",
+      "group": "The Elemental Magical Tools",
+      "element": "fire",
+      "direction": "south",
+      "page": 93,
+      "significations": {
+        "mundane": "A lot of fire power flowing into a situation. Fate has been triggered strongly. There is need to take a firm but calm stance. Power, action, an opening of the future path ahead.",
+        "magical": "The passive magical staff or wand, upheld but not wielded: fire, south, potential, the future. The gods are working with the magician to open a future way: 'you do your bit, we do ours'. Badly placed, too much fire power; in an Underworld position, power being taken away."
+      }
+    },
+    {
+      "id": "regenerator",
+      "name": "Regenerator",
+      "aliases": [
+        "vessel",
+        "cauldron"
+      ],
+      "order": 61,
+      "realm": "physical",
+      "chapter": "VII",
+      "group": "The Elemental Magical Tools",
+      "element": "water",
+      "direction": "west",
+      "page": 94,
+      "significations": {
+        "mundane": "Health, energy, renewal, and regeneration are the key words to be applied to a person, place, or situation. It marks the end of struggle and the beginning of growth, the spring at the end of a long winter. It is the magical cauldron of regeneration that gifts life, health, and happiness.",
+        "magical": "The magical vessel that dispenses regeneration: water, west, completion. Renewal, growth, rebirth; the end of a long period of illness, stress or burden."
+      }
+    },
+    {
+      "id": "foundation",
+      "name": "Foundation",
+      "order": 62,
+      "realm": "physical",
+      "chapter": "VII",
+      "group": "The Elemental Magical Tools",
+      "element": "earth",
+      "direction": "north",
+      "page": 95,
+      "significations": {
+        "mundane": "The beginning of a long term project, literally the ‘founding’ of something. The foundations of a building, the source of a tribe, the root of a mountain, a patch of land that is a focal point for something. In a personal or health reading, it can show where the strength of a person or situation comes from, or that someone is moving to a more stable phase in their lives. Its key words are: anchor, stability, source, roots, and settlement.",
+        "magical": "The earth power we stand on, rooted in the Underworld and the past: earth magic, land spirits, rock and stone as shield, container, anchor or guardian. Something with deep roots in the past; the foundation of something new."
+      }
+    },
+    {
+      "id": "hierophant",
+      "name": "Hierophant",
+      "order": 63,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "page": 98,
+      "significations": {
+        "mundane": "A religious leader, senior teacher, or professor.",
+        "magical": "The human bridge between outer and inner worlds who guides others into the Mysteries, beyond any one religion or system. Such a person or a powerful human inner contact drawing near; a period of major development; leaving comfortable structures for service and teaching."
+      }
+    },
+    {
+      "id": "union",
+      "name": "Union",
+      "order": 64,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "page": 99,
+      "significations": {
+        "mundane": "Partnership, union, marriage, contracts, agreements.",
+        "magical": "Union between two people (bodies, minds, souls), relationships, a magical partnership, an agreement towards a mutual goal, or two powers working together."
+      }
+    },
+    {
+      "id": "child",
+      "name": "Child",
+      "order": 65,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "page": 100,
+      "significations": {
+        "mundane": "A child, youthful energy, a new project.",
+        "magical": "A literal child coming into the magician's orbit, or an adult lacking experience; also youthful energy, a new lease of life, or something new that will grow if nurtured."
+      }
+    },
+    {
+      "id": "elder",
+      "name": "Elder",
+      "order": 66,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "page": 101,
+      "significations": {
+        "mundane": "An elder or elderly person; the wear and tear of age.",
+        "magical": "An old person or old soul influencing the situation, or your own deep wisdom. In health, ageing; in fate readings, a long life and the responsibilities of age."
+      }
+    },
+    {
+      "id": "idiot",
+      "name": "Idiot",
+      "aliases": [
+        "fool"
+      ],
+      "order": 67,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "page": 102,
+      "significations": {
+        "mundane": "The Fool, foolishness, emptiness, nothing. Something is no longer necessary or of any consequence. Your reading is unnecessary, or the question itself is foolish. This is not a frivolous card: the Idiot warns that you are walking down a path of foolishness that can lead to destructive or difficult outcomes.",
+        "magical": "Total stupidity and emptiness: a warning of foolishness that can lead to disaster. Can also stand for 'no', 'zero', 'nothing' or 'empty'."
+      }
+    },
+    {
+      "id": "occultist",
+      "name": "Occultist",
+      "order": 68,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "male",
+      "page": 106,
+      "significations": {
+        "mundane": "This card can represent someone who is manipulative, who holds some authority but is not particularly wise or mature. It can also represent manipulation, power games, passive-aggressive behaviour, or simply a wish to try and control a situation. It can be a warning to watch your behaviour carefully, or to watch carefully someone in your life who could be manipulating situations behind the scenes. It is not always a ‘bad’ card; it may simply represent someone trying to find their feet in the world who has not yet learned maturity. It can also represent bureaucratic, senseless red tape that needs to be dealt with, or people trying to play power games with you. Do not be taken in by such people: be firm, honest, and allow them a chance to show the better side of their personality.",
+        "magical": "A magician (male or female) working through control and manipulation, often immature and lacking ethics: an early stage of development. May indicate that stage, or a struggle with such a magician."
+      }
+    },
+    {
+      "id": "leader",
+      "name": "Leader",
+      "order": 69,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "male",
+      "page": 107,
+      "significations": {
+        "mundane": "This card can represent an authority figure in the reader’s life, one with some power over the reader, or one who can offer true guidance, help, and resources if necessary. The person could be male or female, and it can also represent a quality within the reader that they need to express wisely.",
+        "magical": "A mature adept who rides the White Horse and carries the Limiter, balancing magical and material power in service to land and people. An adept (male or female) carrying great responsibility; a leader."
+      }
+    },
+    {
+      "id": "man-of-nature",
+      "name": "Man of Nature",
+      "order": 70,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "male",
+      "page": 108,
+      "significations": {
+        "mundane": "This card can represent a man close to nature or working on the land or with animals. It can also appear when the reader needs to connect better with nature and understand it better. It is the card that represents our deep connection to the land an animals around us, and reminds us that we are a part of all that, and should not forget it.",
+        "magical": "A magical stage close to the wild, rejecting civilization to tend land, animals and spirits. A healthy period of learning from nature and connecting with land spirits, or a deluded 'wild path' of romantic fantasy and lack of control."
+      }
+    },
+    {
+      "id": "mystic",
+      "name": "Mystic",
+      "order": 71,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "male",
+      "page": 111,
+      "significations": {
+        "mundane": "A thoughtful person who is a bit on the introverted side. They are best when left alone to get on with their life, and they are often searching for something in their life. It can appear when there is a need to withdraw and search deep within, to introspect, to turn away from the noise of daily life, and to search out what is meaningful.",
+        "magical": "An adept who chooses lone mystical exploration over leadership, withdrawn and carrying world burdens. A time of introspection, meditation and deep inner work, often lonely; a thoughtful, psychic, introverted person."
+      }
+    },
+    {
+      "id": "male-warrior",
+      "name": "Male Warrior",
+      "order": 72,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "male",
+      "page": 112,
+      "significations": {
+        "mundane": "A fiery illness, a heated argument, a riot, destructive anger about to be unleashed.",
+        "magical": "Bloodlust: a raw destructive power that cannot be reasoned with. A warning of being destroyed by such a person or of that rage rising in oneself; temper anger and revenge. Also destroying fire, fever, inflammation or war."
+      }
+    },
+    {
+      "id": "oracle",
+      "name": "Oracle",
+      "order": 73,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "female",
+      "page": 116,
+      "significations": {
+        "mundane": "This card can represent a psychic person in the reading. It can also represent a message that the person needs to hear.",
+        "magical": "A female occultist (or intuitive man) relying strongly on psychic ability, often early in magic. Also an inner contact prompting you through divination: you need to ask different questions; recurring appearances mean a contact is trying to reach you."
+      }
+    },
+    {
+      "id": "priestess-magician",
+      "name": "Priestess Magician",
+      "aliases": [
+        "priestess"
+      ],
+      "order": 74,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "female",
+      "page": 117,
+      "significations": {
+        "mundane": "This card can represent a strong and powerful woman, or a man with powerful feminine qualities, or it can represent that aspect of yourself. If it appears in your reading, then it can either a be a warning to ensure that such a personality is not getting out of control, or it can indicate that there is a need for that quality in your life path or actions.",
+        "magical": "A female adept expressing her skill through a male-orientated system, at risk of being typecast; a warning to stay true to her own power. Also a natural leader not yet stepped into the Hierophant's role."
+      }
+    },
+    {
+      "id": "female-warrior",
+      "name": "Female Warrior",
+      "order": 75,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "female",
+      "page": 118,
+      "significations": {
+        "mundane": "This card appears when one needs to fight, whether this is against an illness or an injustice, or to defend those who are defenceless. When she appears in a reading, pay close attention to where she appears: she could represent someone in the situation, a goddess power drawing close to assist you, or an aspect of yourself that needs to come out and fight.",
+        "magical": "Regenerative destruction, the light out of darkness, the priestess who guards the Underworld, held in check by the Limiter. Best when guarding and defending; a time of struggle where defensive fighting within one's boundaries is needed."
+      }
+    },
+    {
+      "id": "healer",
+      "name": "Healer",
+      "order": 76,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "female",
+      "page": 119,
+      "significations": {
+        "mundane": "This card appears when a person has started or is about to step into a healing process. She brings protection, healing, love, regeneration, and a deeper understanding of which emotional paths are best to tread.",
+        "magical": "A female natural magician of water whose true skills are healing and regeneration; also a goddess of the waters (a form of Yemaya). A person, power or emotional state; appears when healing is triggered."
+      }
+    },
+    {
+      "id": "shamaness",
+      "name": "Shamaness",
+      "order": 77,
+      "realm": "physical",
+      "chapter": "VIII",
+      "group": "The Cards of Humanity",
+      "gender": "female",
+      "page": 120,
+      "significations": {
+        "mundane": "This card can represent a woman who is a force of nature, beholden to no one, and who is in touch with her natural surroundings. It can also represent the spirit of the wild nature woman trapped in a man’s body, or a man with both male and female powers deeply embedded within them who has fully integrated them. The Shamaness is the wild woman who cannot easily be understood, who lives by the rules of nature rather than those of any specific culture.",
+        "magical": "The female nature magician who listens to land, winds, creatures and faery beings, often an older, quietly powerful teacher. Such a woman in the situation, or a woman coming to this stage; a reminder not to lose touch with the land's older powers."
+      }
+    },
+    {
+      "id": "underworld-forest",
+      "name": "Underworld Forest",
+      "aliases": [
+        "forest"
+      ],
+      "order": 78,
+      "realm": "underworld",
+      "chapter": "IX",
+      "group": "The Realm of Death and the Underworld",
+      "page": 124,
+      "significations": {
+        "mundane": "If this card appears in a mundane reading, then it can indicate some unhealthy influence in a situation. It can indicate past hidden agendas or old imbalances resurfacing, and in health readings it can indicate that the body is trying to process something that is unbalanced or even painful. It can indicate infection, hidden agendas, mental illness, or old unresolved issues playing a hidden part in a current situation. It has to be read in context to the question and situation, as its meanings are many and varied.",
+        "magical": "The junction of the past, the dead, dreams, ancestors and faery beings: nature's Inner Library. The magical process has deep unseen roots in past and land; a chance to work in vision there; something passing into storage or hibernation."
+      }
+    },
+    {
+      "id": "bridge-of-death",
+      "name": "Bridge of Death",
+      "order": 79,
+      "realm": "underworld",
+      "chapter": "IX",
+      "group": "The Realm of Death and the Underworld",
+      "page": 127,
+      "significations": {
+        "mundane": "The appearance of this card, besides the above descriptions, can also mean that a course of action, if continued, will bring about the permanent end of something. It is a threshold that can be drawn back from if the way ahead is destructive; or it may herald the end of a bad situation. It often indicates the way ahead for such an ending, depending on where it falls in a reading, and it gives the reader the choice either to continue with some course of action, or withdraw.",
+        "magical": "An angelic bridge over the River of Death guarded by two angels. Literally, working at the threshold of death in service; abstractly, deep reflection, self-truth and atonement at a threshold with no retreat; an early preparation for crossing the Abyss; an ending or a person preparing for death."
+      }
+    },
+    {
+      "id": "death",
+      "name": "Death",
+      "order": 80,
+      "realm": "underworld",
+      "chapter": "IX",
+      "group": "The Realm of Death and the Underworld",
+      "page": 130,
+      "significations": {
+        "mundane": "An end, a full stop to something, regardless of what it is. At a stretch, when a reading is looking at seasons or phases of time, this card can represent winter, when the plants die back.",
+        "magical": "The final end of something: a person, cycle or era, or something that will not be revisited; surrendering what has no place in the physical world. Can be used to measure the lifespan of an event or cycle."
+      }
+    },
+    {
+      "id": "destruction",
+      "name": "Destruction",
+      "order": 81,
+      "realm": "underworld",
+      "chapter": "IX",
+      "group": "The Realm of Death and the Underworld",
+      "page": 131,
+      "significations": {
+        "mundane": "A difficult event or energy may trigger an ending to a situation. It can also represent a great deal of pain, a destructive event, or a serious stage in an illness. It can be a frightening card, but it must also be viewed in context. It is also always wise to remember that often destruction has to occur before new ground can be trodden. Our lives are often a series of ‘mini deaths’ and destructive events that serve to push us further along the path of evolving and growing. If this card appears in a mundane reading, then question your motives and choices: it may be better to make different plans, change your course of action, or plan for tough times ahead. Sometimes—most times—destruction can be avoided by sensible decisions. But sometimes you have simply to take a deep breath and walk your way through it, one foot at a time. Once you come out the other end of such a destructive phase then the Star father will appear, bringing new seeds, new pathways, new potentials, and new beginnings.",
+        "magical": "The powers and beings behind destruction (the Tower, in tarot terms). The magician is in the orbit of a destructive power or on a path towards destruction; check weak spots and consider action. Never ignore it; do a yes/no reading to see where it may manifest."
+      }
+    }
+  ]
 }

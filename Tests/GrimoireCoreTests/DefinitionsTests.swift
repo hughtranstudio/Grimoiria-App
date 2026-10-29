@@ -7,17 +7,34 @@ final class DefinitionsTests: XCTestCase {
     func testBundledDefinitionsValidate() {
         let report = lib.validate()
         XCTAssertTrue(report.isValid, report.errors.joined(separator: "\n"))
-        // Quareia and Mystagogos are flagged as placeholders until the deck repos are found.
-        XCTAssertEqual(report.warnings.count, 2)
-        XCTAssertTrue(report.warnings.contains { $0.hasPrefix("quareia") })
+        // Mystagogos is flagged as a placeholder until its card list is merged in.
+        XCTAssertEqual(report.warnings.count, 1)
         XCTAssertTrue(report.warnings.contains { $0.hasPrefix("mystagogos") })
     }
 
     func testPreloadedDecksAndSpreads() {
         XCTAssertEqual(Set(lib.decks.map(\.id)), ["rws-tarot", "quareia", "mystagogos", "custom-template"])
-        XCTAssertEqual(Set(lib.spreads.map(\.id)), ["single", "three-card", "celtic-cross", "freeform"])
+        XCTAssertEqual(Set(lib.spreads.map(\.id)), ["single", "three-card", "celtic-cross", "freeform",
+                                                    "quareia-mystical-map", "quareia-landscape", "quareia-tree-of-life", "quareia-four-directions"])
         XCTAssertEqual(lib.spread("celtic-cross")?.positions.count, 10)
         XCTAssertTrue(lib.freeform.openEnded)
+    }
+
+    func testQuareiaStructure() throws {
+        let q = try XCTUnwrap(lib.deck("quareia"))
+        XCTAssertEqual(q.status, .complete)
+        XCTAssertEqual(q.cards.count, 81)
+        XCTAssertEqual(Set(q.cards.map(\.id)).count, 81)
+        // The ten root powers, I–X, are the only numbered cards.
+        XCTAssertEqual(q.cards.compactMap { $0.attributes["number"].flatMap { Int($0.description) } }.sorted(), Array(1...10))
+        let realms = Dictionary(grouping: q.cards) { $0.attributes["realm"]?.description ?? "" }.mapValues(\.count)
+        XCTAssertEqual(realms, ["divine": 4, "inner": 22, "physical": 51, "underworld": 4])
+        XCTAssertTrue(q.cards.allSatisfy { $0.significations["mundane"] != nil && $0.significations["magical"] != nil })
+        XCTAssertEqual(q.card("limiter")?.attributes["element"], .string("air"))
+        XCTAssertEqual(lib.spread("quareia-mystical-map")?.positions.count, 16)
+        XCTAssertEqual(lib.spread("quareia-landscape")?.positions.count, 12)
+        XCTAssertEqual(lib.spread("quareia-tree-of-life")?.positions.count, 10)
+        XCTAssertEqual(lib.spread("quareia-four-directions")?.positions.count, 6)
     }
 
     func testRWSStructure() throws {

@@ -1,0 +1,61 @@
+{
+  "id": "quareia-landscape",
+  "name": "Landscape",
+  "aliases": [
+    "landscape",
+    "landscape layout"
+  ],
+  "positions": [
+    {
+      "key": "mother-earth",
+      "label": "I Mother Earth: the body, land, subject"
+    },
+    {
+      "key": "union",
+      "label": "II Union: what the subject has a relationship with"
+    },
+    {
+      "key": "star-father",
+      "label": "III Star Father: long-term future on the current path"
+    },
+    {
+      "key": "abyss",
+      "label": "IV Abyss: the deep past, now gone"
+    },
+    {
+      "key": "gate",
+      "label": "V Gate: past that may matter, or what is passing away"
+    },
+    {
+      "key": "wheel-of-fate",
+      "label": "VI Wheel of Fate: current short-term fate patterns and choices"
+    },
+    {
+      "key": "grindstone",
+      "label": "VII Grindstone: difficulties to overcome"
+    },
+    {
+      "key": "inner-temple",
+      "label": "VIII Inner Temple: what flows in from the inner worlds"
+    },
+    {
+      "key": "home-and-hearth",
+      "label": "IX Home and Hearth: home, family, tribe"
+    },
+    {
+      "key": "unraveller",
+      "label": "X Unraveller: what is being dismantled and falling away"
+    },
+    {
+      "key": "river-of-dreams",
+      "label": "XI River of Dreams: sleep, dreams, visions"
+    },
+    {
+      "key": "path-of-hercules",
+      "label": "XII Path of Hercules: short-term future, path forward"
+    }
+  ],
+  "decks": [
+    "quareia"
+  ]
+}

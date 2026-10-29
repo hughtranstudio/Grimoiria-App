@@ -105,7 +105,7 @@ Behaviors that matter:
 
 Same order as spec §13. Each is done when its checks pass with `build-and-verify` and `test-mac-app`.
 
-1. **App shell + definitions.** New Mac app via `new-mac-app`; depends on GrimoireCore; copies Definitions on first launch; Decks screen lists 4 decks (Quareia and Mystagogos marked placeholder) and 4 spreads. *Check:* `DefinitionLibrary.validate()` passes at launch.
+1. **App shell + definitions.** New Mac app via `new-mac-app`; depends on GrimoireCore; copies Definitions on first launch; Decks screen lists 4 decks (Mystagogos marked placeholder) and 8 spreads (4 general, 4 Quareia layouts). *Check:* `DefinitionLibrary.validate()` passes at launch.
 2. **Core records.** SwiftData models + `SwiftDataRepository`; Timeline; reflective editor for all 8 non-divination types with their fields; tags with autocomplete from `tagTree`; links and backlinks. *Check:* create one of each type, relaunch, all present.
 3. **Divination.** Inquiry list and screen, card draws, Yi Jing casts, synthesis, outcomes, reminders + notifications + Needs outcome. *Check:* spec §14 compound Inquiry (3-card RWS + Yi Jing; Quareia once its deck exists), 7-day check-in fires, add outcome, 30-day check-in is next.
 4. **Quick log.** Hotkey panel, quick draw and quick cast. *Check:* omen with one tag in under 20 s.
