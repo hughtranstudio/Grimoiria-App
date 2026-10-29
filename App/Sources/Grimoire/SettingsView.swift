@@ -155,6 +155,12 @@ struct InboxSettings: View {
             Text("Each folder holds incoming, processed and failed. The phone Shortcut writes to GrimoireInbox in iCloud Drive.")
         }
         Section {
+            Toggle("Share a read-only library with the phone", isOn: $settings.sharePhoneLibrary)
+                .onChange(of: settings.sharePhoneLibrary) { _, on in if on { PhoneLibrarySync.shared.publishNow() } }
+        } footer: {
+            Text("Writes filed records into library/ in each ingest folder outside iCloud Drive, so Grimoire on the Pixel can browse and search them and remind you of check-ins. Syncthing carries it; nothing goes to a cloud.")
+        }
+        Section {
             Picker("Speech model", selection: $settings.whisperModel) {
                 Text("Apple on-device speech").tag("apple")
                 Text("Transcript file beside the audio").tag("sidecar")

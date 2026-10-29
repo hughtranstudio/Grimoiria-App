@@ -26,6 +26,7 @@ final class AppSettings {
         whisperModel = defaults.string(forKey: "whisper.model") ?? (Store.isOverridden ? "sidecar" : "apple")
         reminderDefault = ReminderPreset(rawValue: defaults.string(forKey: "reminder.default") ?? "") ?? .ladder
         hotkeyEnabled = defaults.object(forKey: "quick.hotkey") as? Bool ?? true
+        sharePhoneLibrary = defaults.object(forKey: "ingest.phoneLibrary") as? Bool ?? true
     }
 
     /// iCloud Drive/GrimoireInbox, where the phone Shortcut drops captures.
@@ -48,6 +49,8 @@ final class AppSettings {
     /// Reminder offered on the New Inquiry sheet and at Confirm: check-ins at 7, 30 and 90 days unless changed.
     var reminderDefault: ReminderPreset { didSet { defaults.set(reminderDefault.rawValue, forKey: "reminder.default") } }
     var hotkeyEnabled: Bool { didSet { defaults.set(hotkeyEnabled, forKey: "quick.hotkey") } }
+    /// Write a read-only copy of filed records into each Syncthing ingest folder's library/ for the phone.
+    var sharePhoneLibrary: Bool { didSet { defaults.set(sharePhoneLibrary, forKey: "ingest.phoneLibrary") } }
 
     /// The home location for planetary days and hours, when set.
     var home: GeoLocation? {

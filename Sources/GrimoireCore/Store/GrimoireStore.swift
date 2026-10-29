@@ -40,6 +40,15 @@ public extension GrimoireRepository {
     func confirm(_ itemId: ULID, corrected: DraftReading?, entryType: EntryType? = nil, library: DefinitionLibrary,
                  reminder: ReminderPreset = .none, now: Date = Date()) throws -> ConfirmResult {
         guard let item = data.inbox.first(where: { $0.id == itemId }) else { throw StoreError.notFound(itemId.string) }
+        if var outcome = item.outcome, let target = item.entry.inquiryId {
+            // An outcome from the phone joins its reading; the entry that carried it is not filed.
+            outcome.body = item.entry.body
+            let inq = try addOutcome(outcome, to: target, now: now)
+            removeFromInbox(itemId)
+            var entry = item.entry
+            entry.status = .filed
+            return ConfirmResult(entry: entry, inquiry: inq, corrections: [])
+        }
         let result = try Confirmation.confirm(item, corrected: corrected, entryType: entryType, library: library, now: now)
         if let inq = result.inquiry {
             save(inq)

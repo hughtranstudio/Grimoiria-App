@@ -111,6 +111,7 @@ public final class InboxIngestor: @unchecked Sendable {
             occurred.timeZone = home.identifier
         }
         if let ss = s.session { return try await makeSessionItem(s, ss, occurred: occurred, audio: audio, now: now) }
+        if s.isOutcome { return try await makeOutcomeItem(s, occurred: occurred, audio: audio, now: now) }
         var transcript: String?
         if let phone = s.transcript, !phone.isEmpty { transcript = phone }
         else if let audio { transcript = try await transcriber.transcribe(audio) }
@@ -196,6 +197,25 @@ public final class InboxIngestor: @unchecked Sendable {
         // A transcript with no audio (typed or dictated on the phone) still becomes observations.
         if recording == nil, !segments.isEmpty { return SessionAssembler.retranscribed(item, segments: segments, extractor: extractor) }
         return item
+    }
+
+    /// An outcome typed or spoken on the phone for a reading it browsed. Waits in the Inbox like
+    /// any capture; Confirm stacks it on the reading.
+    func makeOutcomeItem(_ s: CaptureSidecar, occurred: ZonedDate, audio: URL?, now: Date) async throws -> InboxItem {
+        var transcript: String?
+        if let phone = s.transcript, !phone.isEmpty { transcript = phone }
+        else if let audio { transcript = try await transcriber.transcribe(audio) }
+        let body = [s.text, transcript].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n\n")
+        let attachments = try audio.map { [Attachment(kind: .audio, path: try copyAudio($0), originalName: $0.lastPathComponent)] } ?? []
+        var entry = Entry(id: ULID(date: occurred.instant), type: .journal, title: "Outcome", occurredAt: occurred, createdAt: now,
+                          body: body, tags: (s.tags ?? []).map { TagPath($0) }.filter { !$0.isEmpty }, attachments: attachments,
+                          mode: .quick, status: .inbox, captureId: s.id, transcript: transcript)
+        entry.inquiryId = s.inquiryId.flatMap { ULID($0) }
+        let fulfilled = s.outcome?.fulfilled ?? .unclear
+        let outcome = GrimoireCore.Outcome(id: ULID(date: occurred.instant), recordedAt: occurred, body: body, fulfilled: fulfilled)
+        return InboxItem(entry: entry, draft: nil, source: "phone:\(s.device ?? "unknown")",
+                         notes: ["Outcome (\(fulfilled.rawValue)) for reading \(s.inquiryId ?? ""). Confirm adds it to that reading."],
+                         outcome: outcome)
     }
 
     func timing(_ at: ZonedDate, _ s: CaptureSidecar) -> TimingContext {

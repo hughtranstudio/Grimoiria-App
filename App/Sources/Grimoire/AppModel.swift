@@ -135,6 +135,7 @@ final class AppModel {
         repository.didChange = { [weak self] in
             guard let self else { return }
             data = repository.data
+            PhoneLibrarySync.shared.schedule()
         }
     }
 
@@ -144,6 +145,7 @@ final class AppModel {
         ReminderScheduler.shared.start()
         QuickLogController.shared.updateHotKey()
         IngestCoordinator.shared.start()
+        PhoneLibrarySync.shared.publishNow()
     }
 
     // MARK: Definitions

@@ -24,12 +24,20 @@ public struct CaptureSidecar: Codable, Hashable, Sendable {
     public var draft: DraftReading?
     /// A recorded ritual, meditation or vision (docs/session-recording.md).
     public var session: SidecarSession?
+    /// With `kind_hint: "outcome"` and `inquiry_id`: what happened after a reading
+    /// (docs/phone-library.md). `text` is the outcome itself.
+    public var outcome: SidecarOutcome?
 
     public struct Location: Codable, Hashable, Sendable { public var lat: Double; public var lon: Double }
     public struct SidecarDraw: Codable, Hashable, Sendable {
         public var deck: String
         public var card: String
         public var orientation: Orientation?
+    }
+
+    public struct SidecarOutcome: Codable, Hashable, Sendable {
+        public var fulfilled: Outcome.Fulfilled
+        public init(fulfilled: Outcome.Fulfilled) { self.fulfilled = fulfilled }
     }
 
     /// The phone's session: times, phase changes and markers by offset in seconds.
@@ -62,7 +70,7 @@ public struct CaptureSidecar: Codable, Hashable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case contractVersion = "contract_version", id, capturedAt = "captured_at", device, kindHint = "kind_hint"
-        case text, audio, tags, inquiryId = "inquiry_id", location, draws, transcript, draft, session
+        case text, audio, tags, inquiryId = "inquiry_id", location, draws, transcript, draft, session, outcome
     }
 
     public static let supportedVersion = 1
@@ -81,8 +89,12 @@ public struct CaptureSidecar: Codable, Hashable, Sendable {
             }
             if let t = ss.type, !EntryType.sessionTypes.map(\.rawValue).contains(t) { throw IngestError.badSidecar("session type must be ritual, meditation or vision, not \(t)") }
         }
+        if s.isOutcome, s.inquiryId.flatMap({ ULID($0) }) == nil { throw IngestError.badSidecar("an outcome needs the inquiry_id of its reading") }
         return s
     }
+
+    /// An outcome for an earlier reading rather than a new record.
+    public var isOutcome: Bool { kindHint?.lowercased() == "outcome" || outcome != nil }
 
     /// Entry type from `kind_hint`; `draw`/`yijing` and unknown hints map to divination/insight.
     public var entryType: EntryType {
