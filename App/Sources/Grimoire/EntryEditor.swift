@@ -53,11 +53,7 @@ struct EntryEditor: View {
             if let transcript = entry.wrappedValue.transcript, !transcript.isEmpty {
                 Section("Transcript") { Text(transcript).textSelection(.enabled).foregroundStyle(.secondary) }
             }
-            if !entry.wrappedValue.attachments.isEmpty {
-                Section("Attachments") {
-                    ForEach(entry.wrappedValue.attachments, id: \.path) { a in AttachmentRow(attachment: a) }
-                }
-            }
+            AttachmentsSection(attachments: entry.attachments)
             Section("Extra notes") {
                 TextField("Anything the fields above miss", text: entry.extraNotes.orEmpty, axis: .vertical)
                     .lineLimit(2...)
@@ -229,6 +225,7 @@ struct PhysicalRefSection: View {
             }
             if ref != nil {
                 TextField("Page", text: Binding(get: { ref?.page ?? "" }, set: { ref?.page = $0 }), prompt: Text("12v, 43–45"))
+                PagePhotoRow(photo: Binding(get: { ref?.photo }, set: { ref?.photo = $0 }))
                 Toggle("Physical only (photo-first index)", isOn: Binding(get: { ref?.physicalOnly ?? false }, set: { ref?.physicalOnly = $0 }))
             } else if model.data.volumes.isEmpty {
                 Button("New Volume…") { model.sheet = .newVolume }

@@ -109,6 +109,18 @@ enum SelfTest {
         check("Volume III pp. 40–50 finds pages 40 to 50", inRange.count == 6, "found \(inRange.count)")
         check("volume page list", model.records(in: vol.id, pages: 40...50).count == 6)
 
+        // Page photos: a stack of photos becomes physical-only records, pages counted on
+        let shots = Store.folder.appending(path: "shots")
+        try? FileManager.default.createDirectory(at: shots, withIntermediateDirectories: true)
+        let photoFiles = (1...2).map { shots.appending(path: "IMG_00\($0).jpg") }
+        for (n, f) in photoFiles.enumerated() { try? Data("page \(n)".utf8).write(to: f) }
+        let indexed = (try? model.indexPages(volumeId: vol.id, photos: photoFiles, firstPage: "60")) ?? []
+        check("page photos index pages 60 and 61", indexed.map { $0.physicalRef?.page } == ["60", "61"])
+        check("page photo copied into Attachments",
+              indexed.first?.physicalRef?.photo.map { FileManager.default.fileExists(atPath: Store.attachments.appending(path: $0.path).path) } == true)
+        check("next page after 61 is 62", model.nextPage(in: vol.id) == "62")
+        check("Volume III p. 61 finds the photo record", model.search("Volume III p. 61") == indexed.suffix(1).map { .entry($0.id) })
+
         // M6: export, byte-stable
         let vault = Store.folder.appending(path: "Vault/Grimoire")
         try? FileManager.default.removeItem(at: vault)

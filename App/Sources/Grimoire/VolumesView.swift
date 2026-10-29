@@ -71,6 +71,7 @@ struct VolumeDetail: View {
                 }
                 TextField("Notes", text: volume.notes.orEmpty, axis: .vertical)
             }
+            VolumePhotoGrid(volumeId: volumeId)
             Section("Records by page") {
                 HStack {
                     Text("Pages")
@@ -97,7 +98,13 @@ struct VolumeDetail: View {
         }
         .formStyle(.grouped)
         .navigationTitle(volume.wrappedValue.name)
-        .toolbar { ToolbarItem { DeleteToolbarButton(id: volumeId) } }
+        .toolbar {
+            ToolbarItem {
+                Button("Index Page Photos…", systemImage: "photo.stack") { model.sheet = .indexPages(volumeId) }
+                    .help("Turn photos of this notebook's pages into records")
+            }
+            ToolbarItem { DeleteToolbarButton(id: volumeId) }
+        }
     }
 }
 

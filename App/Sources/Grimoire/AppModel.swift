@@ -53,12 +53,14 @@ enum Sheet: Identifiable {
     case newInquiry
     case addOutcome(ULID)
     case newVolume
+    case indexPages(ULID?)
 
     var id: String {
         switch self {
         case .newInquiry: "newInquiry"
         case .addOutcome(let id): "outcome-\(id)"
         case .newVolume: "newVolume"
+        case .indexPages: "indexPages"
         }
     }
 }

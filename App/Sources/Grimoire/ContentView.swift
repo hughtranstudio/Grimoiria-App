@@ -22,6 +22,7 @@ struct ContentView: View {
             case .newInquiry: NewInquirySheet()
             case .addOutcome(let id): AddOutcomeSheet(inquiryId: id)
             case .newVolume: NewVolumeSheet()
+            case .indexPages(let id): IndexPagesSheet(volumeId: id)
             }
         }
         .overlay(alignment: .bottom) {

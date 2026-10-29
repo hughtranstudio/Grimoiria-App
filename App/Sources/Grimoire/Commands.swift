@@ -20,6 +20,8 @@ struct AppCommands: Commands {
                 }
             }
             Button("New Volume…") { model.sheet = .newVolume }
+            Button("Index Page Photos…") { model.sheet = .indexPages(nil) }
+                .keyboardShortcut("p", modifiers: [.command, .option])
             Divider()
             Button("Quick Log…") { QuickLogController.shared.toggle() }
                 .keyboardShortcut("l", modifiers: [.command, .option])

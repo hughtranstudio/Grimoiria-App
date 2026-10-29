@@ -76,7 +76,10 @@ public struct ObsidianExporter: Sendable {
 
     func physical(_ p: PhysicalRef?, volumes: [ULID: String]) -> [(String, YAMLValue)] {
         guard let p else { return [] }
-        return [("physical", .map([("volume", .str(volumes[p.volumeId] ?? p.volumeId.string)), ("page", .string(p.page))]))]
+        var m: [(String, YAMLValue)] = [("volume", .str(volumes[p.volumeId] ?? p.volumeId.string)), ("page", .string(p.page))]
+        if let photo = p.photo { m.append(("photo", .string("_attachments/\(photo.path)"))) }
+        if p.physicalOnly { m.append(("physical_only", .bool(true))) }
+        return [("physical", .map(m))]
     }
 
     func linksYAML(_ links: [Link], _ map: [String: String]) -> [(String, YAMLValue)] {
@@ -111,6 +114,7 @@ public struct ObsidianExporter: Sendable {
         var body = e.body.trimmingCharacters(in: .whitespacesAndNewlines)
         if let x = e.extraNotes, !x.isEmpty { body += "\n\n## Extra notes\n\n\(x)" }
         if let t = e.transcript, !t.isEmpty, t != e.body { body += "\n\n## Transcript\n\n\(t)" }
+        if let photo = e.physicalRef?.photo { body += "\n\n![[_attachments/\(photo.path)]]" }
         for a in e.attachments where a.kind == .image { body += "\n\n![[_attachments/\(a.path)]]" }
         return YAML.frontmatter(.map(fm), comment: Self.header) + "\n" + body + "\n"
     }
