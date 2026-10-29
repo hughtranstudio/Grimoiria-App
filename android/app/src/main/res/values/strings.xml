@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grimoire Capture</string>
+    <string name="tile_label">Grimoire capture</string>
+    <string name="shortcut_record_short">Record</string>
+    <string name="shortcut_record_long">Record a capture</string>
+</resources>
