@@ -14,6 +14,8 @@ usage: grimoire <command> [options]
   timing <iso-date> [--lat N --lon N]     moon phase/sign, sun sign, planetary day/hour
   ingest <GrimoireInbox folder> [--lat N --lon N --tz Zone] [--stable-seconds 3]
                                           ingest phone captures into the Inbox
+  import <file or folder>... [--tz Zone] [--lat N --lon N] [--dmy] [--tag T]... [--attachments DIR] [--dry-run]
+                                          split .docx/.md/.txt records into Inbox items
   inbox                                   list Inbox items waiting for confirm
   confirm <id> [corrections] [--reminder none|1w|1m|3m]
         corrections: --deck D=ID --card D.N=CARD --orientation D.N=upright|reversed
@@ -166,6 +168,35 @@ func run() async throws {
         try store.flush()
         for o in outcomes { print(o) }
 
+    case "import":
+        let lib = try loadLibrary(args)
+        guard !args.positional.isEmpty else { throw CLIError(description: "import needs files or folders (.docx, .md, .txt)") }
+        let store = try openStore(args)
+        var importer = DocumentImporter(parser: ReadingParser(library: lib))
+        if let tz = args.one("tz") { importer.timeZone = tz }
+        if let la = args.one("lat").flatMap(Double.init), let lo = args.one("lon").flatMap(Double.init) { importer.location = GeoLocation(latitude: la, longitude: lo) }
+        if args.has("dmy") { importer.slashOrder = .dayFirst }
+        importer.tags = args.all("tag").map { TagPath($0) }
+        let dryRun = args.has("dry-run")
+        let run = ImportRun(importer: importer, attachmentsFolder: dryRun ? nil : args.one("attachments").map { URL(fileURLWithPath: $0) })
+        var preview: [InboxItem] = []
+        let outcomes = run.run(args.positional.map { URL(fileURLWithPath: $0) },
+                               isKnown: { cid in store.knowsCapture(cid) || preview.contains { $0.entry.captureId == cid } },
+                               deliver: { dryRun ? preview.append($0) : store.addToInbox($0) })
+        if !dryRun { try store.flush() }
+        for o in outcomes {
+            switch o {
+            case .imported(let file, let id, _):
+                let item = preview.first { $0.id == id } ?? store.data.inbox.first { $0.id == id }!
+                let e = item.entry
+                print("\(dryRun ? "would import" : "imported")  \(id)  \(e.occurredAt.day)  \(e.type.rawValue)  \(e.displayTitle)  [\(file)]")
+                if dryRun, let d = item.draft { print(describe(d, library: lib).split(separator: "\n").map { "    " + $0 }.joined(separator: "\n")) }
+                for n in item.notes ?? [] { print("    ! \(n)") }
+            case .duplicate(let file, let cid): print("duplicate  \(cid)  [\(file)]")
+            case .failed(let file, let reason): print("failed  \(file): \(reason)")
+            }
+        }
+
     case "inbox":
         let lib = try loadLibrary(args)
         let store = try openStore(args)
@@ -174,6 +205,7 @@ func run() async throws {
             print("\(item.id)  \(item.entry.occurredAt.iso8601)  \(item.entry.type.rawValue)  \(item.source)  [\(item.draft?.weakest.rawValue ?? "no draws")]")
             if let d = item.draft { print(describe(d, library: lib).split(separator: "\n").map { "    " + $0 }.joined(separator: "\n")) }
             else { print("    " + item.entry.displayTitle) }
+            for n in item.notes ?? [] { print("    ! \(n)") }
         }
 
     case "confirm":

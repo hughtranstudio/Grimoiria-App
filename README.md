@@ -13,12 +13,13 @@ This repository holds **GrimoireCore**, the platform-neutral Swift package the M
 | `Sources/GrimoireCore/YiJing/` | Casts from line values; primary, changing and resulting hexagrams derived, never stored separately. |
 | `Sources/GrimoireCore/Parsing/` | Spoken/typed draw parser → `DraftReading` with per-field confidence. Quick draw (`3 cups r, tower`). |
 | `Sources/GrimoireCore/Ingest/` | Phone sidecar contract v1, `InboxIngestor` (folder rules from spec §12), mandatory confirm-and-correct with a correction log. |
+| `Sources/GrimoireCore/Import/` | Google Docs / local file importer: .docx (built-in zip + inflate), .md with frontmatter, .txt; splits on dated headings and date lines into Inbox items. See [`docs/google-docs-import.md`](docs/google-docs-import.md). |
 | `Sources/GrimoireCore/Export/` | Obsidian Markdown + YAML frontmatter, `grimoire.jsonl`, write-only-if-changed writer. |
 | `Sources/GrimoireCore/Timing/` | Moon phase, illumination and sign, Sun sign, planetary day and hour (sunrise to sunrise, Chaldean order). |
 | `Sources/GrimoireCore/Store/` | `GrimoireRepository` protocol (the SwiftData seam), in-memory and JSON-file stores, search. |
-| `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `export`. |
+| `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `import`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `export`. |
 | `schemas/` | JSON Schemas: phone sidecar v1, deck, spread, JSONL export record. |
-| `tools/` | Definition generator, schema validator, end-to-end demo script. |
+| `tools/` | Definition generator, schema validator, import fixture generator, end-to-end demo script. |
 
 ## Build and test
 
@@ -26,7 +27,7 @@ Mac (Xcode 26 / Swift 6.2) or Linux (Swift 6.1+):
 
 ```bash
 swift build
-swift test                      # 59 tests
+swift test                      # 73 tests
 tools/e2e-demo.sh               # capture → Inbox → confirm → export, through the CLI
 pip install jsonschema && python3 tools/validate_schemas.py
 ```
@@ -41,7 +42,7 @@ swift run grimoire timing 2026-10-28T08:14:00-07:00 --lat 37.77 --lon -122.42 --
 
 ## Status
 
-**Done and tested (Linux, Swift 6.1):** definitions and validation, all models, Yi Jing derivation, voice/quick-draw parser, confirm-and-correct, folder ingest rules (stable size, iCloud placeholders, idempotency, failed/ with reasons), Obsidian and JSONL export (byte-stable re-export), timing context, reminders and "Needs outcome", search including Volume + page range, CLI.
+**Done and tested (Linux, Swift 6.1):** definitions and validation, all models, Yi Jing derivation, voice/quick-draw parser, confirm-and-correct, folder ingest rules (stable size, iCloud placeholders, idempotency, failed/ with reasons), Obsidian and JSONL export (byte-stable re-export), timing context, reminders and "Needs outcome", search including Volume + page range, CLI, importing Google Docs and local .docx/.md/.txt records into the Inbox (both routes give the same items).
 
 **Placeholders:**
 - **Quareia and Mystagogos decks** have no cards yet (`status: placeholder`). Their card lists, attributes and significations should be generated from Hugh's deck repositories by extending `tools/generate_definitions.py`. Every RWS card and hexagram already has an empty `significations` slot for the same merge.

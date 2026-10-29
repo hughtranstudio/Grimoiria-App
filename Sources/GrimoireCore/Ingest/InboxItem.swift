@@ -10,12 +10,16 @@ public struct InboxItem: Codable, Hashable, Sendable, Identifiable {
     public var draft: DraftReading?
     /// Where the item came from: "phone:<device>", "import:<file>", …
     public var source: String
+    /// Things to check before confirming, such as a guessed date or type. Optional so stores
+    /// written before imports existed still decode.
+    public var notes: [String]?
 
-    public init(entry: Entry, draft: DraftReading?, source: String) {
+    public init(entry: Entry, draft: DraftReading?, source: String, notes: [String]? = nil) {
         precondition(entry.status == .inbox, "Inbox items must have status inbox")
         self.entry = entry
         self.draft = draft
         self.source = source
+        self.notes = notes?.isEmpty == true ? nil : notes
     }
 }
 
