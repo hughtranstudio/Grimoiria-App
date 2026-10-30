@@ -2,6 +2,8 @@ import Foundation
 
 public enum EntryType: String, Codable, CaseIterable, Sendable {
     case journal, ritual, meditation, vision, contact, omen, insight, dream, divination
+    /// Something that happened in life ("I just launched a website"), usually with a Uranika chart.
+    case event
 }
 
 public enum EntryMode: String, Codable, Sendable { case quick, reflective }
@@ -33,6 +35,8 @@ public struct Entry: Codable, Hashable, Sendable, Identifiable {
     public var transcript: String?
     /// The recorded session behind a ritual, meditation or vision: clock, phases, observations.
     public var session: PracticeSession?
+    /// The chart of the moment from Uranika, when that integration is on.
+    public var astro: AstroSnapshot?
 
     public init(
         id: ULID = ULID(),
@@ -53,7 +57,8 @@ public struct Entry: Codable, Hashable, Sendable, Identifiable {
         extraNotes: String? = nil,
         captureId: String? = nil,
         transcript: String? = nil,
-        session: PracticeSession? = nil
+        session: PracticeSession? = nil,
+        astro: AstroSnapshot? = nil
     ) {
         self.id = id
         self.type = type
@@ -75,6 +80,7 @@ public struct Entry: Codable, Hashable, Sendable, Identifiable {
         self.captureId = captureId
         self.transcript = transcript
         self.session = session
+        self.astro = astro
     }
 
     /// Title, or the first line of the body when blank (spec §3.1).
@@ -133,6 +139,7 @@ public struct TypeFields: Codable, Hashable, Sendable {
         .insight: ["domain"],
         .dream: ["lucid", "recurring", "figures"],
         .divination: [],
+        .event: [],
     ]
 
     /// Problems with 1–5 scales and enum-like strings.
