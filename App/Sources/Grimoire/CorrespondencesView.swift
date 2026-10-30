@@ -18,12 +18,12 @@ struct CorrespondenceList: View {
             ForEach(Correspondences.kinds, id: \.self) { kind in
                 let rows = hits.filter { $0.kind == kind }
                 if !rows.isEmpty {
-                    Section(Self.titles[kind] ?? kind.capitalized) {
+                    Section(header: Text(Self.titles[kind] ?? kind.capitalized).font(Typo.caption)) {
                         ForEach(rows) { e in
                             Label {
                                 VStack(alignment: .leading, spacing: Space.xs) {
-                                    Text(e.name)
-                                    Text(summary(e)).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                                    Text(e.name).font(Typo.body)
+                                    Text(summary(e)).font(Typo.caption).foregroundStyle(.secondary).lineLimit(1)
                                 }
                             } icon: {
                                 Text(e.glyph ?? "•").foregroundStyle(.tint)
@@ -58,7 +58,7 @@ private extension View {
         safeAreaInset(edge: .bottom) {
             if let source {
                 Text(source)
-                    .font(.caption)
+                    .font(Typo.caption)
                     .foregroundStyle(.secondary)
                     .padding(Space.md)
                     .frame(maxWidth: .infinity, alignment: .leading)

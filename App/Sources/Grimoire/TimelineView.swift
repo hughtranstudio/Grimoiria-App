@@ -33,7 +33,7 @@ struct TimelineList: View {
         @Bindable var model = model
         List(selection: $model.selection) {
             ForEach(days, id: \.0) { day, items in
-                Section(day) {
+                Section(header: Text(day).font(Typo.caption)) {
                     ForEach(items) { item in
                         switch item {
                         case .entry(let e): EntryRow(entry: e).tag(Selection.entry(e.id)).contextMenu { DeleteButton(id: e.id) }
@@ -108,13 +108,13 @@ struct TodayList: View {
     var body: some View {
         @Bindable var model = model
         List(selection: $model.selection) {
-            Section("Now") {
+            Section(header: Text("Now").font(Typo.caption)) {
                 Text(TimingText.line(model.timing(at: model.now())))
-                    .font(.callout)
+                    .font(Typo.callout)
                     .foregroundStyle(.secondary)
                     .selectionDisabled()
             }
-            Section("Needs outcome") {
+            Section(header: Text("Needs outcome").font(Typo.caption)) {
                 if due.isEmpty {
                     Text("Nothing due.").foregroundStyle(.secondary).selectionDisabled()
                 }
@@ -123,7 +123,7 @@ struct TodayList: View {
                         VStack(alignment: .leading, spacing: Space.xs) {
                             InquiryRow(inquiry: i)
                             HStack {
-                                Text("Due \(DisplayDate.day(r.dueOn))").font(.caption).foregroundStyle(.secondary)
+                                Text("Due \(DisplayDate.day(r.dueOn))").font(Typo.caption).foregroundStyle(.secondary)
                                 Spacer()
                                 Button("Snooze 3 Days") { model.snooze(r.id) }
                                 Button("Add Outcome…") { model.sheet = .addOutcome(i.id) }
@@ -134,7 +134,7 @@ struct TodayList: View {
                     }
                 }
             }
-            Section("Today") {
+            Section(header: Text("Today").font(Typo.caption)) {
                 if todays.isEmpty && todaysInquiries.isEmpty {
                     Text("Nothing logged yet today.").foregroundStyle(.secondary).selectionDisabled()
                 }

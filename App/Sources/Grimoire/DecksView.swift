@@ -15,29 +15,29 @@ struct DeckList: View {
                     Label(error, systemImage: "exclamationmark.triangle").foregroundStyle(.red)
                 }
             }
-            Section("Decks") {
+            Section(header: Text("Decks").font(Typo.caption)) {
                 ForEach(model.library.decks) { d in
                     VStack(alignment: .leading, spacing: Space.xs) {
-                        Text(d.name)
-                        Text(subtitle(d)).font(.caption).foregroundStyle(.secondary)
+                        Text(d.name).font(Typo.body)
+                        Text(subtitle(d)).font(Typo.caption).foregroundStyle(.secondary)
                     }
                     .padding(.vertical, Space.xs)
                     .tag(Selection.deck(d.id))
                 }
             }
-            Section("Spreads") {
+            Section(header: Text("Spreads").font(Typo.caption)) {
                 ForEach(model.library.spreads) { s in
                     VStack(alignment: .leading, spacing: Space.xs) {
-                        Text(s.name)
+                        Text(s.name).font(Typo.body)
                         Text(s.openEnded ? "Any number of cards" : s.positions.map(\.label).joined(separator: " · "))
-                            .font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                            .font(Typo.caption).foregroundStyle(.secondary).lineLimit(2)
                     }
                     .padding(.vertical, Space.xs)
                     .selectionDisabled()
                 }
             }
-            Section("Yi Jing") {
-                Text("\(model.library.yijing.hexagrams.count) hexagrams, \(model.library.yijing.trigrams.count) trigrams")
+            Section(header: Text("Yi Jing").font(Typo.caption)) {
+                Text("\(model.library.yijing.hexagrams.count) hexagrams, \(model.library.yijing.trigrams.count) trigrams").font(Typo.body)
                     .foregroundStyle(.secondary)
                     .selectionDisabled()
             }
@@ -90,7 +90,7 @@ struct DeckDetail: View {
                 Toggle("Reversals allowed", isOn: deck.reversalsAllowed)
                 LabeledContent("Aliases") { ListField(items: deck.aliases.optional, prompt: "rws, rider") }
                 if let source = deck.wrappedValue.source {
-                    Text(source).font(.callout).foregroundStyle(.secondary)
+                    Text(source).font(Typo.callout).foregroundStyle(.secondary)
                 }
             }
             Section("Cards (\(deck.wrappedValue.cards.count))") {

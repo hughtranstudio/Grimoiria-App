@@ -23,12 +23,12 @@ struct InboxList: View {
                 HStack(alignment: .firstTextBaseline, spacing: Space.sm) {
                     Image(systemName: item.draft == nil ? item.entry.type.symbol : "suit.diamond").foregroundStyle(.tint).frame(width: 20)
                     VStack(alignment: .leading, spacing: Space.xs) {
-                        Text(item.draft?.question.value ?? item.entry.displayTitle).lineLimit(2)
+                        Text(item.draft?.question.value ?? item.entry.displayTitle).font(Typo.body).lineLimit(2)
                         HStack(spacing: Space.sm) {
                             Text(DisplayDate.dayTime(item.entry.occurredAt))
                             if let d = item.draft, d.weakest < .high { Text("Check \(d.weakest.rawValue) fields") }
                         }
-                        .font(.caption).foregroundStyle(.secondary)
+                        .font(Typo.caption).foregroundStyle(.secondary)
                     }
                 }
                 .padding(.vertical, Space.xs)
@@ -140,10 +140,10 @@ struct InboxDetail: View {
                     Text(item.entry.body).textSelection(.enabled)
                 }
                 if !draft.unparsed.isEmpty {
-                    Text("Words not placed").font(.caption).foregroundStyle(.secondary)
+                    Text("Words not placed").font(Typo.caption).foregroundStyle(.secondary)
                     FlowChips(words: draft.unparsed)
                 }
-                Text("From \(item.source) · \(DisplayDate.dayTime(item.entry.occurredAt))").font(.caption).foregroundStyle(.secondary)
+                Text("From \(item.source) · \(DisplayDate.dayTime(item.entry.occurredAt))").font(Typo.caption).foregroundStyle(.secondary)
             }
             .padding(Space.margin)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -269,7 +269,7 @@ struct DraftDivinationSection: View {
                                 .toggleStyle(.checkbox)
                                 .flagged(divination.draws[i].orientation.confidence < .high)
                             if let heard = divination.draws[i].cardId.heard {
-                                Text("Heard “\(heard)”").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                                Text("Heard “\(heard)”").font(Typo.caption).foregroundStyle(.secondary).lineLimit(1)
                             }
                             Spacer()
                             Button("Remove", systemImage: "minus.circle") { divination.draws.remove(at: i) }
@@ -319,7 +319,7 @@ struct FlowChips: View {
         FlowLayout(spacing: Space.xs) {
             ForEach(Array(words.enumerated()), id: \.offset) { _, w in
                 Text(w)
-                    .font(.callout)
+                    .font(Typo.callout)
                     .padding(.horizontal, Space.sm)
                     .padding(.vertical, 2)
                     .background(.tint.opacity(0.15), in: .capsule)
@@ -369,7 +369,7 @@ struct AudioPlayerRow: View {
                 playing.toggle()
             }
             .disabled(!FileManager.default.fileExists(atPath: url.path))
-            Text(url.lastPathComponent).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            Text(url.lastPathComponent).font(Typo.caption).foregroundStyle(.secondary).lineLimit(1)
         }
         .onDisappear { player?.stop() }
     }

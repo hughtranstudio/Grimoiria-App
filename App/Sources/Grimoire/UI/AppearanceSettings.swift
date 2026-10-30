@@ -1,10 +1,21 @@
+import GrimoireAppKit
 import SwiftUI
 
-/// Settings > Appearance: the accent color. Light and dark mode follow the Mac.
+/// Settings > Appearance: the house style (DRAFT) and the accent color.
+/// Light and dark mode follow the Mac, except style C, which is always dark.
 struct AppearanceSettings: View {
     @Bindable private var store = ThemeStore.shared
+    @Bindable private var house = HouseStyleStore.shared
 
     var body: some View {
+        Section {
+            Picker("House style (DRAFT)", selection: $house.styleID) {
+                ForEach(HouseTokens.styles) { Text($0.name).tag($0.id) }
+            }
+            Text(house.style.summary)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
         Section {
             AccentPreview()
                 .padding(.vertical, Space.xs)
@@ -17,7 +28,9 @@ struct AppearanceSettings: View {
                             }
                         }
                     }
-                    Text(store.theme.name)
+                    .disabled(house.style.accentIsRubric)
+                    .opacity(house.style.accentIsRubric ? 0.4 : 1)
+                    Text(house.style.accentIsRubric ? "Rubric red, set by the house style" : store.theme.name)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
