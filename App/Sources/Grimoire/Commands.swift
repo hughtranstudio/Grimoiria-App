@@ -37,6 +37,8 @@ struct AppCommands: Commands {
             Button("Import Deck…") { model.importDeck() }
             Button("Export to Obsidian") { model.exportNow() }
                 .keyboardShortcut("e", modifiers: [.command, .shift])
+            Button("Export Calendar (.ics)…") { model.exportCalendar() }
+                .keyboardShortcut("e", modifiers: [.command, .option])
             Button("Check Inbox Folders") { IngestCoordinator.shared.scanAll() }
                 .keyboardShortcut("r", modifiers: [.command, .shift])
         }

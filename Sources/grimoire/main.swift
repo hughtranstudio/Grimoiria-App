@@ -43,6 +43,10 @@ usage: grimoire <command> [options]
                                           removes notes it wrote for records that are gone
   calendar [--from yyyy-MM-dd] [--days 14] [--tz Zone] [--lat N --lon N] [--hours]
                                           moon phases, sign changes, day rulers (and planetary hours) ahead
+  calendar-export --out FILE.ics [--from yyyy-MM-dd] [--days 90] [--tz Zone] [--sky phases|all|none]
+                  [--hours venus,mars] [--its-day] [--lat N --lon N] [--no-rituals] [--no-checkins]
+                                          planned rituals, check-ins, lunations and chosen planetary hours as an
+                                          .ics file for Google or Apple Calendar: timing and a grimoire:// link only
   hours <planet> [--after ISO] [--its-day] [--limit 5] [--tz Zone] [--lat N --lon N]
                                           next planetary hours of a planet, e.g. hours mars --its-day
   correspond [text] [--json]              look up planets, signs, elements, trigrams: correspond iron, correspond aries
@@ -460,6 +464,36 @@ func run() async throws {
                 for h in d.hours { print("      \(h.number < 10 ? " " : "")\(h.number)  \(time(h.start))–\(time(h.end))  \(h.planet.rawValue)") }
             }
         }
+
+    case "calendar-export":
+        let store = try openStore(args)
+        guard let out = args.one("out"), !out.isEmpty else { throw CLIError(description: "calendar-export needs --out FILE.ics") }
+        let tz = args.one("tz").flatMap(TimeZone.init(identifier:)) ?? .current
+        guard var exporter = CalendarExporter(first: args.one("from") ?? today(tz), days: args.one("days").flatMap(Int.init) ?? 90, zone: tz) else {
+            throw CLIError(description: "--from must be yyyy-MM-dd")
+        }
+        exporter.rituals = !args.has("no-rituals")
+        exporter.checkIns = !args.has("no-checkins")
+        switch args.one("sky") ?? "phases" {
+        case "phases": break
+        case "all": exporter.sky = Set(SkyEvent.Kind.allCases)
+        case "none": exporter.sky = []
+        case let other: throw CLIError(description: "--sky is phases, all or none, not \(other)")
+        }
+        exporter.hoursOf = try (args.one("hours") ?? "").split(separator: ",").map { name in
+            guard let p = Planet(rawValue: name.trimmingCharacters(in: .whitespaces).lowercased()) else {
+                throw CLIError(description: "unknown planet \(name): \(Planet.chaldean.map(\.rawValue).joined(separator: ", "))")
+            }
+            return p
+        }
+        exporter.hoursOnTheirDay = args.has("its-day")
+        exporter.location = location(args)
+        if !exporter.hoursOf.isEmpty && exporter.location == nil {
+            throw CLIError(description: "--hours needs a location: --lat N --lon N or $GRIMOIRE_HOME")
+        }
+        let events = exporter.events(for: store.data)
+        try Data(CalendarExporter.ics(events).utf8).write(to: URL(fileURLWithPath: out), options: .atomic)
+        print("\(events.count) event(s) written to \(out)")
 
     case "hours":
         guard let name = args.positional.first, let planet = Planet(rawValue: name.lowercased()) else {
