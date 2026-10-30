@@ -35,7 +35,7 @@ Mac (Xcode 26 / Swift 6.2) or Linux (Swift 6.1+):
 
 ```bash
 swift build
-swift test                      # 126 tests
+swift test                      # 161 tests
 (cd android && ./gradlew -PcoreOnly :core:test)   # Kotlin parser parity + capture outbox
 tools/e2e-demo.sh               # capture → Inbox → confirm → export, through the CLI
 pip install jsonschema && python3 tools/validate_schemas.py
