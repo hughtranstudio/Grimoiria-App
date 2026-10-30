@@ -1,0 +1,45 @@
+{
+  "formatVersion": 1,
+  "id": "working-journal",
+  "name": "Working Journal",
+  "description": "Clean modern journal on US Letter for home printing: one column, a sans label line, black with a deep blue accent.",
+  "page": {
+    "size": "us-letter",
+    "margins": { "inside": "1in", "outside": "1.1in", "top": "0.9in", "bottom": "0.9in" },
+    "bleed": "0mm",
+    "cropMarks": false,
+    "chaptersOnRecto": false
+  },
+  "type": {
+    "body": ["Source Serif 4", "Charter", "Libertinus Serif"],
+    "display": ["Source Serif 4", "Charter", "Libertinus Serif"],
+    "label": ["Source Sans 3", "Helvetica Neue", "DejaVu Sans", "Libertinus Serif"],
+    "symbols": ["Noto Sans Symbols", "Noto Sans Symbols 2", "Apple Symbols", "DejaVu Sans"],
+    "size": "10.5pt",
+    "leading": "0.7em",
+    "justify": false,
+    "indent": "0em",
+    "paragraphSpacing": "0.9em",
+    "smallCapsLabels": false,
+    "initial": "none"
+  },
+  "colour": {
+    "ink": "#1b1b1b",
+    "accent": "#1f4e79",
+    "quiet": "#6b6b6b",
+    "rule": "#c8c8c8"
+  },
+  "ornament": {
+    "chapterMark": "",
+    "itemSeparator": "rule",
+    "titleMark": "☉ ☽ ☿ ♀ ♂ ♃ ♄"
+  },
+  "content": {
+    "contents": true,
+    "timing": true,
+    "photos": true,
+    "tags": true,
+    "cardIndex": true,
+    "hexagramIndex": true
+  }
+}
