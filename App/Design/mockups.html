@@ -1,0 +1,213 @@
+<title>Grimoire House Style</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a printer's proof sheet. Three proofs of one app window, stacked, each with its note in the margin. */
+:root {
+  /* Page tokens (the sheet these proofs sit on) */
+  --bg: #F8F8F8; --fg: #000000; --fg-2: #6B6B6B; --line: rgb(0 0 0 / 0.14); --red: #CC0000; --red-mark: #EB0303;
+  --title: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --text: "EB Garamond", "Iowan Old Style", Georgia, serif;
+  --sf: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #141414; --fg: #F4F4F4; --fg-2: rgb(244 244 244 / 0.62); --line: rgb(244 244 244 / 0.16); --red: #FF3232; --red-mark: #FF3232; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #141414; --fg: #F4F4F4; --fg-2: rgb(244 244 244 / 0.62); --line: rgb(244 244 244 / 0.16); --red: #FF3232; --red-mark: #FF3232; color-scheme: dark }
+
+/* Style tokens, generated from Design/tokens.json (tokens.css), plus Apple's own values where a style keeps them */
+.mac { --ground: #FFFFFF; --surface: #F4F4F5; --ink: #1D1D1F; --muted: #6E6E73; --rule: rgb(0 0 0 / 0.1);
+       --side: #E8E8EA; --side-ink: #1D1D1F; --side-muted: #6E6E73; --chrome: #F0F0F2; --radius: 8px;
+       --rubric: #EB0303; --rubricText: #CC0000;
+       --t-title: var(--title); --t-text: var(--text); --t-label: var(--text); --caps: uppercase; --track: 0.14em; }
+.mac[data-mode="dark"] { --ground: #1E1E1E; --surface: #2A2A2C; --ink: #F5F5F7; --muted: #98989D; --rule: rgb(255 255 255 / 0.1);
+       --side: #2B2B2D; --side-ink: #F5F5F7; --side-muted: #98989D; --chrome: #323234; }
+[data-style="a"][data-mode="light"] { --ground: #F8F8F8; --surface: #FFFFFF; --ink: #000000; --muted: #6B6B6B; --rule: rgb(0 0 0 / 0.14); --rubric: #EB0303; --rubricText: #CC0000; --radius: 2px; }
+[data-style="a"][data-mode="dark"] { --ground: #000000; --surface: #141414; --ink: #F4F4F4; --muted: rgb(244 244 244 / 0.62); --rule: rgb(244 244 244 / 0.16); --rubric: #FF3232; --rubricText: #FF3232; --radius: 2px; }
+.mac[data-style="b"] { --t-label: var(--sf); --caps: none; --track: 0; }
+[data-style="b"][data-mode="light"] { --rubric: #EB0303; --rubricText: #CC0000; }
+[data-style="b"][data-mode="dark"] { --rubric: #FF3232; --rubricText: #FF3232; }
+.mac[data-style="c"] { --ground: #010742; --surface: #00042C; --ink: #F4F4F4; --muted: rgb(244 244 244 / 0.66); --rule: rgb(244 244 244 / 0.18); --rubric: #FF3232; --rubricText: #FF3232; --radius: 2px;
+       --side: #02062F; --side-ink: #F4F4F4; --side-muted: rgb(244 244 244 / 0.6); --chrome: #000325; }
+
+body { background: var(--bg); color: var(--fg); font: 17px/1.5 var(--text); }
+.sheet { max-width: 1180px; margin: 0 auto; padding-block: 48px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 48px; }
+header.top { display: grid; gap: 12px; max-width: 68ch; }
+.draft { font: 600 12px/1 var(--text); letter-spacing: 0.18em; text-transform: uppercase; color: var(--red); display: flex; gap: 12px; align-items: center; }
+.draft::after { content: ""; width: 48px; height: 2px; background: var(--red-mark); }
+h1 { font: 400 clamp(32px, 5vw, 48px)/1.05 var(--title); letter-spacing: 0.08em; text-transform: uppercase; margin: 0; text-wrap: balance; }
+header.top p { margin: 0; color: var(--fg-2); }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 15px; color: var(--fg-2); }
+.controls button { font: 500 15px var(--text); color: var(--fg); background: transparent; border: 1px solid var(--line); padding: 6px 14px; border-radius: 2px; cursor: pointer; }
+.controls button[aria-pressed="true"] { border-color: var(--red-mark); color: var(--red); }
+.controls button:focus-visible { outline: 2px solid var(--red-mark); outline-offset: 2px; }
+
+.proof { display: grid; grid-template-columns: minmax(0, 862px) minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 960px) { .proof { grid-template-columns: minmax(0, 1fr); } }
+.note { display: grid; gap: 8px; border-top: 2px solid var(--red-mark); padding-top: 12px; }
+.note h2 { font: 400 30px/1.1 var(--title); margin: 0; letter-spacing: 0.06em; text-transform: uppercase; }
+.note h2 b { color: var(--red); font-weight: 500; }
+.note p { margin: 0; font-size: 16px; }
+.note ul { margin: 0; padding-left: 18px; font-size: 15px; color: var(--fg-2); display: grid; gap: 4px; }
+
+/* The mock Mac window */
+.frame { overflow-x: auto; width: fit-content; max-width: 100%; border-radius: 12px; box-shadow: 0 0 0 1px var(--line), 0 18px 40px rgb(0 0 0 / 0.12); }
+.mac { width: 860px; min-height: 520px; display: grid; grid-template-columns: 172px 240px 1fr; grid-template-rows: 44px auto; background: var(--ground); color: var(--ink); font-size: 13px; }
+.bar { grid-column: 1 / -1; display: grid; grid-template-columns: 172px 240px 1fr; align-items: center; background: var(--chrome); border-bottom: 1px solid var(--rule); font: 600 13px var(--sf); color: var(--side-ink); }
+.bar .lights { display: flex; gap: 8px; padding-left: 16px; }
+.bar .lights i { width: 12px; height: 12px; border-radius: 50%; background: #FF5F57; } .bar .lights i:nth-child(2) { background: #FEBC2E; } .bar .lights i:nth-child(3) { background: #28C840; }
+.bar span { padding-left: 16px; }
+.side { background: var(--side); color: var(--side-ink); padding: 12px 8px; display: grid; align-content: start; gap: 2px; font: 13px var(--sf); border-right: 1px solid var(--rule); }
+.side .row { display: flex; justify-content: space-between; padding: 4px 8px; border-radius: 6px; }
+.side .row.on { background: var(--rubric); color: #FFFFFF; }
+.side .row em { font-style: normal; color: var(--side-muted); }
+.list { border-right: 1px solid var(--rule); display: grid; align-content: start; overflow: hidden; }
+.list .item { padding: 10px 16px; border-bottom: 1px solid var(--rule); display: grid; gap: 2px; }
+.list .item.on { background: color-mix(in srgb, var(--rubric) 12%, transparent); box-shadow: inset 2px 0 0 var(--rubric); }
+.list .q { font: 15px/1.3 var(--t-text); }
+.list .meta { font: 12px var(--t-label); color: var(--muted); }
+.detail { padding: 20px 24px; overflow: hidden; display: grid; align-content: start; gap: 14px; }
+.kicker { font: 500 12px var(--t-label); letter-spacing: var(--track); text-transform: var(--caps); color: var(--rubricText); }
+.htitle { font: 500 26px/1.15 var(--t-title); letter-spacing: var(--track); text-transform: var(--caps); margin: 4px 0 8px; text-wrap: balance; }
+[data-style="b"] .htitle { font-size: 28px; letter-spacing: 0; }
+.rubric-rule { width: 48px; height: 2px; background: var(--rubric); }
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: 0 0 0 1px var(--rule); padding: 10px 14px; display: grid; gap: 6px; }
+.card h3 { margin: 0; font: 600 11px var(--t-label); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.draws { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.draw { display: grid; gap: 2px; }
+.draw .pos { font: 12px var(--t-label); color: var(--muted); }
+.draw .card-name { font: 16px/1.2 var(--t-text); }
+.draw .rev { font: italic 13px var(--t-text); color: var(--rubricText); }
+.hex { display: flex; gap: 14px; align-items: center; font: 15px var(--t-text); }
+.hex .lines { display: grid; gap: 3px; width: 34px; }
+.hex .lines i { height: 4px; background: var(--ink); display: block; }
+.hex .lines i.yin { background: linear-gradient(90deg, var(--ink) 42%, transparent 42% 58%, var(--ink) 58%); }
+.hex .lines i.moving { background: var(--rubric); }
+.synth { font: 15px/1.5 var(--t-text); margin: 0; }
+.btn { justify-self: start; font: 500 13px var(--sf); background: var(--rubric); color: #FFFFFF; padding: 4px 12px; border-radius: 6px; }
+[data-style="a"] .btn, [data-style="c"] .btn { border-radius: 2px; font-family: var(--t-label); font-size: 14px; letter-spacing: 0.06em; }
+@media (prefers-reduced-motion: no-preference) { .mac * { transition: background-color .42s cubic-bezier(0.16, 1, 0.3, 1), color .42s cubic-bezier(0.16, 1, 0.3, 1); } }
+footer { color: var(--fg-2); font-size: 15px; max-width: 68ch; display: grid; gap: 8px; }
+footer code { font-size: 14px; }
+</style>
+
+<main class="sheet">
+  <header class="top">
+    <div class="draft">Draft · not approved</div>
+    <h1>Grimoire in the HT Press house style</h1>
+    <p>Three proofs of the same Inquiry page, drawn from the token file in the pull request. Pick one, or name what to change. The Mac app has all three behind Settings › Appearance › House style.</p>
+    <div class="controls" role="group" aria-label="Mac appearance">
+      <span>Mac in</span>
+      <button type="button" id="mode-light" aria-pressed="true" data-mode="light">Light</button>
+      <button type="button" id="mode-dark" aria-pressed="false" data-mode="dark">Dark</button>
+    </div>
+  </header>
+
+  <template id="window">
+    <div class="frame">
+      <div class="mac">
+        <div class="bar"><div class="lights"><i></i><i></i><i></i></div><span>Inquiries</span><span>Should I begin the next Quareia module at Samhain?</span></div>
+        <nav class="side">
+          <div class="row"><span>Today</span><em>1</em></div>
+          <div class="row"><span>Timeline</span></div>
+          <div class="row on"><span>Inquiries</span></div>
+          <div class="row"><span>Inbox</span><em>2</em></div>
+          <div class="row"><span>Search</span></div>
+          <div class="row"><span>Volumes</span></div>
+          <div class="row"><span>Decks</span></div>
+          <div class="row"><span>Patterns</span></div>
+          <div class="row"><span>Calendar</span></div>
+          <div class="row"><span>Correspondences</span></div>
+        </nav>
+        <div class="list">
+          <div class="item on"><div class="q">Should I begin the next Quareia module at Samhain?</div><div class="meta">10-29-2026 · Rider-Waite-Smith + Yi Jing · Open</div></div>
+          <div class="item"><div class="q">What does the crow at the gate want?</div><div class="meta">10-21-2026 · Quareia deck · Resolved</div></div>
+          <div class="item"><div class="q">Is the east wall the right place for the altar?</div><div class="meta">10-12-2026 · Mystagogos · Revisited</div></div>
+          <div class="item"><div class="q">How should I approach the new contact?</div><div class="meta">10-02-2026 · Yi Jing · Open</div></div>
+        </div>
+        <section class="detail">
+          <div>
+            <div class="kicker">Inquiry · 10-29-2026 · Saturn hour</div>
+            <div class="htitle">Should I begin the next Quareia module at Samhain?</div>
+            <div class="rubric-rule"></div>
+          </div>
+          <div class="card">
+            <h3>Rider-Waite-Smith · Past, Present, Future</h3>
+            <div class="draws">
+              <div class="draw"><span class="pos">Past</span><span class="card-name">The Hermit</span></div>
+              <div class="draw"><span class="pos">Present</span><span class="card-name">Six of Cups</span><span class="rev">reversed</span></div>
+              <div class="draw"><span class="pos">Future</span><span class="card-name">The Star</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Yi Jing</h3>
+            <div class="hex">
+              <div class="lines" aria-hidden="true"><i></i><i class="yin"></i><i class="yin"></i><i class="moving"></i><i class="yin"></i><i class="yin"></i></div>
+              <span>52 Keeping Still, line 3 changing, to 23 Splitting Apart</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Synthesis</h3>
+            <p class="synth">Finish the solitary work first. The Star waits on the far side of a stillness that has to be kept, not hurried.</p>
+          </div>
+          <span class="btn">Add Outcome</span>
+        </section>
+      </div>
+    </div>
+  </template>
+
+  <section class="proof" data-proof="a">
+    <div class="slot"></div>
+    <aside class="note">
+      <h2><b>A</b> · Codex</h2>
+      <p>Full press. Vellum page, ink type, Garamond everywhere, square corners. Red marks the selection, the kicker and the rule.</p>
+      <ul><li>Dark mode: ink-black page, soot cards, linen type</li><li>Labels and lists also in EB Garamond</li><li>Titles in tracked Cormorant capitals</li></ul>
+    </aside>
+  </section>
+
+  <section class="proof" data-proof="b">
+    <div class="slot"></div>
+    <aside class="note">
+      <h2><b>B</b> · Marginalia</h2>
+      <p>Light touch. Apple's white pages, rounded cards and San Francisco labels stay. Garamond carries titles and everything you write. Rubric red replaces the accent.</p>
+      <ul><li>Closest to today's app</li><li>Breaks the “no sans” rule for labels on purpose</li><li>Titles in Cormorant, not capitals</li></ul>
+    </aside>
+  </section>
+
+  <section class="proof" data-proof="c">
+    <div class="slot"></div>
+    <aside class="note">
+      <h2><b>C</b> · Beltane Night</h2>
+      <p>Beltane ultramarine night ground, linen type, red that glows. Always dark, whatever the Mac is set to.</p>
+      <ul><li>The night ground from the house palette</li><li>Red on dark is #FF3232</li><li>Best for evening and ritual work</li></ul>
+    </aside>
+  </section>
+
+  <footer>
+    <p>Not in these proofs yet: Hugh's woodcut marks from Figma “HT Brand” (they will sit beside the kicker and in empty pages) and Physis for astrological glyphs. Both need the files exported.</p>
+    <p>Every colour and size comes from <code>App/Design/tokens.json</code>. A test checks that all text meets WCAG AA contrast on every ground.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var tpl = document.getElementById('window');
+  document.querySelectorAll('.proof').forEach(function (proof) {
+    var node = tpl.content.cloneNode(true);
+    var mac = node.querySelector('.mac');
+    mac.dataset.style = proof.dataset.proof;
+    mac.dataset.mode = 'light';
+    mac.setAttribute('role', 'img');
+    mac.setAttribute('aria-label', 'Option ' + proof.dataset.proof.toUpperCase() + ' mockup of the Inquiry page');
+    proof.querySelector('.slot').appendChild(node);
+  });
+  var buttons = document.querySelectorAll('.controls button');
+  function setMode(mode) {
+    document.querySelectorAll('.mac').forEach(function (m) { m.dataset.mode = mode; });
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.mode === mode)); });
+    try { localStorage.setItem('grimoire-mock-mode', mode); } catch (e) {}
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { setMode(b.dataset.mode); }); });
+  try { var saved = localStorage.getItem('grimoire-mock-mode'); if (saved) setMode(saved); } catch (e) {}
+})();
+</script>

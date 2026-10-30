@@ -115,10 +115,69 @@ final class IngestTests: XCTestCase {
         XCTAssertEqual(item.entry.body, "Crow on the gate")
     }
 
+    /// The Android app sends its own transcript and the reading the user checked on the phone.
+    /// The Mac keeps both (no second transcription, no re-parse) but the item still waits in the Inbox.
+    func testAndroidCaptureKeepsPhoneTranscriptAndCheckedDraft() async throws {
+        struct NoTranscriber: Transcriber {
+            func transcribe(_ audio: URL) async throws -> String { throw IngestError.transcription("should not be called") }
+        }
+        ingestor = InboxIngestor(root: root, transcriber: NoTranscriber(), parser: TestSupport.parser)
+        ingestor.defaultTimeZone = "America/Los_Angeles"
+        ingestor.stableSeconds = 0
+        try fm.createDirectory(at: ingestor.incoming, withIntermediateDirectories: true)
+        for ext in ["wav", "json"] {
+            let name = "20261029-071500-3307.\(ext)"
+            try fm.copyItem(at: TestSupport.fixture("capture-android/\(name)"), to: ingestor.incoming.appendingPathComponent(name))
+        }
+        let out = await scan(t0)
+        XCTAssertEqual(out, [.ingested(captureId: "20261029-071500-3307")])
+        let item = try XCTUnwrap(repo.data.inbox.first)
+        XCTAssertEqual(item.source, "phone:pixel")
+        XCTAssertEqual(item.entry.status, .inbox)
+        XCTAssertEqual(item.entry.type, .divination)
+        XCTAssertTrue(item.entry.transcript?.hasPrefix("Question: will the move go ahead.") ?? false)
+        let d = try XCTUnwrap(item.draft?.divinations.first)
+        XCTAssertEqual(d.draws.map(\.cardId.value), ["cups-03", "maj-16", "wands-11"])
+        XCTAssertEqual(d.draws[1].cardId.heard, "tour") // corrected on the phone, heard text kept
+        XCTAssertEqual(item.draft?.weakest, .high)
+        XCTAssertTrue(repo.data.entries.isEmpty)
+    }
+
     func testSidecarSchemaRequirements() {
         XCTAssertThrowsError(try CaptureSidecar.decode(Data(#"{"contract_version":1,"id":"a"}"#.utf8)))
         XCTAssertThrowsError(try CaptureSidecar.decode(Data(#"{"contract_version":1,"id":"a","captured_at":"yesterday"}"#.utf8)))
         XCTAssertThrowsError(try CaptureSidecar.decode(Data(#"{"contract_version":1,"id":"a","captured_at":"2026-10-28T08:14:00Z","audio":"../x.m4a"}"#.utf8)))
         XCTAssertNoThrow(try CaptureSidecar.decode(Data(#"{"contract_version":1,"id":"a","captured_at":"2026-10-28T08:14:00Z"}"#.utf8)))
+    }
+}
+
+final class RetranscribeTests: XCTestCase {
+    func testSpeechHintsMatchTheAndroidList() {
+        let lib = TestSupport.library
+        let hints = lib.speechHints()
+        XCTAssertEqual(hints.count, Set(hints).count)
+        XCTAssertTrue(hints.contains("reversed"))
+        for d in lib.decks { XCTAssertTrue(hints.contains(d.name)); for c in d.cards { XCTAssertTrue(hints.contains(c.name)) } }
+        for h in lib.yijing.hexagrams { XCTAssertTrue(hints.contains(h.pinyin)) }
+        XCTAssertLessThan(lib.speechHints(aliases: false).count, hints.count)
+    }
+
+    func testRetranscribeReplacesTextAndReparses() {
+        let at = TestSupport.date("2026-10-28T08:14:00-07:00")
+        let heard = "Deck rider way. Three card: three of cops reversed"
+        let item = InboxItem(entry: Entry(type: .divination, occurredAt: at, body: heard, status: .inbox, transcript: heard),
+                             draft: TestSupport.parser.parse(heard), source: "phone:iphone")
+        let again = item.retranscribed("Deck Rider-Waite, three card: three of cups reversed, the Tower, page of wands.", parser: TestSupport.parser)
+        XCTAssertEqual(again.entry.transcript, "Deck Rider-Waite, three card: three of cups reversed, the Tower, page of wands.")
+        XCTAssertEqual(again.entry.body, again.entry.transcript)
+        XCTAssertEqual(again.draft?.divinations.first?.draws.map(\.cardId.value), ["cups-03", "maj-16", "wands-11"])
+        XCTAssertEqual(again.id, item.id)
+        XCTAssertEqual(again.entry.status, .inbox)
+
+        // Typed text before the old transcript is kept.
+        let typed = InboxItem(entry: Entry(type: .omen, occurredAt: at, body: "Crow.\n\nold words", status: .inbox, transcript: "old words"),
+                              draft: nil, source: "phone:pixel")
+        XCTAssertEqual(typed.retranscribed("new words", parser: TestSupport.parser).entry.body, "Crow.\n\nnew words")
+        XCTAssertNil(typed.retranscribed("new words", parser: TestSupport.parser).draft)
     }
 }

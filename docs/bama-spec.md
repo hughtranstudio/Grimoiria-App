@@ -46,7 +46,7 @@ Native, system accent colour. Calm, text-first. Cards shown by name with suit/el
 
 ## Not in version one
 - Analytics dashboards, transits, Uranian midpoints
-- Phone app beyond the capture Shortcut
+- Phone app beyond capture (the iPhone Shortcut and the Android capture app in `android/` are capture-only)
 - Two-way Obsidian sync
 - ML, embeddings
 - Video, in-app drawing
@@ -68,14 +68,15 @@ Native, system accent colour. Calm, text-first. Cards shown by name with suit/el
 
 ### Using GrimoireCore
 
-Add the package as a local dependency of the app target. What the app gets, already tested (59 tests):
+Add the package as a local dependency of the app target. What the app gets, already tested (85 tests):
 
 - `DefinitionLibrary.bundled()` / `.load(from:)` / `.validate()` for decks, spreads, Yi Jing. Copy the bundled `Definitions` folder to Application Support on first launch, then always load from there so the deck editor can write files.
 - Models as `Codable` value types: `Entry` (+ `TypeFields`), `Inquiry`, `Divination`, `Draw`, `YiJingCast`, `Synthesis`, `Outcome`, `Reminder`, `Volume`, `PhysicalRef`, `TagPath`, `TagTree`, `Link`, `ZonedDate`, `ULID`.
 - `ReadingParser.parse(_:)` for transcripts and `parseQuickDraw(_:deckId:spreadId:)` for the quick panel. Output is a `DraftReading` with `Parsed<T>` fields carrying `heard` text and a `Confidence` (high / medium / low / missing).
 - `InboxIngestor` (folder rules) and `Confirmation.confirm` / `GrimoireRepository.confirm` (the only path from draft to filed records; logs corrections).
-- `TimingContext.compute(at:location:)` for moon phase/sign, Sun sign, planetary day and hour.
-- `GrimoireRepository.search`, `needsOutcome(today:)`, `backlinks(to:)`, `tagTree`, `knowsCapture`.
+- `TimingContext.compute(at:location:timeKnown:)` for moon phase/sign, Sun sign, planetary day, hour and hour number (1–24 from sunrise); the location used is stored on the context. `GrimoireRepository.fillTiming(location:overwrite:)` fills records saved without it.
+- `OutcomeCheckIn.reminder(for:askedOn:today:preset:)`: the 7/30/90-day ladder, one `Reminder` per Inquiry that rolls forward on `complete()`; filed late, it starts at the latest step already past, due today.
+- `GrimoireRepository.search`, `needsOutcome(today:)`, `scheduleOutcomeCheckIn`, `addOutcome(_:to:)`, `stopReminders(for:)`, `backfillOutcomeCheckIns(today:)`, `backlinks(to:)`, `tagTree`, `knowsCapture`.
 - `ObsidianExporter.files(for:)`, `JSONLExporter.export(_:)`, `ExportWriter.write(_:to:)`.
 
 Main app types to write:
@@ -84,7 +85,7 @@ Main app types to write:
 - `SwiftDataRepository: GrimoireRepository`. `data` builds a `GrimoireData` snapshot (fine at personal scale; add targeted fetches later if search gets slow).
 - `IngestCoordinator`: one `InboxIngestor` per ingest folder, an FSEvents stream per folder, a serial actor so scans never overlap.
 - `WhisperTranscriber: Transcriber` (WhisperKit, model chosen in Settings, runs off the main actor).
-- `ReminderScheduler`: schedules a notification for each pending `Reminder` at 09:00 local on `dueOn`; actions Snooze 3 days / Add outcome.
+- `ReminderScheduler`: schedules a notification for each pending `Reminder` at 09:00 local on `dueOn`, body `reminder.prompt`; actions Snooze 3 days / Add outcome / No more nudges (`stopReminders`). Reschedule a reminder whenever it is saved, since a ladder moves its `dueOn`.
 - `QuickLogPanel`, `InquiryView`, `InboxView`, `TimelineView`, `TodayView`, `VolumesView`, `DecksView`, `SearchView`, `SettingsView`.
 
 Behaviors that matter:
@@ -92,10 +93,10 @@ Behaviors that matter:
 - **Confirm is mandatory.** Ingested items are `InboxRecord`s with `entry.status == .inbox`. Nothing in Timeline, Search or Export reads them. Only the Inbox's Confirm button calls `repository.confirm(...)`.
 - **Inbox screen.** Left: transcript with an audio player. Right: the draft: question, each divination with deck and spread pickers, each draw as a card picker + orientation toggle + position. Anything with confidence below `.high` gets an accent outline; `missing` cards show an empty picker. `draft.unparsed` words appear as chips under the transcript, `draft.warnings` as a banner. Confirm is disabled while any card or Yi Jing line set is missing; `ConfirmError` text is shown inline.
 - **Quick log.** Hotkey opens the panel anywhere. One keystroke picks the type: J journal, O omen, I insight, D dream, C card draw, Y Yi Jing, V vision. In C mode, deck and spread pickers, then one text field fed to `parseQuickDraw` live as the user types; Enter saves. In Y mode, six digits fed to `YiJingCast(quick:)`, hexagrams shown instantly. Saves `mode: .quick`.
-- **Inquiry screen.** Question, context, every divination laid out by spread (Celtic Cross as the cross + staff, others as a row), Yi Jing as two hexagram drawings with changing lines marked, synthesis editor with confidence 1–5, outcomes in date order with "days after", linked entries and backlinks. Adding an outcome uses `Inquiry.addOutcome` so they stack; status moves open → resolved → revisited.
-- **Reminders.** New-Inquiry sheet offers presets None / 1 week / 1 month / 3 months / custom (`ReminderPreset`). The default is still an open question for Hugh; use None until he says otherwise. Today shows `needsOutcome(today:)`.
-- **Timing.** Compute at save from `occurredAt` and the home location in Settings (per-entry override). Show `nearCusp` signs with "≈".
-- **Ingest folder.** Default `~/Library/Mobile Documents/com~apple~CloudDocs/GrimoireInbox/`; Settings lists several. Set `ingestor.defaultTimeZone` to the Mac's zone and `ingestor.location` to the home location, `attachmentsFolder` to Application Support/Attachments.
+- **Inquiry screen.** Question, context, every divination laid out by spread (Celtic Cross as the cross + staff, others as a row), Yi Jing as two hexagram drawings with changing lines marked, synthesis editor with confidence 1–5, outcomes in date order with "days after", linked entries and backlinks. Adding an outcome uses `repository.addOutcome(_:to:)` so they stack, status moves open → resolved → revisited, and a due check-in rolls on to the next step.
+- **Reminders.** New-Inquiry sheet and Confirm offer presets 7 / 30 / 90 days (default, `.ladder`) / None / 1 week / 1 month / 3 months (`ReminderPreset`). Today shows `needsOutcome(today:)` with the reminder's prompt ("One week on: what has happened since you asked?"). After importing old notes, offer "Add check-ins to past readings" (`backfillOutcomeCheckIns`).
+- **Timing.** Compute at save from `occurredAt` and the home location in Settings (per-entry override, stored in `timing.location`). Show moon phase, planetary day and "hour of Mars (3rd of night)" from `planetaryHourNumber`; show `nearCusp` signs with "≈". When the home location is first set, run `fillTiming(location:)`. Transits and Uranian midpoints are out of v1.
+- **Ingest folder.** Default `~/Library/Mobile Documents/com~apple~CloudDocs/GrimoireInbox/`; Settings lists several (the Pixel's Syncthing folder, usually `~/GrimoireInbox/`, is the second; see `docs/android-capture.md`). Android captures may carry `transcript` and `draft`; `InboxIngestor` already uses them instead of Whisper and the parser, and the Inbox shows them like any other draft. Set `ingestor.defaultTimeZone` to the Mac's zone and `ingestor.location` to the home location, `attachmentsFolder` to Application Support/Attachments.
 - **Export.** Settings holds the vault folder (e.g. `Vault/Grimoire/`). Export runs on demand and after each confirm; `ExportWriter` only touches changed files. Copy attachments into `_attachments/`.
 - **Decks.** Read-only list in v1 milestone 1; the deck editor (add/rename cards, attributes, import JSON) writes JSON back to the Definitions folder and must pass `validate()` before saving.
 - **Privacy.** No network entitlement. WhisperKit models are bundled or downloaded once by explicit user action in Settings.
@@ -104,9 +105,9 @@ Behaviors that matter:
 
 Same order as spec §13. Each is done when its checks pass with `build-and-verify` and `test-mac-app`.
 
-1. **App shell + definitions.** New Mac app via `new-mac-app`; depends on GrimoireCore; copies Definitions on first launch; Decks screen lists 4 decks (Quareia and Mystagogos marked placeholder) and 4 spreads. *Check:* `DefinitionLibrary.validate()` passes at launch.
+1. **App shell + definitions.** New Mac app via `new-mac-app`; depends on GrimoireCore; copies Definitions on first launch; Decks screen lists 4 decks (Mystagogos marked placeholder) and 8 spreads (4 general, 4 Quareia layouts). *Check:* `DefinitionLibrary.validate()` passes at launch.
 2. **Core records.** SwiftData models + `SwiftDataRepository`; Timeline; reflective editor for all 8 non-divination types with their fields; tags with autocomplete from `tagTree`; links and backlinks. *Check:* create one of each type, relaunch, all present.
-3. **Divination.** Inquiry list and screen, card draws, Yi Jing casts, synthesis, outcomes, reminders + notifications + Needs outcome. *Check:* spec §14 compound Inquiry (3-card RWS + Yi Jing; Quareia once its deck exists), 1-week reminder, add outcome when it fires.
+3. **Divination.** Inquiry list and screen, card draws, Yi Jing casts, synthesis, outcomes, reminders + notifications + Needs outcome. *Check:* spec §14 compound Inquiry (3-card RWS + Yi Jing; Quareia once its deck exists), 7-day check-in fires, add outcome, 30-day check-in is next.
 4. **Quick log.** Hotkey panel, quick draw and quick cast. *Check:* omen with one tag in under 20 s.
 5. **Volumes.** Volumes screen, physical refs, page-range search. *Check:* find everything in Volume III pp. 40–50.
 6. **Export.** Obsidian + JSONL; vault-note links. *Check:* files open in Obsidian with valid frontmatter; second export writes 0 files.
@@ -115,4 +116,4 @@ Same order as spec §13. Each is done when its checks pass with `build-and-verif
 
 ## Open questions carried from the spec
 
-Reminder default; astro auto-fill scope; phone capture-only vs browse; relation to the Uranika/Obsidian hub; where the Quareia, Mystagogos and significations repos live.
+Phone capture-only vs browse; relation to the Uranika/Obsidian hub; where the Quareia, Mystagogos and significations repos live.

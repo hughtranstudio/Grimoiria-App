@@ -13,13 +13,17 @@ public struct InboxItem: Codable, Hashable, Sendable, Identifiable {
     /// Things to check before confirming, such as a guessed date or type. Optional so stores
     /// written before imports existed still decode.
     public var notes: [String]?
+    /// An outcome sent from the phone for the reading `entry.inquiryId`. Confirming adds it to that
+    /// reading instead of filing the entry.
+    public var outcome: Outcome?
 
-    public init(entry: Entry, draft: DraftReading?, source: String, notes: [String]? = nil) {
+    public init(entry: Entry, draft: DraftReading?, source: String, notes: [String]? = nil, outcome: Outcome? = nil) {
         precondition(entry.status == .inbox, "Inbox items must have status inbox")
         self.entry = entry
         self.draft = draft
         self.source = source
         self.notes = notes?.isEmpty == true ? nil : notes
+        self.outcome = outcome
     }
 }
 
@@ -69,6 +73,10 @@ public enum Confirmation {
         entry.status = .filed
         entry.updatedAt = now
         if let t = entryType { entry.type = t }
+        // Confirming a session is the review: its observations count as checked from here on.
+        if entry.session != nil {
+            for i in entry.session!.observations.indices { entry.session!.observations[i].reviewed = true }
+        }
 
         var corrections: [CorrectionLogEntry] = []
         var inquiry: Inquiry?

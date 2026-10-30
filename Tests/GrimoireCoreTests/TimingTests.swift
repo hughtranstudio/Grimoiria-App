@@ -55,4 +55,56 @@ final class TimingTests: XCTestCase {
         let t = TimingContext.compute(at: ZonedDate.parse("2024-12-21T12:00:00+01:00", timeZone: "Europe/Oslo")!, location: tromso)
         XCTAssertNil(t.planetaryHour)
     }
+
+    func testHourNumberAndLocationAreRecorded() {
+        let london = GeoLocation(latitude: 51.5074, longitude: -0.1278)
+        // Sunday 2024-06-23 21:30 BST: first hour of the night is the 13th hour.
+        let t = TimingContext.compute(at: utc("2024-06-23T20:30:00Z"), location: london)
+        XCTAssertEqual(t.planetaryHourNumber, 13)
+        XCTAssertEqual(t.isNightHour, true)
+        XCTAssertEqual(t.location, london)
+        let morning = TimingContext.compute(at: utc("2024-06-23T03:50:00Z"), location: london)
+        XCTAssertEqual(morning.planetaryHourNumber, 1)
+        XCTAssertEqual(morning.isNightHour, false)
+    }
+
+    func testDateWithoutTimeKeepsDayDropsHour() {
+        let london = GeoLocation(latitude: 51.5074, longitude: -0.1278)
+        let t = TimingContext.compute(at: utc("2024-06-23T12:00:00Z"), location: london, timeKnown: false)
+        XCTAssertEqual(t.planetaryDay, .sun)
+        XCTAssertNil(t.planetaryHour)
+        XCTAssertNil(t.planetaryHourNumber)
+        XCTAssertFalse(t.timeKnown)
+    }
+
+    func testFillTimingOnRecordsMissingIt() {
+        let london = GeoLocation(latitude: 51.5074, longitude: -0.1278)
+        let paris = GeoLocation(latitude: 48.8566, longitude: 2.3522)
+        let repo = MemoryRepository()
+        let bare = Entry(type: .ritual, occurredAt: utc("2024-06-23T20:30:00Z"), body: "LBRP")
+        var abroad = Entry(type: .vision, occurredAt: utc("2024-06-23T20:30:00Z"), body: "In Paris")
+        abroad.timing = TimingContext.compute(at: abroad.occurredAt, location: paris)
+        let inq = Inquiry(question: "Q", askedAt: utc("2024-04-23T23:49:00Z"))
+        // Saved before a home location was set: moon only, no planetary hour.
+        let early = Entry(type: .journal, occurredAt: utc("2024-06-23T03:50:00Z"), timing: TimingContext.compute(at: utc("2024-06-23T03:50:00Z"), location: nil))
+        repo.save(bare); repo.save(abroad); repo.save(inq); repo.save(early)
+
+        XCTAssertEqual(repo.fillTiming(location: nil), 2, "without a location only records with no timing at all")
+        XCTAssertEqual(repo.fillTiming(location: london), 3)
+        XCTAssertEqual(repo.entry(early.id)?.timing?.planetaryHour, .sun)
+        XCTAssertEqual(repo.entry(bare.id)?.timing?.planetaryHour, .jupiter)
+        XCTAssertEqual(repo.entry(bare.id)?.timing?.location, london)
+        XCTAssertEqual(repo.inquiry(inq.id)?.timing?.moonPhase, .full)
+        XCTAssertEqual(repo.fillTiming(location: london), 0, "nothing left to fill")
+        // Overwrite recomputes everything but keeps a record's own location.
+        XCTAssertEqual(repo.fillTiming(location: london, overwrite: true), 4)
+        XCTAssertEqual(repo.entry(abroad.id)?.timing?.location, paris)
+    }
+
+    func testOlderStoredTimingStillDecodes() throws {
+        let json = #"{"moonPhase":"full","moonIllumination":100,"moonSign":"scorpio","sunSign":"taurus","planetaryDay":"sun","planetaryHour":"venus","nearCusp":false}"#
+        let t = try JSONDecoder().decode(TimingContext.self, from: Data(json.utf8))
+        XCTAssertNil(t.planetaryHourNumber)
+        XCTAssertNil(t.location)
+    }
 }

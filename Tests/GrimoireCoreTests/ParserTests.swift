@@ -70,14 +70,30 @@ final class ParserTests: XCTestCase {
         XCTAssertTrue(r.warnings.contains { $0.contains("3 positions but 2 cards") })
     }
 
-    func testCompoundReadingWithPlaceholderDeck() {
+    func testCompoundReadingWithQuareia() {
         let r = parser.parse("Question: the new house. Deck Rider-Waite, single, the Star. Deck Quareia, the weaver. I Ching 789676.")
         XCTAssertEqual(r.divinations.count, 3)
         XCTAssertEqual(r.divinations[0].deckId.value, "rws-tarot")
         XCTAssertEqual(r.divinations[1].deckId.value, "quareia")
-        XCTAssertTrue(r.divinations[1].draws.isEmpty)
-        XCTAssertTrue(r.warnings.contains { $0.contains("quareia has no card list") })
+        XCTAssertEqual(cards(r.divinations[1]), ["weaver-of-creation"])
+        XCTAssertTrue(r.warnings.isEmpty, "\(r.warnings)")
         XCTAssertEqual(r.divinations[2].cast?.lines.value, [7, 8, 9, 6, 7, 6])
+    }
+
+    func testQuareiaLayoutAndCards() {
+        let r = parser.parse("Deck Quareia, four directions. Mother Earth, Staff of the Gods, the Grindstone, Gate of the Past, Blood Ancestor, Union.")
+        let d = r.divinations[0]
+        XCTAssertEqual(d.spreadId.value, "quareia-four-directions")
+        XCTAssertEqual(cards(d), ["mother-earth", "staff-of-the-gods", "grindstone", "gate-of-the-past", "blood-ancestor", "union"])
+        XCTAssertEqual(d.draws.map(\.positionKey), ["centre", "east", "south", "west", "north", "union"])
+        XCTAssertTrue(r.unparsed.isEmpty, "\(r.unparsed)")
+    }
+
+    func testPlaceholderDeckWarns() {
+        let r = parser.parse("Deck Mystagogos, the oracle.")
+        XCTAssertEqual(r.divinations[0].deckId.value, "mystagogos")
+        XCTAssertTrue(r.divinations[0].draws.isEmpty)
+        XCTAssertTrue(r.warnings.contains { $0.contains("mystagogos has no card list") })
     }
 
     func testOverfullSpreadMarksExtrasLow() {

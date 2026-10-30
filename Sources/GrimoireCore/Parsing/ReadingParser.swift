@@ -229,7 +229,7 @@ public struct ReadingParser: Sendable {
     /// Keeps the question's original casing and punctuation from the raw transcript.
     static func recoverQuestion(from transcript: String) -> String? {
         guard let r = transcript.range(of: "question", options: [.caseInsensitive]) else { return nil }
-        var rest = transcript[r.upperBound...].drop { ":,- ".contains($0) }
+        var rest = transcript[r.upperBound...].drop { ":,-–— ".contains($0) }
         if let end = rest.firstIndex(where: { ".?!\n".contains($0) }) {
             let isQ = rest[end] == "?"
             rest = rest[..<end]

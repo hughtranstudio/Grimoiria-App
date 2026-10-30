@@ -5,11 +5,14 @@ public struct DefinitionLibrary: Sendable {
     public var decks: [DeckDefinition]
     public var spreads: [SpreadDefinition]
     public var yijing: YiJingDefinition
+    /// Planets, signs, elements and trigrams (`correspondences.json`), when the folder has it.
+    public var correspondences: Correspondences?
 
-    public init(decks: [DeckDefinition], spreads: [SpreadDefinition], yijing: YiJingDefinition) {
+    public init(decks: [DeckDefinition], spreads: [SpreadDefinition], yijing: YiJingDefinition, correspondences: Correspondences? = nil) {
         self.decks = decks.sorted { $0.id < $1.id }
         self.spreads = spreads.sorted { $0.id < $1.id }
         self.yijing = yijing
+        self.correspondences = correspondences
     }
 
     public func deck(_ id: String) -> DeckDefinition? { decks.first { $0.id == id } }
@@ -46,7 +49,9 @@ public struct DefinitionLibrary: Sendable {
         let spreads = try jsonFiles("spreads").map { try decode(SpreadDefinition.self, $0) }
         let yjURL = folder.appendingPathComponent("yijing.json")
         guard fm.fileExists(atPath: yjURL.path) else { throw DefinitionError.missing("yijing.json") }
-        return DefinitionLibrary(decks: decks, spreads: spreads, yijing: try decode(YiJingDefinition.self, yjURL))
+        let cURL = folder.appendingPathComponent("correspondences.json")
+        let correspondences = fm.fileExists(atPath: cURL.path) ? try decode(Correspondences.self, cURL) : nil
+        return DefinitionLibrary(decks: decks, spreads: spreads, yijing: try decode(YiJingDefinition.self, yjURL), correspondences: correspondences)
     }
 
     /// Structural checks. Errors make the library unusable; warnings (e.g. placeholder decks) do not.
@@ -90,6 +95,13 @@ public struct DefinitionLibrary: Sendable {
                 report.errors.append("yijing #\(h.number): unknown trigram"); continue
             }
             if lo + up != h.lines { report.errors.append("yijing #\(h.number): lines disagree with trigrams") }
+        }
+        if let c = correspondences {
+            let ids = c.entries.map(\.id)
+            if Set(ids).count != ids.count { report.errors.append("correspondences: duplicate entry ids") }
+            for e in c.entries {
+                for r in e.related where c.entry(r) == nil { report.errors.append("correspondences \(e.id): unknown related entry \(r)") }
+            }
         }
         return report
     }

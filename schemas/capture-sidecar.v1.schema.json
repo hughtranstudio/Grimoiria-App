@@ -10,7 +10,7 @@
     "id": { "type": "string", "minLength": 1, "description": "Opaque unique id chosen by the phone, e.g. 20261028-081400-4821 or a ULID." },
     "captured_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$" },
     "device": { "type": "string" },
-    "kind_hint": { "enum": ["draw", "yijing", "journal", "ritual", "meditation", "vision", "contact", "omen", "insight", "dream"] },
+    "kind_hint": { "enum": ["draw", "yijing", "journal", "ritual", "meditation", "vision", "contact", "omen", "insight", "dream", "event"] },
     "text": { "type": "string" },
     "audio": { "type": "string", "pattern": "^[^/.][^/]*$" },
     "tags": { "type": "array", "items": { "type": "string" } },
@@ -19,6 +19,188 @@
       "type": "object",
       "required": ["lat", "lon"],
       "properties": { "lat": { "type": "number" }, "lon": { "type": "number" } }
+    },
+    "transcript": { "type": "string", "description": "On-phone transcript of audio, corrected by the user. When present the Mac does not transcribe again." },
+    "draft": {
+      "type": "object",
+      "description": "Reading checked on the phone, in GrimoireCore DraftReading JSON (camelCase keys, Parsed fields as {value, heard, confidence}). When present the Mac uses it instead of parsing; Inbox confirm still applies.",
+      "required": ["question", "divinations", "unparsed", "warnings"],
+      "properties": {
+        "question": { "$ref": "#/$defs/parsed" },
+        "divinations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["system", "deckId", "spreadId", "draws", "heard"],
+            "properties": {
+              "system": { "enum": ["cards", "yijing", "other"] },
+              "deckId": { "$ref": "#/$defs/parsed" },
+              "spreadId": { "$ref": "#/$defs/parsed" },
+              "draws": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["cardId", "orientation", "positionKey"],
+                  "properties": {
+                    "cardId": { "$ref": "#/$defs/parsed" },
+                    "orientation": { "$ref": "#/$defs/parsed" },
+                    "positionKey": { "type": "string" }
+                  }
+                }
+              },
+              "cast": {
+                "type": "object",
+                "required": ["lines", "method"],
+                "properties": {
+                  "lines": { "$ref": "#/$defs/parsed" },
+                  "method": { "enum": ["coins", "yarrow", "other"] }
+                }
+              },
+              "heard": { "type": "string" }
+            }
+          }
+        },
+        "unparsed": { "type": "array", "items": { "type": "string" } },
+        "warnings": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "session": {
+      "type": "object",
+      "description": "A recorded ritual, meditation or vision (docs/session-recording.md). Mark offsets are seconds after started_at.",
+      "properties": {
+        "type": {
+          "enum": [
+            "ritual",
+            "meditation",
+            "vision"
+          ]
+        },
+        "started_at": {
+          "$ref": "#/properties/captured_at"
+        },
+        "ended_at": {
+          "$ref": "#/properties/captured_at"
+        },
+        "intention": {
+          "type": "string"
+        },
+        "technique": {
+          "type": "string"
+        },
+        "marks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "offset_s"
+            ],
+            "properties": {
+              "offset_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "phase": {
+                "enum": [
+                  "preparation",
+                  "opening",
+                  "working",
+                  "closing",
+                  "aftermath"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "imagery",
+                  "entity",
+                  "place",
+                  "symbol",
+                  "message",
+                  "sound",
+                  "sensation",
+                  "emotion",
+                  "insight",
+                  "omen",
+                  "event",
+                  "action",
+                  "note"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "segments": {
+          "type": "array",
+          "description": "Timed transcript: offset in seconds from the start of the audio.",
+          "items": {
+            "type": "object",
+            "required": [
+              "offset",
+              "text"
+            ],
+            "properties": {
+              "offset": {
+                "type": "number",
+                "minimum": 0
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "before": {
+          "type": "object",
+          "properties": {
+            "energy": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "calm": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "focus": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          }
+        },
+        "after": {
+          "type": "object",
+          "properties": {
+            "energy": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "calm": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "focus": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          }
+        },
+        "outcome": {
+          "type": "string"
+        }
+      }
     },
     "draws": {
       "type": "array",
@@ -30,6 +212,17 @@
           "card": { "type": "string" },
           "orientation": { "enum": ["upright", "reversed", "n/a"] }
         }
+      }
+    }
+  },
+  "$defs": {
+    "parsed": {
+      "type": "object",
+      "required": ["confidence"],
+      "properties": {
+        "value": {},
+        "heard": { "type": "string" },
+        "confidence": { "enum": ["missing", "low", "medium", "high"] }
       }
     }
   }

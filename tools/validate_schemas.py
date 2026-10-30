@@ -11,7 +11,7 @@ def schema(name): return Draft202012Validator(json.load(open(os.path.join(ROOT, 
 checks = [
     (schema("deck.schema.json"), glob.glob(os.path.join(ROOT, "Sources/GrimoireCore/Resources/Definitions/decks/*.json"))),
     (schema("spread.schema.json"), glob.glob(os.path.join(ROOT, "Sources/GrimoireCore/Resources/Definitions/spreads/*.json"))),
-    (schema("capture-sidecar.v1.schema.json"), glob.glob(os.path.join(ROOT, "Tests/GrimoireCoreTests/Fixtures/capture/*.json"))),
+    (schema("capture-sidecar.v1.schema.json"), glob.glob(os.path.join(ROOT, "Tests/GrimoireCoreTests/Fixtures/capture*/*.json"))),
 ]
 failed = 0
 for v, files in checks:

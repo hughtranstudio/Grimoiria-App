@@ -1,0 +1,79 @@
+{
+  "id": "quareia-mystical-map",
+  "name": "Foundation/Mystical Map",
+  "aliases": [
+    "mystical map",
+    "foundation mystical map",
+    "mystical map layout",
+    "foundation layout"
+  ],
+  "positions": [
+    {
+      "key": "mother-earth",
+      "label": "I Mother Earth: ground zero, the body or land now"
+    },
+    {
+      "key": "union",
+      "label": "II Union: the strongest relationship or interaction"
+    },
+    {
+      "key": "star-father",
+      "label": "III Star Father: long-term future (south/up)"
+    },
+    {
+      "key": "abyss",
+      "label": "IV Abyss: deep past that will not return (north/down)"
+    },
+    {
+      "key": "gate",
+      "label": "V Gate: what is falling away (may return)"
+    },
+    {
+      "key": "temple-of-ancestors",
+      "label": "VI Temple of Ancestors: ancestral influence, inherited gifts"
+    },
+    {
+      "key": "inner-temple",
+      "label": "VII Inner Temple: deeper magical or inner aspects, inner contacts"
+    },
+    {
+      "key": "blood-ancestor",
+      "label": "VIII Blood Ancestor: deepest ancestral connection in the Underworld"
+    },
+    {
+      "key": "foundation",
+      "label": "IX Foundation: the deep anchor from the past"
+    },
+    {
+      "key": "weaver-of-creation",
+      "label": "X Weaver of Creation: the current fate pattern"
+    },
+    {
+      "key": "grindstone",
+      "label": "XI Grindstone: limitation to overcome"
+    },
+    {
+      "key": "magical-temple",
+      "label": "XII Magical Temple: magical life, temples in whose orbit"
+    },
+    {
+      "key": "home-and-hearth",
+      "label": "XIII Home and Hearth: home, family, day-to-day world"
+    },
+    {
+      "key": "unraveller",
+      "label": "XIV Unraveller: what is unravelling and passing away"
+    },
+    {
+      "key": "river-of-dreams",
+      "label": "XV River of Dreams: sleep, dreams, visions"
+    },
+    {
+      "key": "path-of-hercules",
+      "label": "XVI Path of Hercules: short-term future, the way ahead"
+    }
+  ],
+  "decks": [
+    "quareia"
+  ]
+}

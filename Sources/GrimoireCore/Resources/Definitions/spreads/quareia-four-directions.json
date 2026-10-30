@@ -1,0 +1,39 @@
+{
+  "id": "quareia-four-directions",
+  "name": "Four Directions",
+  "aliases": [
+    "four directions",
+    "directions",
+    "directional",
+    "four directions layout"
+  ],
+  "positions": [
+    {
+      "key": "centre",
+      "label": "1 Centre: the subject (body, place, land, person, object)"
+    },
+    {
+      "key": "east",
+      "label": "2 East: coming into being, potential, air, utterance, spring, incoming, learning"
+    },
+    {
+      "key": "south",
+      "label": "3 South: the path ahead, the future, fire, summer, work"
+    },
+    {
+      "key": "west",
+      "label": "4 West: family, home, ageing, water, autumn, falling away, legacy"
+    },
+    {
+      "key": "north",
+      "label": "5 North: ancestors, death, the past, winter, earth"
+    },
+    {
+      "key": "union",
+      "label": "6 Union: the biggest influence on the subject, relationships, input"
+    }
+  ],
+  "decks": [
+    "quareia"
+  ]
+}

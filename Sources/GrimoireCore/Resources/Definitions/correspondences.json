@@ -1,0 +1,1850 @@
+{
+  "id": "classical",
+  "name": "Classical correspondences",
+  "version": 1,
+  "source": "Ptolemy and Lilly (dignities), Agrippa (squares, incense), Golden Dawn (colours, sephiroth, directions, archangels), Shuo Gua (trigrams).",
+  "entries": [
+    {
+      "id": "planet:saturn",
+      "kind": "planet",
+      "name": "Saturn",
+      "glyph": "♄",
+      "fields": [
+        {
+          "label": "Day",
+          "values": [
+            "Saturday"
+          ]
+        },
+        {
+          "label": "Metal",
+          "values": [
+            "Lead"
+          ]
+        },
+        {
+          "label": "Nature",
+          "values": [
+            "Cold and dry"
+          ]
+        },
+        {
+          "label": "Rules",
+          "values": [
+            "Capricorn",
+            "Aquarius"
+          ]
+        },
+        {
+          "label": "Exalted in",
+          "values": [
+            "Libra"
+          ]
+        },
+        {
+          "label": "Detriment in",
+          "values": [
+            "Cancer",
+            "Leo"
+          ]
+        },
+        {
+          "label": "Fall in",
+          "values": [
+            "Aries"
+          ]
+        },
+        {
+          "label": "Colour (Golden Dawn)",
+          "values": [
+            "Indigo"
+          ]
+        },
+        {
+          "label": "Sephirah",
+          "values": [
+            "Binah"
+          ]
+        },
+        {
+          "label": "Magic square",
+          "values": [
+            "3 × 3"
+          ]
+        },
+        {
+          "label": "Incense (Agrippa)",
+          "values": [
+            "Myrrh",
+            "Black poppy seed",
+            "Mandrake root"
+          ]
+        }
+      ],
+      "related": [
+        "sign:capricorn",
+        "sign:aquarius",
+        "sign:libra"
+      ]
+    },
+    {
+      "id": "planet:jupiter",
+      "kind": "planet",
+      "name": "Jupiter",
+      "glyph": "♃",
+      "fields": [
+        {
+          "label": "Day",
+          "values": [
+            "Thursday"
+          ]
+        },
+        {
+          "label": "Metal",
+          "values": [
+            "Tin"
+          ]
+        },
+        {
+          "label": "Nature",
+          "values": [
+            "Warm and moist"
+          ]
+        },
+        {
+          "label": "Rules",
+          "values": [
+            "Sagittarius",
+            "Pisces"
+          ]
+        },
+        {
+          "label": "Exalted in",
+          "values": [
+            "Cancer"
+          ]
+        },
+        {
+          "label": "Detriment in",
+          "values": [
+            "Gemini",
+            "Virgo"
+          ]
+        },
+        {
+          "label": "Fall in",
+          "values": [
+            "Capricorn"
+          ]
+        },
+        {
+          "label": "Colour (Golden Dawn)",
+          "values": [
+            "Violet"
+          ]
+        },
+        {
+          "label": "Sephirah",
+          "values": [
+            "Chesed"
+          ]
+        },
+        {
+          "label": "Magic square",
+          "values": [
+            "4 × 4"
+          ]
+        },
+        {
+          "label": "Incense (Agrippa)",
+          "values": [
+            "Storax",
+            "Lignum aloes",
+            "Benzoin"
+          ]
+        }
+      ],
+      "related": [
+        "sign:sagittarius",
+        "sign:pisces",
+        "sign:cancer"
+      ]
+    },
+    {
+      "id": "planet:mars",
+      "kind": "planet",
+      "name": "Mars",
+      "glyph": "♂",
+      "fields": [
+        {
+          "label": "Day",
+          "values": [
+            "Tuesday"
+          ]
+        },
+        {
+          "label": "Metal",
+          "values": [
+            "Iron"
+          ]
+        },
+        {
+          "label": "Nature",
+          "values": [
+            "Hot and dry"
+          ]
+        },
+        {
+          "label": "Rules",
+          "values": [
+            "Aries",
+            "Scorpio"
+          ]
+        },
+        {
+          "label": "Exalted in",
+          "values": [
+            "Capricorn"
+          ]
+        },
+        {
+          "label": "Detriment in",
+          "values": [
+            "Libra",
+            "Taurus"
+          ]
+        },
+        {
+          "label": "Fall in",
+          "values": [
+            "Cancer"
+          ]
+        },
+        {
+          "label": "Colour (Golden Dawn)",
+          "values": [
+            "Scarlet"
+          ]
+        },
+        {
+          "label": "Sephirah",
+          "values": [
+            "Geburah"
+          ]
+        },
+        {
+          "label": "Magic square",
+          "values": [
+            "5 × 5"
+          ]
+        },
+        {
+          "label": "Incense (Agrippa)",
+          "values": [
+            "Sulphur",
+            "Euphorbium",
+            "Bdellium"
+          ]
+        }
+      ],
+      "related": [
+        "sign:aries",
+        "sign:scorpio",
+        "sign:capricorn"
+      ]
+    },
+    {
+      "id": "planet:sun",
+      "kind": "planet",
+      "name": "Sun",
+      "glyph": "☉",
+      "fields": [
+        {
+          "label": "Day",
+          "values": [
+            "Sunday"
+          ]
+        },
+        {
+          "label": "Metal",
+          "values": [
+            "Gold"
+          ]
+        },
+        {
+          "label": "Nature",
+          "values": [
+            "Hot and dry"
+          ]
+        },
+        {
+          "label": "Rules",
+          "values": [
+            "Leo"
+          ]
+        },
+        {
+          "label": "Exalted in",
+          "values": [
+            "Aries"
+          ]
+        },
+        {
+          "label": "Detriment in",
+          "values": [
+            "Aquarius"
+          ]
+        },
+        {
+          "label": "Fall in",
+          "values": [
+            "Libra"
+          ]
+        },
+        {
+          "label": "Colour (Golden Dawn)",
+          "values": [
+            "Orange"
+          ]
+        },
+        {
+          "label": "Sephirah",
+          "values": [
+            "Tiphareth"
+          ]
+        },
+        {
+          "label": "Magic square",
+          "values": [
+            "6 × 6"
+          ]
+        },
+        {
+          "label": "Incense (Agrippa)",
+          "values": [
+            "Frankincense",
+            "Saffron",
+            "Balsam"
+          ]
+        }
+      ],
+      "related": [
+        "sign:leo",
+        "sign:aries"
+      ]
+    },
+    {
+      "id": "planet:venus",
+      "kind": "planet",
+      "name": "Venus",
+      "glyph": "♀",
+      "fields": [
+        {
+          "label": "Day",
+          "values": [
+            "Friday"
+          ]
+        },
+        {
+          "label": "Metal",
+          "values": [
+            "Copper"
+          ]
+        },
+        {
+          "label": "Nature",
+          "values": [
+            "Temperate, warm and moist"
+          ]
+        },
+        {
+          "label": "Rules",
+          "values": [
+            "Taurus",
+            "Libra"
+          ]
+        },
+        {
+          "label": "Exalted in",
+          "values": [
+            "Pisces"
+          ]
+        },
+        {
+          "label": "Detriment in",
+          "values": [
+            "Scorpio",
+            "Aries"
+          ]
+        },
+        {
+          "label": "Fall in",
+          "values": [
+            "Virgo"
+          ]
+        },
+        {
+          "label": "Colour (Golden Dawn)",
+          "values": [
+            "Emerald green"
+          ]
+        },
+        {
+          "label": "Sephirah",
+          "values": [
+            "Netzach"
+          ]
+        },
+        {
+          "label": "Magic square",
+          "values": [
+            "7 × 7"
+          ]
+        },
+        {
+          "label": "Incense (Agrippa)",
+          "values": [
+            "Musk",
+            "Red roses",
+            "Ambergris"
+          ]
+        }
+      ],
+      "related": [
+        "sign:taurus",
+        "sign:libra",
+        "sign:pisces"
+      ]
+    },
+    {
+      "id": "planet:mercury",
+      "kind": "planet",
+      "name": "Mercury",
+      "glyph": "☿",
+      "fields": [
+        {
+          "label": "Day",
+          "values": [
+            "Wednesday"
+          ]
+        },
+        {
+          "label": "Metal",
+          "values": [
+            "Quicksilver"
+          ]
+        },
+        {
+          "label": "Nature",
+          "values": [
+            "Changeable, takes on others"
+          ]
+        },
+        {
+          "label": "Rules",
+          "values": [
+            "Gemini",
+            "Virgo"
+          ]
+        },
+        {
+          "label": "Exalted in",
+          "values": [
+            "Virgo"
+          ]
+        },
+        {
+          "label": "Detriment in",
+          "values": [
+            "Sagittarius",
+            "Pisces"
+          ]
+        },
+        {
+          "label": "Fall in",
+          "values": [
+            "Pisces"
+          ]
+        },
+        {
+          "label": "Colour (Golden Dawn)",
+          "values": [
+            "Yellow"
+          ]
+        },
+        {
+          "label": "Sephirah",
+          "values": [
+            "Hod"
+          ]
+        },
+        {
+          "label": "Magic square",
+          "values": [
+            "8 × 8"
+          ]
+        },
+        {
+          "label": "Incense (Agrippa)",
+          "values": [
+            "Mastic",
+            "Cloves",
+            "Cinquefoil"
+          ]
+        }
+      ],
+      "related": [
+        "sign:gemini",
+        "sign:virgo",
+        "sign:virgo"
+      ]
+    },
+    {
+      "id": "planet:moon",
+      "kind": "planet",
+      "name": "Moon",
+      "glyph": "☽",
+      "fields": [
+        {
+          "label": "Day",
+          "values": [
+            "Monday"
+          ]
+        },
+        {
+          "label": "Metal",
+          "values": [
+            "Silver"
+          ]
+        },
+        {
+          "label": "Nature",
+          "values": [
+            "Cold and moist"
+          ]
+        },
+        {
+          "label": "Rules",
+          "values": [
+            "Cancer"
+          ]
+        },
+        {
+          "label": "Exalted in",
+          "values": [
+            "Taurus"
+          ]
+        },
+        {
+          "label": "Detriment in",
+          "values": [
+            "Capricorn"
+          ]
+        },
+        {
+          "label": "Fall in",
+          "values": [
+            "Scorpio"
+          ]
+        },
+        {
+          "label": "Colour (Golden Dawn)",
+          "values": [
+            "Blue"
+          ]
+        },
+        {
+          "label": "Sephirah",
+          "values": [
+            "Yesod"
+          ]
+        },
+        {
+          "label": "Magic square",
+          "values": [
+            "9 × 9"
+          ]
+        },
+        {
+          "label": "Incense (Agrippa)",
+          "values": [
+            "Camphor",
+            "White poppy seed",
+            "Frankincense"
+          ]
+        }
+      ],
+      "related": [
+        "sign:cancer",
+        "sign:taurus"
+      ]
+    },
+    {
+      "id": "sign:aries",
+      "kind": "sign",
+      "name": "Aries",
+      "glyph": "♈︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Fire"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Cardinal"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Mars"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": [
+            "Sun"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Head and face"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Masculine, diurnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:fire",
+        "planet:mars",
+        "planet:sun"
+      ]
+    },
+    {
+      "id": "sign:taurus",
+      "kind": "sign",
+      "name": "Taurus",
+      "glyph": "♉︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Earth"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Fixed"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Venus"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": [
+            "Moon"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Neck and throat"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Feminine, nocturnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:earth",
+        "planet:venus",
+        "planet:moon"
+      ]
+    },
+    {
+      "id": "sign:gemini",
+      "kind": "sign",
+      "name": "Gemini",
+      "glyph": "♊︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Air"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Mutable"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Mercury"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": []
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Shoulders, arms and hands"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Masculine, diurnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:air",
+        "planet:mercury"
+      ]
+    },
+    {
+      "id": "sign:cancer",
+      "kind": "sign",
+      "name": "Cancer",
+      "glyph": "♋︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Water"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Cardinal"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Moon"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": [
+            "Jupiter"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Chest and breasts"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Feminine, nocturnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:water",
+        "planet:moon",
+        "planet:jupiter"
+      ]
+    },
+    {
+      "id": "sign:leo",
+      "kind": "sign",
+      "name": "Leo",
+      "glyph": "♌︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Fire"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Fixed"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Sun"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": []
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Heart and back"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Masculine, diurnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:fire",
+        "planet:sun"
+      ]
+    },
+    {
+      "id": "sign:virgo",
+      "kind": "sign",
+      "name": "Virgo",
+      "glyph": "♍︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Earth"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Mutable"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Mercury"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": [
+            "Mercury"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Belly and bowels"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Feminine, nocturnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:earth",
+        "planet:mercury",
+        "planet:mercury"
+      ]
+    },
+    {
+      "id": "sign:libra",
+      "kind": "sign",
+      "name": "Libra",
+      "glyph": "♎︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Air"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Cardinal"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Venus"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": [
+            "Saturn"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Kidneys and lower back"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Masculine, diurnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:air",
+        "planet:venus",
+        "planet:saturn"
+      ]
+    },
+    {
+      "id": "sign:scorpio",
+      "kind": "sign",
+      "name": "Scorpio",
+      "glyph": "♏︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Water"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Fixed"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Mars"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": [
+            "Pluto"
+          ]
+        },
+        {
+          "label": "Exaltation of",
+          "values": []
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Genitals"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Feminine, nocturnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:water",
+        "planet:mars"
+      ]
+    },
+    {
+      "id": "sign:sagittarius",
+      "kind": "sign",
+      "name": "Sagittarius",
+      "glyph": "♐︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Fire"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Mutable"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Jupiter"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": []
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Hips and thighs"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Masculine, diurnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:fire",
+        "planet:jupiter"
+      ]
+    },
+    {
+      "id": "sign:capricorn",
+      "kind": "sign",
+      "name": "Capricorn",
+      "glyph": "♑︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Earth"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Cardinal"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Saturn"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": []
+        },
+        {
+          "label": "Exaltation of",
+          "values": [
+            "Mars"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Knees"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Feminine, nocturnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:earth",
+        "planet:saturn",
+        "planet:mars"
+      ]
+    },
+    {
+      "id": "sign:aquarius",
+      "kind": "sign",
+      "name": "Aquarius",
+      "glyph": "♒︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Air"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Fixed"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Saturn"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": [
+            "Uranus"
+          ]
+        },
+        {
+          "label": "Exaltation of",
+          "values": []
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Calves and ankles"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Masculine, diurnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:air",
+        "planet:saturn"
+      ]
+    },
+    {
+      "id": "sign:pisces",
+      "kind": "sign",
+      "name": "Pisces",
+      "glyph": "♓︎",
+      "fields": [
+        {
+          "label": "Element",
+          "values": [
+            "Water"
+          ]
+        },
+        {
+          "label": "Modality",
+          "values": [
+            "Mutable"
+          ]
+        },
+        {
+          "label": "Ruler",
+          "values": [
+            "Jupiter"
+          ]
+        },
+        {
+          "label": "Modern ruler",
+          "values": [
+            "Neptune"
+          ]
+        },
+        {
+          "label": "Exaltation of",
+          "values": [
+            "Venus"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Feet"
+          ]
+        },
+        {
+          "label": "Polarity",
+          "values": [
+            "Feminine, nocturnal"
+          ]
+        }
+      ],
+      "related": [
+        "element:water",
+        "planet:jupiter",
+        "planet:venus"
+      ]
+    },
+    {
+      "id": "element:fire",
+      "kind": "element",
+      "name": "Fire",
+      "glyph": "🜂",
+      "fields": [
+        {
+          "label": "Qualities",
+          "values": [
+            "Hot and dry"
+          ]
+        },
+        {
+          "label": "Humour",
+          "values": [
+            "Choleric (yellow bile)"
+          ]
+        },
+        {
+          "label": "Signs",
+          "values": [
+            "Aries",
+            "Leo",
+            "Sagittarius"
+          ]
+        },
+        {
+          "label": "Direction (Golden Dawn)",
+          "values": [
+            "South"
+          ]
+        },
+        {
+          "label": "Archangel (Golden Dawn)",
+          "values": [
+            "Michael"
+          ]
+        },
+        {
+          "label": "Tool",
+          "values": [
+            "Wand"
+          ]
+        },
+        {
+          "label": "Tarot suit",
+          "values": [
+            "Wands"
+          ]
+        },
+        {
+          "label": "Elementals",
+          "values": [
+            "Salamanders"
+          ]
+        },
+        {
+          "label": "Kerub",
+          "values": [
+            "Lion"
+          ]
+        }
+      ],
+      "related": [
+        "sign:aries",
+        "sign:leo",
+        "sign:sagittarius"
+      ],
+      "suit": "wands"
+    },
+    {
+      "id": "element:water",
+      "kind": "element",
+      "name": "Water",
+      "glyph": "🜄",
+      "fields": [
+        {
+          "label": "Qualities",
+          "values": [
+            "Cold and moist"
+          ]
+        },
+        {
+          "label": "Humour",
+          "values": [
+            "Phlegmatic (phlegm)"
+          ]
+        },
+        {
+          "label": "Signs",
+          "values": [
+            "Cancer",
+            "Scorpio",
+            "Pisces"
+          ]
+        },
+        {
+          "label": "Direction (Golden Dawn)",
+          "values": [
+            "West"
+          ]
+        },
+        {
+          "label": "Archangel (Golden Dawn)",
+          "values": [
+            "Gabriel"
+          ]
+        },
+        {
+          "label": "Tool",
+          "values": [
+            "Cup"
+          ]
+        },
+        {
+          "label": "Tarot suit",
+          "values": [
+            "Cups"
+          ]
+        },
+        {
+          "label": "Elementals",
+          "values": [
+            "Undines"
+          ]
+        },
+        {
+          "label": "Kerub",
+          "values": [
+            "Eagle"
+          ]
+        }
+      ],
+      "related": [
+        "sign:cancer",
+        "sign:scorpio",
+        "sign:pisces"
+      ],
+      "suit": "cups"
+    },
+    {
+      "id": "element:air",
+      "kind": "element",
+      "name": "Air",
+      "glyph": "🜁",
+      "fields": [
+        {
+          "label": "Qualities",
+          "values": [
+            "Hot and moist"
+          ]
+        },
+        {
+          "label": "Humour",
+          "values": [
+            "Sanguine (blood)"
+          ]
+        },
+        {
+          "label": "Signs",
+          "values": [
+            "Gemini",
+            "Libra",
+            "Aquarius"
+          ]
+        },
+        {
+          "label": "Direction (Golden Dawn)",
+          "values": [
+            "East"
+          ]
+        },
+        {
+          "label": "Archangel (Golden Dawn)",
+          "values": [
+            "Raphael"
+          ]
+        },
+        {
+          "label": "Tool",
+          "values": [
+            "Dagger"
+          ]
+        },
+        {
+          "label": "Tarot suit",
+          "values": [
+            "Swords"
+          ]
+        },
+        {
+          "label": "Elementals",
+          "values": [
+            "Sylphs"
+          ]
+        },
+        {
+          "label": "Kerub",
+          "values": [
+            "Man"
+          ]
+        }
+      ],
+      "related": [
+        "sign:gemini",
+        "sign:libra",
+        "sign:aquarius"
+      ],
+      "suit": "swords"
+    },
+    {
+      "id": "element:earth",
+      "kind": "element",
+      "name": "Earth",
+      "glyph": "🜃",
+      "fields": [
+        {
+          "label": "Qualities",
+          "values": [
+            "Cold and dry"
+          ]
+        },
+        {
+          "label": "Humour",
+          "values": [
+            "Melancholic (black bile)"
+          ]
+        },
+        {
+          "label": "Signs",
+          "values": [
+            "Taurus",
+            "Virgo",
+            "Capricorn"
+          ]
+        },
+        {
+          "label": "Direction (Golden Dawn)",
+          "values": [
+            "North"
+          ]
+        },
+        {
+          "label": "Archangel (Golden Dawn)",
+          "values": [
+            "Auriel"
+          ]
+        },
+        {
+          "label": "Tool",
+          "values": [
+            "Pentacle"
+          ]
+        },
+        {
+          "label": "Tarot suit",
+          "values": [
+            "Pentacles"
+          ]
+        },
+        {
+          "label": "Elementals",
+          "values": [
+            "Gnomes"
+          ]
+        },
+        {
+          "label": "Kerub",
+          "values": [
+            "Bull"
+          ]
+        }
+      ],
+      "related": [
+        "sign:taurus",
+        "sign:virgo",
+        "sign:capricorn"
+      ],
+      "suit": "pentacles"
+    },
+    {
+      "id": "trigram:qian",
+      "kind": "trigram",
+      "name": "Qian",
+      "glyph": "☰",
+      "fields": [
+        {
+          "label": "Family",
+          "values": [
+            "Father"
+          ]
+        },
+        {
+          "label": "Quality",
+          "values": [
+            "Strong, creative"
+          ]
+        },
+        {
+          "label": "Direction (Later Heaven)",
+          "values": [
+            "Northwest"
+          ]
+        },
+        {
+          "label": "Phase",
+          "values": [
+            "Metal"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Head"
+          ]
+        },
+        {
+          "label": "Animal",
+          "values": [
+            "Horse"
+          ]
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "trigram:kun",
+      "kind": "trigram",
+      "name": "Kun",
+      "glyph": "☷",
+      "fields": [
+        {
+          "label": "Family",
+          "values": [
+            "Mother"
+          ]
+        },
+        {
+          "label": "Quality",
+          "values": [
+            "Yielding, receptive"
+          ]
+        },
+        {
+          "label": "Direction (Later Heaven)",
+          "values": [
+            "Southwest"
+          ]
+        },
+        {
+          "label": "Phase",
+          "values": [
+            "Earth"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Belly"
+          ]
+        },
+        {
+          "label": "Animal",
+          "values": [
+            "Cow"
+          ]
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "trigram:zhen",
+      "kind": "trigram",
+      "name": "Zhen",
+      "glyph": "☳",
+      "fields": [
+        {
+          "label": "Family",
+          "values": [
+            "Eldest son"
+          ]
+        },
+        {
+          "label": "Quality",
+          "values": [
+            "Arousing, movement"
+          ]
+        },
+        {
+          "label": "Direction (Later Heaven)",
+          "values": [
+            "East"
+          ]
+        },
+        {
+          "label": "Phase",
+          "values": [
+            "Wood"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Foot"
+          ]
+        },
+        {
+          "label": "Animal",
+          "values": [
+            "Dragon"
+          ]
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "trigram:kan",
+      "kind": "trigram",
+      "name": "Kan",
+      "glyph": "☵",
+      "fields": [
+        {
+          "label": "Family",
+          "values": [
+            "Middle son"
+          ]
+        },
+        {
+          "label": "Quality",
+          "values": [
+            "Dangerous, the abyss"
+          ]
+        },
+        {
+          "label": "Direction (Later Heaven)",
+          "values": [
+            "North"
+          ]
+        },
+        {
+          "label": "Phase",
+          "values": [
+            "Water"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Ear"
+          ]
+        },
+        {
+          "label": "Animal",
+          "values": [
+            "Pig"
+          ]
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "trigram:gen",
+      "kind": "trigram",
+      "name": "Gen",
+      "glyph": "☶",
+      "fields": [
+        {
+          "label": "Family",
+          "values": [
+            "Youngest son"
+          ]
+        },
+        {
+          "label": "Quality",
+          "values": [
+            "Keeping still"
+          ]
+        },
+        {
+          "label": "Direction (Later Heaven)",
+          "values": [
+            "Northeast"
+          ]
+        },
+        {
+          "label": "Phase",
+          "values": [
+            "Earth"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Hand"
+          ]
+        },
+        {
+          "label": "Animal",
+          "values": [
+            "Dog"
+          ]
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "trigram:xun",
+      "kind": "trigram",
+      "name": "Xun",
+      "glyph": "☴",
+      "fields": [
+        {
+          "label": "Family",
+          "values": [
+            "Eldest daughter"
+          ]
+        },
+        {
+          "label": "Quality",
+          "values": [
+            "Gentle, penetrating"
+          ]
+        },
+        {
+          "label": "Direction (Later Heaven)",
+          "values": [
+            "Southeast"
+          ]
+        },
+        {
+          "label": "Phase",
+          "values": [
+            "Wood"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Thighs"
+          ]
+        },
+        {
+          "label": "Animal",
+          "values": [
+            "Fowl"
+          ]
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "trigram:li",
+      "kind": "trigram",
+      "name": "Li",
+      "glyph": "☲",
+      "fields": [
+        {
+          "label": "Family",
+          "values": [
+            "Middle daughter"
+          ]
+        },
+        {
+          "label": "Quality",
+          "values": [
+            "Clinging, light"
+          ]
+        },
+        {
+          "label": "Direction (Later Heaven)",
+          "values": [
+            "South"
+          ]
+        },
+        {
+          "label": "Phase",
+          "values": [
+            "Fire"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Eye"
+          ]
+        },
+        {
+          "label": "Animal",
+          "values": [
+            "Pheasant"
+          ]
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "trigram:dui",
+      "kind": "trigram",
+      "name": "Dui",
+      "glyph": "☱",
+      "fields": [
+        {
+          "label": "Family",
+          "values": [
+            "Youngest daughter"
+          ]
+        },
+        {
+          "label": "Quality",
+          "values": [
+            "Joyous"
+          ]
+        },
+        {
+          "label": "Direction (Later Heaven)",
+          "values": [
+            "West"
+          ]
+        },
+        {
+          "label": "Phase",
+          "values": [
+            "Metal"
+          ]
+        },
+        {
+          "label": "Body",
+          "values": [
+            "Mouth"
+          ]
+        },
+        {
+          "label": "Animal",
+          "values": [
+            "Sheep"
+          ]
+        }
+      ],
+      "related": []
+    }
+  ]
+}

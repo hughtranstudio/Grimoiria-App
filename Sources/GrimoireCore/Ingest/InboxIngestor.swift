@@ -16,6 +16,12 @@ public final class InboxIngestor: @unchecked Sendable {
     public var location: GeoLocation?
     /// Attachments are copied here; the Entry stores a path relative to it.
     public var attachmentsFolder: URL?
+    /// Tags suggested for observations in recorded sessions.
+    public var vocabulary: TagVocabulary = .standard
+    /// When set, entries get the chart of their moment from Uranika (see `UranikaAstrologer`).
+    public var astrologer: UranikaAstrologer?
+    /// Existing tags, used to suggest tags for life events.
+    public var tagVocabulary: [TagPath] = []
 
     private var sizeObservations: [String: (size: Int, since: Date)] = [:]
     private let lock = NSLock()
@@ -108,12 +114,16 @@ public final class InboxIngestor: @unchecked Sendable {
         if let home = TimeZone(identifier: defaultTimeZone), home.secondsFromGMT(for: occurred.instant) == occurred.zone.secondsFromGMT(for: occurred.instant) {
             occurred.timeZone = home.identifier
         }
+        if let ss = s.session { return try await makeSessionItem(s, ss, occurred: occurred, audio: audio, now: now) }
+        if s.isOutcome { return try await makeOutcomeItem(s, occurred: occurred, audio: audio, now: now) }
         var transcript: String?
-        if let audio { transcript = try await transcriber.transcribe(audio) }
+        if let phone = s.transcript, !phone.isEmpty { transcript = phone }
+        else if let audio { transcript = try await transcriber.transcribe(audio) }
         let spoken = [s.text, transcript].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n\n")
 
         var draft: DraftReading?
-        let parsed = parser.parse(spoken)
+        // A reading already checked on the phone is kept as is; Confirm still happens here.
+        let parsed = s.draft ?? parser.parse(spoken)
         if !parsed.isEmpty || s.expectsReading {
             draft = parsed
             if s.expectsReading && parsed.isEmpty {
@@ -136,23 +146,99 @@ public final class InboxIngestor: @unchecked Sendable {
 
         var attachments: [Attachment] = []
         if let audio {
-            var rel = audio.lastPathComponent
-            if let folder = attachmentsFolder {
-                rel = "audio/\(audio.lastPathComponent)"
-                let dest = folder.appendingPathComponent(rel)
-                try fs.makeDirectory(dest.deletingLastPathComponent())
-                try fs.write(try fs.read(audio), to: dest)
-            }
-            attachments.append(Attachment(kind: .audio, path: rel, originalName: audio.lastPathComponent))
+            attachments.append(Attachment(kind: .audio, path: try copyAudio(audio), originalName: audio.lastPathComponent))
         }
         let tags: [TagPath] = (s.tags ?? []).map { TagPath($0) }.filter { !$0.isEmpty }
         let sidecarLocation: GeoLocation? = s.location.map { GeoLocation(latitude: $0.lat, longitude: $0.lon) }
-        let timing = TimingContext.compute(at: occurred, location: location ?? sidecarLocation)
+        let uranikaHome = astrologer?.settings.home.map { GeoLocation(latitude: $0.latitude, longitude: $0.longitude, name: $0.name) }
+        let timing = TimingContext.compute(at: occurred, location: location ?? uranikaHome ?? sidecarLocation)
         var entry = Entry(id: ULID(date: occurred.instant), type: s.entryType, occurredAt: occurred, createdAt: now,
                           body: spoken, tags: tags, attachments: attachments, timing: timing,
                           mode: .quick, status: .inbox, captureId: s.id, transcript: transcript)
         if let iid = s.inquiryId, let u = ULID(iid) { entry.inquiryId = u }
-        return InboxItem(entry: entry, draft: draft, source: "phone:\(s.device ?? "unknown")")
+        var notes: [String] = []
+        // Only untyped captures (or the phone's Event button) are read as life events; a chosen type wins.
+        let hint = s.kindHint?.lowercased()
+        if hint == nil || hint == "event", draft?.divinations.isEmpty != false, let event = LifeEvent.detect(spoken, kindHint: s.kindHint, vocabulary: tagVocabulary) {
+            entry.type = .event
+            entry.title = event.title
+            for t in event.tags where !entry.tags.contains(t) { entry.tags.append(t) }
+            if s.kindHint?.lowercased() != "event" { notes.append("Filed as a life event because it starts like one; change the type if not") }
+        }
+        if let astro = astrologer, astro.applies(to: entry.type) {
+            let snap = await astro.snapshot(at: occurred, place: astro.place(captured: sidecarLocation, fallback: location), now: now)
+            entry.astro = snap
+            if snap.status == .pending, let n = snap.note { notes.append(n) }
+        }
+        return InboxItem(entry: entry, draft: draft, source: "phone:\(s.device ?? "unknown")", notes: notes)
+    }
+
+    /// Copies the audio into the attachments folder; returns the path the Entry stores.
+    func copyAudio(_ audio: URL) throws -> String {
+        guard let folder = attachmentsFolder else { return audio.lastPathComponent }
+        let rel = "audio/\(audio.lastPathComponent)"
+        let dest = folder.appendingPathComponent(rel)
+        try fs.makeDirectory(dest.deletingLastPathComponent())
+        try fs.write(try fs.read(audio), to: dest)
+        return rel
+    }
+
+    /// A recorded session from the phone: phases and markers from the sidecar, observations from
+    /// the timed transcript (the phone's, or the Mac's own when it sent none).
+    func makeSessionItem(_ s: CaptureSidecar, _ ss: CaptureSidecar.SidecarSession, occurred: ZonedDate, audio: URL?, now: Date) async throws -> InboxItem {
+        let zone = occurred.timeZone
+        var start = ss.startedAt.flatMap { ZonedDate.parse($0) } ?? occurred
+        start.timeZone = zone
+        let type = EntryType.sessionTypes.contains(s.entryType) ? s.entryType : .meditation
+        var recorder = SessionRecorder(type: type, startedAt: start, intention: ss.intention, technique: ss.technique,
+                                       tags: (s.tags ?? []).map { TagPath($0) }.filter { !$0.isEmpty }, before: ss.before, firstPhase: nil)
+        for m in (ss.marks ?? []).sorted(by: { $0.offsetS < $1.offsetS }) {
+            let at = start.instant.addingTimeInterval(m.offsetS)
+            if let p = m.phase { recorder.setPhase(p, at: at) }
+            if let k = m.kind ?? (m.text?.isEmpty == false ? .note : nil) {
+                recorder.observe(k, m.text ?? "", tags: (m.tags ?? []).map { vocabulary.canonical(TagPath($0)) }.filter { !$0.isEmpty }, at: at)
+            } else if m.phase == nil {
+                recorder.mark(at: at)
+            }
+        }
+        var segments = ss.segments ?? []
+        if segments.isEmpty, let phone = s.transcript, !phone.isEmpty { segments = TimedTranscript.parse(phone) }
+        if segments.isEmpty, let audio { segments = try await transcriber.timedSegments(audio) }
+        // No end time sent: the session ran at least until its last mark or words.
+        let lastOffset = max(ss.marks?.map(\.offsetS).max() ?? 0, segments.map(\.offset).max() ?? 0)
+        let end = ss.endedAt.flatMap { ZonedDate.parse($0) }?.instant ?? start.instant.addingTimeInterval(lastOffset)
+        recorder.finish(at: end, after: ss.after, outcome: ss.outcome ?? s.text)
+
+        let extractor = ObservationExtractor(vocabulary: vocabulary)
+        let source = "phone:\(s.device ?? "unknown")"
+        let recording = try audio.map { SessionRecording(path: try copyAudio($0), offset: 0, duration: recorder.session.duration, segments: segments) }
+        let item = recorder.inboxItem(recording: recording, extractor: extractor, timing: timing(start, s), source: source, captureId: s.id, now: now)
+        // A transcript with no audio (typed or dictated on the phone) still becomes observations.
+        if recording == nil, !segments.isEmpty { return SessionAssembler.retranscribed(item, segments: segments, extractor: extractor) }
+        return item
+    }
+
+    /// An outcome typed or spoken on the phone for a reading it browsed. Waits in the Inbox like
+    /// any capture; Confirm stacks it on the reading.
+    func makeOutcomeItem(_ s: CaptureSidecar, occurred: ZonedDate, audio: URL?, now: Date) async throws -> InboxItem {
+        var transcript: String?
+        if let phone = s.transcript, !phone.isEmpty { transcript = phone }
+        else if let audio { transcript = try await transcriber.transcribe(audio) }
+        let body = [s.text, transcript].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n\n")
+        let attachments = try audio.map { [Attachment(kind: .audio, path: try copyAudio($0), originalName: $0.lastPathComponent)] } ?? []
+        var entry = Entry(id: ULID(date: occurred.instant), type: .journal, title: "Outcome", occurredAt: occurred, createdAt: now,
+                          body: body, tags: (s.tags ?? []).map { TagPath($0) }.filter { !$0.isEmpty }, attachments: attachments,
+                          mode: .quick, status: .inbox, captureId: s.id, transcript: transcript)
+        entry.inquiryId = s.inquiryId.flatMap { ULID($0) }
+        let fulfilled = s.outcome?.fulfilled ?? .unclear
+        let outcome = GrimoireCore.Outcome(id: ULID(date: occurred.instant), recordedAt: occurred, body: body, fulfilled: fulfilled)
+        return InboxItem(entry: entry, draft: nil, source: "phone:\(s.device ?? "unknown")",
+                         notes: ["Outcome (\(fulfilled.rawValue)) for reading \(s.inquiryId ?? ""). Confirm adds it to that reading."],
+                         outcome: outcome)
+    }
+
+    func timing(_ at: ZonedDate, _ s: CaptureSidecar) -> TimingContext {
+        TimingContext.compute(at: at, location: location ?? s.location.map { GeoLocation(latitude: $0.lat, longitude: $0.lon) })
     }
 
     func isStable(_ url: URL, now: Date) -> Bool {

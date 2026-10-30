@@ -40,12 +40,19 @@ public extension GrimoireRepository {
     func confirm(_ itemId: ULID, corrected: DraftReading?, entryType: EntryType? = nil, library: DefinitionLibrary,
                  reminder: ReminderPreset = .none, now: Date = Date()) throws -> ConfirmResult {
         guard let item = data.inbox.first(where: { $0.id == itemId }) else { throw StoreError.notFound(itemId.string) }
+        if var outcome = item.outcome, let target = item.entry.inquiryId {
+            // An outcome from the phone joins its reading; the entry that carried it is not filed.
+            outcome.body = item.entry.body
+            let inq = try addOutcome(outcome, to: target, now: now)
+            removeFromInbox(itemId)
+            var entry = item.entry
+            entry.status = .filed
+            return ConfirmResult(entry: entry, inquiry: inq, corrections: [])
+        }
         let result = try Confirmation.confirm(item, corrected: corrected, entryType: entryType, library: library, now: now)
         if let inq = result.inquiry {
             save(inq)
-            if let due = reminder.dueOn(from: inq.askedAt.day) {
-                save(Reminder(targetId: inq.id, dueOn: due))
-            }
+            scheduleOutcomeCheckIn(for: inq, preset: reminder, today: GrimoireDateFormat.day(now, in: inq.askedAt.zone))
         }
         save(result.entry)
         logCorrections(result.corrections)
@@ -58,6 +65,49 @@ public extension GrimoireRepository {
         data.reminders.filter { $0.isDue(today: today) }.sorted { ($0.dueOn, $0.id) < ($1.dueOn, $1.id) }
     }
 
+    /// Creates the outcome reminder for an Inquiry unless it already has an open one.
+    @discardableResult
+    func scheduleOutcomeCheckIn(for inquiry: Inquiry, preset: ReminderPreset = .ladder, today: String) -> Reminder? {
+        guard !data.reminders.contains(where: { $0.targetId == inquiry.id && $0.status != .done }),
+              let r = OutcomeCheckIn.reminder(for: inquiry.id, askedOn: inquiry.askedAt.day, today: today, preset: preset) else { return nil }
+        save(r)
+        return r
+    }
+
+    /// Stacks an outcome on an Inquiry and completes the reminders it answers: those due on or before
+    /// the outcome's day. A ladder then rolls on to its next check-in, so later outcomes layer on.
+    @discardableResult
+    func addOutcome(_ outcome: Outcome, to inquiryId: ULID, now: Date = Date()) throws -> Inquiry {
+        guard var inq = inquiry(inquiryId) else { throw StoreError.notFound(inquiryId.string) }
+        inq.addOutcome(outcome)
+        inq.updatedAt = now
+        save(inq)
+        for var r in data.reminders where r.targetId == inquiryId && r.status != .done && r.dueOn <= outcome.recordedAt.day {
+            r.complete()
+            save(r)
+        }
+        return inq
+    }
+
+    /// "No more nudges" for this record: every open reminder on it is marked done.
+    func stopReminders(for targetId: ULID) {
+        for var r in data.reminders where r.targetId == targetId && r.status != .done {
+            r.status = .done
+            save(r)
+        }
+    }
+
+    /// Backfill for imported or older readings: open Inquiries with no outcome and no reminder yet
+    /// get a check-in, starting at the latest step already past (see `OutcomeCheckIn.reminder`).
+    @discardableResult
+    func backfillOutcomeCheckIns(today: String, preset: ReminderPreset = .ladder) -> [Reminder] {
+        let reminded = Set(data.reminders.map(\.targetId))
+        return data.inquiries
+            .filter { $0.outcomes.isEmpty && $0.status == .open && !reminded.contains($0.id) }
+            .sorted { $0.id < $1.id }
+            .compactMap { scheduleOutcomeCheckIn(for: $0, preset: preset, today: today) }
+    }
+
     /// Records that link to `id` (backlinks, spec §6).
     func backlinks(to id: ULID) -> [(source: ULID, kind: Link.Kind)] {
         var out: [(ULID, Link.Kind)] = []
@@ -66,7 +116,7 @@ public extension GrimoireRepository {
     }
 
     var tagTree: TagTree {
-        var all: [TagPath] = data.entries.flatMap(\.tags)
+        var all: [TagPath] = data.entries.flatMap(\.tags) + data.entries.flatMap { $0.session?.observationTags ?? [] }
         for i in data.inquiries {
             all += i.tags
             if let c = i.category { all.append(c) }
