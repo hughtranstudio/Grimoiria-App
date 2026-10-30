@@ -55,6 +55,9 @@ final class MeaningsTests: XCTestCase {
         XCTAssertEqual(cast.appearances.first?.note, "Strong, steady")
         XCTAssertEqual(try XCTUnwrap(p.meaning(hexagram: 43)).appearances.first?.position, "changed into")
         XCTAssertTrue(try XCTUnwrap(p.meaning(hexagram: 1)).summary.hasSuffix("No outcomes recorded yet."))
+        let one = try XCTUnwrap(Patterns(data: { var d = try data(); d.inquiries.removeAll { $0.question != "Pitch the client?" }; return d }(), library: lib)
+            .meaning(card: "maj-16", deckId: "rws-tarot"))
+        XCTAssertEqual(one.summary, "Came up once, mostly about work. The one reading with an outcome came partly true.")
         XCTAssertNil(p.meaning(hexagram: 2))
     }
 
@@ -78,7 +81,7 @@ final class MeaningsTests: XCTestCase {
         XCTAssertTrue(note.contains("## What it has meant for you"))
         XCTAssertTrue(note.contains("### In your words"))
         XCTAssertTrue(note.contains("Felt like the floor dropping"))
-        XCTAssertTrue(note.contains("### When it came true"))
+        XCTAssertTrue(note.contains("### When it came true, or partly"))
         XCTAssertTrue(note.contains("readings_with_outcome: 3"))
         XCTAssertTrue(note.contains("## Every reading"))
     }

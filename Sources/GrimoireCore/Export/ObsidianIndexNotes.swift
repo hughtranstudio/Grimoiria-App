@@ -92,7 +92,7 @@ extension ObsidianExporter {
         }
         let fulfilled = m.whenItCameTrue
         if !fulfilled.isEmpty {
-            md += "### When it came true\n\n"
+            md += "### When it came true, or partly\n\n"
             for a in fulfilled.prefix(12) {
                 let o = a.outcome!
                 md += "- \(a.day), \(reading(a)) (\(o.fulfilled == .yes ? "yes" : "partly"), as \(a.position)): \(oneLine(o.body))\n"

@@ -60,14 +60,20 @@ public struct PersonalMeaning: Hashable, Sendable {
         let no = outcomes.byFulfilled[.no] ?? 0, unclear = outcomes.byFulfilled[.unclear] ?? 0
         if outcomes.answered == 0 {
             s += " No outcomes recorded yet."
+        } else if outcomes.answered == 1 {
+            switch outcomes.byFulfilled.first?.key {
+            case .yes: s += " The one reading with an outcome came true."
+            case .partly: s += " The one reading with an outcome came partly true."
+            case .no: s += " The one reading with an outcome didn't come true."
+            default: s += " The one reading with an outcome is still unclear."
+            }
         } else {
             var parts: [String] = []
             if yes > 0 { parts.append("\(yes) came true") }
             if partly > 0 { parts.append("\(partly) partly") }
             if no > 0 { parts.append("\(no) didn't") }
             if unclear > 0 { parts.append("\(unclear) unclear") }
-            let of = outcomes.answered == 1 ? "the one reading with an outcome" : "the \(outcomes.answered) readings with an outcome"
-            s += " Of \(of), \(Self.list(parts))."
+            s += " Of the \(outcomes.answered) readings with an outcome, \(Self.list(parts))."
         }
         return s
     }
@@ -248,7 +254,7 @@ extension PersonalMeaning {
             for a in words { s += "  \(a.day)  \(a.note!)  (\(a.question))\n" }
         }
         if !whenItCameTrue.isEmpty {
-            s += "\nWhen it came true\n"
+            s += "\nWhen it came true, or partly\n"
             for a in whenItCameTrue { s += "  \(a.day)  \(a.question): \(a.outcome!.body) (\(a.outcome!.fulfilled.rawValue), as \(a.position))\n" }
         }
         s += "\nEvery reading\n"

@@ -133,7 +133,7 @@ struct MeaningSections: View {
             }
         }
         if !meaning.whenItCameTrue.isEmpty {
-            Section("When it came true") {
+            Section("When it came true, or partly") {
                 ForEach(meaning.whenItCameTrue, id: \.inquiryId) { a in
                     MeaningLine(day: a.day, text: a.outcome?.body ?? "",
                                 detail: "\(a.question) · \(a.outcome?.fulfilled == .yes ? "yes" : "partly"), as \(a.position)")
