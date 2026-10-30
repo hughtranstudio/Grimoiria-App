@@ -51,6 +51,8 @@ usage: grimoire <command> [options]
   hours <planet> [--after ISO] [--its-day] [--limit 5] [--tz Zone] [--lat N --lon N]
                                           next planetary hours of a planet, e.g. hours mars --its-day
   correspond [text] [--json]              look up planets, signs, elements, trigrams: correspond iron, correspond aries
+  meaning <card or hexagram> [--deck ID] [--json]
+                                          what it has meant in your readings: meaning "the tower", meaning yijing/29
   patterns [--from yyyy-MM-dd] [--to yyyy-MM-dd] [--top N] [--within DAYS] [--json]
                                           most-drawn cards and hexagrams, recurrences, moon and day, outcomes
   uranika check                           is Uranika open? lists its saved charts and their ids
@@ -561,6 +563,21 @@ func run() async throws {
         let p = Patterns(data: store.data, library: lib, from: try day("from", end: false), to: try day("to", end: true))
         let report = p.report(top: args.one("top").flatMap(Int.init) ?? 10, recurrenceDays: args.one("within").flatMap(Int.init) ?? 30)
         if args.has("json") { try printJSON(report) } else { print(report.text) }
+
+    case "meaning":
+        let lib = try loadLibrary(args)
+        let store = try openStore(args)
+        let text = args.positional.joined(separator: " ")
+        guard !text.isEmpty else { throw CLIError(description: "meaning needs a card or hexagram, e.g. meaning \"the tower\"") }
+        guard let symbol = lib.symbol(named: text, deckId: args.one("deck")) else { throw CLIError(description: "no card or hexagram called \(text)") }
+        let p = Patterns(data: store.data, library: lib)
+        let meaning: PersonalMeaning?
+        switch symbol {
+        case let .card(deckId, cardId): meaning = p.meaning(card: cardId, deckId: deckId)
+        case let .hexagram(n): meaning = p.meaning(hexagram: n)
+        }
+        guard let meaning else { print("\(text): not in any reading yet."); break }
+        if args.has("json") { try printJSON(meaning.report) } else { print(meaning.text, terminator: "") }
 
     case "export":
         let lib = try loadLibrary(args)
