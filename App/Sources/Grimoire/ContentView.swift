@@ -143,6 +143,7 @@ extension EntryType {
         case .insight: "lightbulb"
         case .dream: "moon.zzz"
         case .divination: "suit.diamond"
+        case .event: "calendar.badge.clock"
         }
     }
 

@@ -147,7 +147,7 @@ struct TypeFieldsSection: View {
                 Toggle("Recurring", isOn: $fields.recurring.orFalse)
                 LabeledContent("Figures") { TagField(tags: $fields.figures.orEmpty, prompt: "entity/…") }
             }
-        case .journal, .divination:
+        case .journal, .divination, .event:
             EmptyView()
         }
     }
