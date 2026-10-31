@@ -27,6 +27,9 @@ final class AppSettings {
         reminderDefault = ReminderPreset(rawValue: defaults.string(forKey: "reminder.default") ?? "") ?? .ladder
         hotkeyEnabled = defaults.object(forKey: "quick.hotkey") as? Bool ?? true
         sharePhoneLibrary = defaults.object(forKey: "ingest.phoneLibrary") as? Bool ?? true
+        nudgeNotifications = defaults.object(forKey: "nudges.notify") as? Bool ?? true
+        hiddenNudges = defaults.stringArray(forKey: "nudges.hidden") ?? []
+        notifiedNudges = defaults.stringArray(forKey: "nudges.notified") ?? []
     }
 
     /// iCloud Drive/GrimoireInbox, where the phone Shortcut drops captures.
@@ -51,6 +54,13 @@ final class AppSettings {
     var hotkeyEnabled: Bool { didSet { defaults.set(hotkeyEnabled, forKey: "quick.hotkey") } }
     /// Write a read-only copy of filed records into each Syncthing ingest folder's library/ for the phone.
     var sharePhoneLibrary: Bool { didSet { defaults.set(sharePhoneLibrary, forKey: "ingest.phoneLibrary") } }
+
+    /// A notification when a card, hexagram or symbol starts coming back.
+    var nudgeNotifications: Bool { didSet { defaults.set(nudgeNotifications, forKey: "nudges.notify") } }
+    /// Nudges you hid from Today, by `Nudge.id` (one run each).
+    var hiddenNudges: [String] { didSet { defaults.set(hiddenNudges, forKey: "nudges.hidden") } }
+    /// Nudges already sent as a notification, so each run notifies once.
+    var notifiedNudges: [String] { didSet { defaults.set(notifiedNudges, forKey: "nudges.notified") } }
 
     /// The home location for planetary days and hours, when set.
     var home: GeoLocation? {

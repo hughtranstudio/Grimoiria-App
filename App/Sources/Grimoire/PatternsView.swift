@@ -47,6 +47,23 @@ extension AppModel {
         page = .search
     }
 
+    /// Cards, hexagrams and symbols coming back right now, minus the ones you hid.
+    var nudges: [Nudge] {
+        let hidden = Set(settings.hiddenNudges)
+        return Patterns(data: data, library: library).nudges(today: today).filter { !hidden.contains($0.id) }
+    }
+
+    func hide(_ nudge: Nudge) { settings.hiddenNudges.append(nudge.id) }
+
+    /// Opens what the nudge is about: the card's or hexagram's meaning, or the records with the symbol.
+    func open(_ nudge: Nudge) {
+        switch nudge.subject {
+        case let .card(deckId, cardId): browse(card: deckId, cardId)
+        case let .hexagram(n): browse(hexagram: n)
+        case let .tag(t): browse(tag: t)
+        }
+    }
+
     func browse(tag: TagPath) {
         searchCard = nil
         searchHexagram = nil

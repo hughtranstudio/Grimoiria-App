@@ -53,6 +53,23 @@ final class ReminderScheduler: NSObject, UNUserNotificationCenterDelegate {
                 : UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
             center.add(UNNotificationRequest(identifier: r.id.string, content: content, trigger: trigger))
         }
+        notifyNudges()
+    }
+
+    /// One notification per new run of a card, hexagram or symbol coming back.
+    private func notifyNudges() {
+        let model = AppModel.shared
+        guard model.settings.nudgeNotifications else { return }
+        let sent = Set(model.settings.notifiedNudges)
+        for n in model.nudges where !sent.contains(n.id) {
+            let content = UNMutableNotificationContent()
+            content.title = "Keeps coming back"
+            content.body = n.message
+            content.userInfo = ["nudge": n.id]
+            // Delivered at once, so the next refresh can't clear it while pending.
+            UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "nudge-\(n.id)", content: content, trigger: nil))
+            model.settings.notifiedNudges.append(n.id)
+        }
     }
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async
@@ -62,11 +79,13 @@ final class ReminderScheduler: NSObject, UNUserNotificationCenterDelegate {
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let info = response.notification.request.content.userInfo
+        let nudge = info["nudge"] as? String
         let reminder = (info["reminder"] as? String).flatMap(ULID.init)
         let target = (info["target"] as? String).flatMap(ULID.init)
         let action = response.actionIdentifier
         await MainActor.run {
             let model = AppModel.shared
+            if let nudge, let n = model.nudges.first(where: { $0.id == nudge }) { model.open(n); return }
             switch action {
             case Self.snoozeAction:
                 if let reminder { model.snooze(reminder) }

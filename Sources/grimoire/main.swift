@@ -53,6 +53,8 @@ usage: grimoire <command> [options]
   correspond [text] [--json]              look up planets, signs, elements, trigrams: correspond iron, correspond aries
   meaning <card or hexagram> [--deck ID] [--json]
                                           what it has meant in your readings: meaning "the tower", meaning yijing/29
+  nudges [--today yyyy-MM-dd] [--within DAYS] [--min N] [--json]
+                                          cards, hexagrams and symbols that keep coming back right now
   patterns [--from yyyy-MM-dd] [--to yyyy-MM-dd] [--top N] [--within DAYS] [--json]
                                           most-drawn cards and hexagrams, recurrences, moon and day, outcomes
   uranika check                           is Uranika open? lists its saved charts and their ids
@@ -578,6 +580,22 @@ func run() async throws {
         }
         guard let meaning else { print("\(text): not in any reading yet."); break }
         if args.has("json") { try printJSON(meaning.report) } else { print(meaning.text, terminator: "") }
+
+    case "nudges":
+        let lib = try loadLibrary(args)
+        let store = try openStore(args)
+        let p = Patterns(data: store.data, library: lib)
+        let nudges = p.nudges(today: args.one("today") ?? today(), withinDays: args.one("within").flatMap(Int.init) ?? 14,
+                              minTimes: args.one("min").flatMap(Int.init) ?? 3)
+        if args.has("json") {
+            struct Row: Encodable { let key, name, message, from, to: String; let times, days: Int; let records: [String] }
+            try printJSON(nudges.map { Row(key: $0.key, name: $0.name, message: $0.message, from: $0.from, to: $0.to,
+                                           times: $0.times, days: $0.days, records: $0.recordIds.map(\.string)) })
+        } else if nudges.isEmpty {
+            print("Nothing keeps coming back right now.")
+        } else {
+            for n in nudges { print("\(n.message)  (\(n.from) to \(n.to))  \(n.key)") }
+        }
 
     case "export":
         let lib = try loadLibrary(args)
