@@ -160,6 +160,7 @@ enum SelfTest {
         check("patterns count the Tower", p.cardCounts(deckId: "rws-tarot").contains { $0.key == "maj-16" })
         model.browse(card: "rws-tarot", "maj-16")
         check("browse by card finds the reading", model.search("").contains(.inquiry(inq.id)))
+        check("browsing a card shows what it has meant", model.searchMeaning?.appearances.contains { $0.inquiryId == inq.id } == true)
         let hex = model.inquiry(inq.id)?.divinations[1].cast?.primaryHexagram(in: model.library.yijing) ?? 0
         model.browse(hexagram: hex)
         check("browse by hexagram", model.search("").contains(.inquiry(inq.id)))

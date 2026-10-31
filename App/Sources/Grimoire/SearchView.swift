@@ -38,6 +38,9 @@ struct SearchList: View {
                 }
             }
             .selectionDisabled()
+            if let m = model.searchMeaning {
+                MeaningSections(meaning: m)
+            }
             if browsing {
                 BrowseSections()
             } else {
@@ -106,6 +109,55 @@ struct BrowseSections: View {
     }
 }
 
+/// What the filtered card or hexagram has meant in your readings: the summary, your own notes,
+/// and what happened when it came true. Each reading opens on click.
+struct MeaningSections: View {
+    let meaning: PersonalMeaning
+
+    var body: some View {
+        Section("What it has meant for you") {
+            Text(meaning.summary)
+                .font(Typo.body)
+                .fixedSize(horizontal: false, vertical: true)
+            ForEach(meaning.bookMeaning.sorted { $0.key < $1.key }, id: \.key) { k, v in
+                LabeledContent(k.capitalized, value: v.description)
+            }
+        }
+        .selectionDisabled()
+        let words = meaning.appearances.filter { !($0.note ?? "").isEmpty }
+        if !words.isEmpty {
+            Section("In your words") {
+                ForEach(words, id: \.inquiryId) { a in
+                    MeaningLine(day: a.day, text: a.note ?? "", detail: a.question).tag(Selection.inquiry(a.inquiryId))
+                }
+            }
+        }
+        if !meaning.whenItCameTrue.isEmpty {
+            Section("When it came true, or partly") {
+                ForEach(meaning.whenItCameTrue, id: \.inquiryId) { a in
+                    MeaningLine(day: a.day, text: a.outcome?.body ?? "",
+                                detail: "\(a.question) · \(a.outcome?.fulfilled == .yes ? "yes" : "partly"), as \(a.position)")
+                        .tag(Selection.inquiry(a.inquiryId))
+                }
+            }
+        }
+    }
+}
+
+/// One dated line under a meaning: what was written, then the reading it belongs to.
+struct MeaningLine: View {
+    let day: String
+    let text: String
+    let detail: String
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(text).font(Typo.body).fixedSize(horizontal: false, vertical: true)
+            Text("\(DisplayDate.day(day)) · \(detail)").font(Typo.caption).foregroundStyle(.secondary)
+        }
+    }
+}
+
 /// One tag with its use count; children fold out below it.
 struct TagBrowseRow: View {
     @Environment(AppModel.self) private var model
@@ -130,6 +182,16 @@ struct TagBrowseRow: View {
 }
 
 extension AppModel {
+    /// Your meaning of the card or hexagram being browsed, if one is.
+    var searchMeaning: PersonalMeaning? {
+        let p = Patterns(data: data, library: library)
+        if let key = searchCard {
+            let parts = key.split(separator: "/", maxSplits: 1).map(String.init)
+            return parts.count == 2 ? p.meaning(card: parts[1], deckId: parts[0]) : nil
+        }
+        return searchHexagram.flatMap(p.meaning(hexagram:))
+    }
+
     /// Turns the search field into a GrimoireCore query: “#tag” words are tags,
     /// a page query like “Volume III pp. 40–50” picks a volume and pages, the rest is text.
     func search(_ text: String, type: EntryType? = nil, from: Date? = nil, to: Date? = nil) -> [SearchHit] {

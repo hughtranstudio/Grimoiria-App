@@ -38,10 +38,11 @@ public struct ObsidianExporter: Sendable {
         let patterns = Patterns(data: data, library: library)
         let readings = Dictionary(uniqueKeysWithValues: data.inquiries.map { ($0.id, $0) })
         for (key, draws) in Dictionary(grouping: patterns.cards, by: { "\($0.deckId)/\($0.cardId)" }) {
-            out["Cards/\(cardBase(draws[0].deckId, draws[0].cardId)).md"] = card(draws, readings: readings, links: inquiryLinks, key: key)
+            out["Cards/\(cardBase(draws[0].deckId, draws[0].cardId)).md"] = card(draws, readings: readings, links: inquiryLinks, key: key,
+                                                                                 meaning: patterns.meaning(card: draws[0].cardId, deckId: draws[0].deckId))
         }
         for (n, casts) in Dictionary(grouping: patterns.hexagrams, by: \.number) {
-            out["Hexagrams/\(hexagramBase(n)).md"] = hexagram(n, casts, readings: readings, links: inquiryLinks)
+            out["Hexagrams/\(hexagramBase(n)).md"] = hexagram(n, casts, readings: readings, links: inquiryLinks, meaning: patterns.meaning(hexagram: n))
         }
         out["Grimoire.md"] = home(data, patterns: patterns, links: entryLinks)
         return out
