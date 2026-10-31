@@ -29,7 +29,7 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .fitsContent()
+        .fitsContent(max: 760)
         .frame(width: 560)
     }
 }
