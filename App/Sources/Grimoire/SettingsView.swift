@@ -29,7 +29,7 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .fitsContent()
+        .fitsContent(max: 760)
         .frame(width: 560)
     }
 }
@@ -90,6 +90,17 @@ struct GeneralSettings: View {
             Text("Inquiries")
         } footer: {
             Text("Past readings without an outcome get one check-in, due today, at the latest step already passed.")
+        }
+        Section {
+            Toggle("Notify when something keeps coming back", isOn: $settings.nudgeNotifications)
+                .onChange(of: settings.nudgeNotifications) { ReminderScheduler.shared.refresh() }
+            if !settings.hiddenNudges.isEmpty {
+                Button("Show Hidden Nudges Again") { settings.hiddenNudges = [] }
+            }
+        } header: {
+            Text("Nudges")
+        } footer: {
+            Text("A card, hexagram or symbol that comes up three times within two weeks shows on Today, with one notification per run.")
         }
         Section {
             Toggle("Quick Log hotkey (Control-Option-G)", isOn: $settings.hotkeyEnabled)

@@ -18,12 +18,12 @@ This repository holds **GrimoireCore**, the platform-neutral Swift package the M
 | `Sources/GrimoireCore/Export/` | Calendar `.ics` (rituals, check-ins, lunations, planetary hours; times and links only), Obsidian Markdown + YAML frontmatter, card and hexagram notes, a home note, `grimoire.jsonl`, `ML/` files for local models (draws, text chunks, sessions and observations as JSONL and CSV, tag vocabulary, manifest; see [`docs/analyzing-sessions.md`](docs/analyzing-sessions.md)), write-only-if-changed writer that removes notes for deleted records, and printable books (`BookExporter` → Typst; see [`docs/book-export.md`](docs/book-export.md)). |
 | `Sources/GrimoireCore/Resources/Book/` | Shared Typst book layout and the two bundled designs (Working Journal, Book of Shadows). |
 | `Sources/GrimoireCore/Attachments/` | Copies photos, audio and files into the attachments folder; indexes photos of notebook pages into a volume (pages, folios, two-page spreads). |
-| `Sources/GrimoireCore/Analysis/` | Patterns: card and hexagram counts, recurrences, timing (moon phase, sign, planetary day and hour), outcomes by system and confidence; your own meaning of each card and hexagram (`Meanings.swift`: where it fell, what about, your notes, how those readings turned out). |
+| `Sources/GrimoireCore/Analysis/` | Patterns: card and hexagram counts, recurrences, timing (moon phase, sign, planetary day and hour), outcomes by system and confidence; your own meaning of each card and hexagram (`Meanings.swift`: where it fell, what about, your notes, how those readings turned out); nudges when a card, hexagram or symbol keeps coming back (`Nudges.swift`). |
 | `Sources/GrimoireCore/Definitions/` | Decks, spreads, Yi Jing, and the correspondence table (planets, signs, elements, trigrams; Golden Dawn and Agrippa). |
 | `Sources/GrimoireCore/Timing/` | Moon phase, illumination and sign, Sun sign, planetary day and hour (sunrise to sunrise, Chaldean order); the ritual calendar (lunations, ingresses, planetary hours ahead). |
 | `Sources/GrimoireCore/Uranika/` | Charts from Uranika (Hugh's Uranian astrology app) on the same Mac: the sky of each entry's moment, transits and solar arcs to the natal chart, life events. See [`docs/uranika.md`](docs/uranika.md). |
 | `Sources/GrimoireCore/Store/` | `GrimoireRepository` protocol (the SwiftData seam), in-memory and JSON-file stores, search. |
-| `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `import`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `outcome`, `remind`, `remind-backfill`, `timing-fill`, `patterns`, `calendar`, `calendar-export`, `hours`, `correspond`, `meaning`, `session`, `observe`, `observations`, `vocab`, `export`, `book`, `uranika`. |
+| `Sources/grimoire/` | Agent CLI: `validate`, `parse`, `draw`, `cast`, `timing`, `ingest`, `import`, `inbox`, `confirm`, `add`, `search`, `show`, `inquiries`, `needs-outcome`, `outcome`, `remind`, `remind-backfill`, `timing-fill`, `patterns`, `calendar`, `calendar-export`, `hours`, `correspond`, `meaning`, `nudges`, `session`, `observe`, `observations`, `vocab`, `export`, `book`, `uranika`. |
 | `App/` | The Mac app (macOS 26, SwiftUI + SwiftData). `cd App && ./build.sh` builds and installs it; `tools/selftest.sh` runs its self-test. |
 | `android/` | **Grimoire Capture**, the Android (Pixel) capture app: record or type, transcribe on the phone, check the parsed reading, sync to the Mac's Inbox via Syncthing. See [`docs/android-capture.md`](docs/android-capture.md). |
 | `schemas/` | JSON Schemas: phone sidecar v1, deck, spread, JSONL export record. |
@@ -35,7 +35,7 @@ Mac (Xcode 26 / Swift 6.2) or Linux (Swift 6.1+):
 
 ```bash
 swift build
-swift test                      # 167 tests
+swift test                      # 170 tests
 (cd android && ./gradlew -PcoreOnly :core:test)   # Kotlin parser parity + capture outbox
 tools/e2e-demo.sh               # capture → Inbox → confirm → export, through the CLI
 pip install jsonschema && python3 tools/validate_schemas.py

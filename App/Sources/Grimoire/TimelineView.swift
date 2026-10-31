@@ -114,6 +114,12 @@ struct TodayList: View {
                     .foregroundStyle(.secondary)
                     .selectionDisabled()
             }
+            let nudges = model.nudges
+            if !nudges.isEmpty {
+                Section(header: Text("Keeps coming back").font(Typo.caption)) {
+                    ForEach(nudges) { n in NudgeRow(nudge: n) }
+                }
+            }
             Section(header: Text("Needs outcome").font(Typo.caption)) {
                 if due.isEmpty {
                     Text("Nothing due.").foregroundStyle(.secondary).selectionDisabled()
@@ -143,5 +149,29 @@ struct TodayList: View {
             }
         }
         .toolbar { ToolbarItem { NewEntryMenu() } }
+    }
+}
+
+/// "The Tower, 4 times in 9 days": opens its meaning, or hides this run.
+struct NudgeRow: View {
+    @Environment(AppModel.self) private var model
+    let nudge: Nudge
+
+    var body: some View {
+        HStack {
+            Button { model.open(nudge) } label: {
+                VStack(alignment: .leading, spacing: Space.xs) {
+                    Text(nudge.message).font(Typo.body)
+                    Text("\(DisplayDate.day(nudge.from)) to \(DisplayDate.day(nudge.to))").font(Typo.caption).foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            .help("Show what it has meant and every time it came up")
+            Spacer()
+            Button("Hide") { model.hide(nudge) }
+                .controlSize(.small)
+                .help("Hide until it starts coming back again")
+        }
+        .selectionDisabled()
     }
 }

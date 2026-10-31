@@ -36,7 +36,7 @@ enum SeedData {
         ritual.tools = ["wand", "salt", "frankincense"]
         ritual.durationMin = 40
         ritual.result = "The room felt still afterwards; a crow called at the close."
-        let r = entry(.ritual, "Lesser banishing, new working space", "Performed at dawn facing east.", 0, tags: ["practice/banishing", "place/study"], page: "41", fields: ritual)
+        let r = entry(.ritual, "Lesser banishing, new working space", "Performed at dawn facing east.", 0, tags: ["practice/banishing", "place/study", "entity/ally/crow"], page: "41", fields: ritual)
         var omen = TypeFields()
         omen.observedIn = "nature"
         omen.interpretation = "A messenger; pay attention to the next letter."
@@ -60,7 +60,7 @@ enum SeedData {
         vis.setting = "meditation"
         vis.clarity = 3
         vis.beings = ["entity/ally/crow"]
-        var v = entry(.vision, nil, "A grey landscape and a gate with no wall around it.", 8, tags: ["vision/gate"], page: "52", fields: vis)
+        var v = entry(.vision, nil, "A grey landscape and a gate with no wall around it.", 8, tags: ["vision/gate", "entity/ally/crow"], page: "52", fields: vis)
         // A recorded session: phases, spoken and typed observations, one marker, one written after.
         let start = v.occurredAt
         v.session = PracticeSession(
