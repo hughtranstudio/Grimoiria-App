@@ -4,6 +4,11 @@
     <string name="tile_label">Grimoire capture</string>
     <string name="shortcut_record_short">Record</string>
     <string name="shortcut_record_long">Record a capture</string>
-    <string name="shortcut_session_short">Session</string>
-    <string name="shortcut_session_long">Record a ritual, meditation or vision</string>
+    <string name="tile_practice_label">Practice</string>
+    <string name="shortcut_meditate_short">Meditate</string>
+    <string name="shortcut_meditate_long">Start a meditation now</string>
+    <string name="shortcut_ritual_short">Ritual</string>
+    <string name="shortcut_ritual_long">Start a ritual now</string>
+    <string name="shortcut_vision_short">Vision</string>
+    <string name="shortcut_vision_long">Start a vision session now</string>
 </resources>

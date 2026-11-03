@@ -14,12 +14,40 @@
     <shortcut
         android:enabled="true"
         android:icon="@drawable/ic_capture"
-        android:shortcutId="session"
-        android:shortcutLongLabel="@string/shortcut_session_long"
-        android:shortcutShortLabel="@string/shortcut_session_short">
+        android:shortcutId="meditate"
+        android:shortcutLongLabel="@string/shortcut_meditate_long"
+        android:shortcutShortLabel="@string/shortcut_meditate_short">
         <intent
-            android:action="app.grimoiria.capture.SESSION"
+            android:action="app.grimoiria.capture.PRACTICE"
             android:targetClass="app.grimoiria.capture.MainActivity"
-            android:targetPackage="app.grimoiria.capture" />
+            android:targetPackage="app.grimoiria.capture">
+            <extra android:name="type" android:value="meditation" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_capture"
+        android:shortcutId="ritual"
+        android:shortcutLongLabel="@string/shortcut_ritual_long"
+        android:shortcutShortLabel="@string/shortcut_ritual_short">
+        <intent
+            android:action="app.grimoiria.capture.PRACTICE"
+            android:targetClass="app.grimoiria.capture.MainActivity"
+            android:targetPackage="app.grimoiria.capture">
+            <extra android:name="type" android:value="ritual" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_capture"
+        android:shortcutId="vision"
+        android:shortcutLongLabel="@string/shortcut_vision_long"
+        android:shortcutShortLabel="@string/shortcut_vision_short">
+        <intent
+            android:action="app.grimoiria.capture.PRACTICE"
+            android:targetClass="app.grimoiria.capture.MainActivity"
+            android:targetPackage="app.grimoiria.capture">
+            <extra android:name="type" android:value="vision" />
+        </intent>
     </shortcut>
 </shortcuts>

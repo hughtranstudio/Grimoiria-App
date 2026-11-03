@@ -20,6 +20,8 @@ If transcription can't run (model not downloaded, recognizer busy), the capture 
 
 Shortcuts for one-tap recording: the **Grimoire capture** Quick Settings tile (swipe down, edit tiles, drag it in), or long-press the app icon → **Record**.
 
+One-tap practice: long-press the app icon → **Meditate**, **Ritual** or **Vision** starts that session at once, recording, with no setup (add intention and ratings later, or on the Mac). The **Practice** Quick Settings tile starts the last kind you began. A session already running is opened, never replaced.
+
 ## Why Syncthing
 
 The Pixel can't run iCloud Drive, and the practice records are private, so the sync route should not go through anyone's cloud. **Syncthing** syncs a folder directly between the phone and the Mac (peer to peer, encrypted, works on the home network and over the internet via relays). It is offline-first by nature: files written while away sync when both devices next see each other. The app doesn't depend on Syncthing itself, only on a folder, so another sync tool that exposes a folder would also work.
