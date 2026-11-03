@@ -34,6 +34,7 @@ struct EntryEditor: View {
                 if let t = entry.wrappedValue.timing {
                     LabeledContent("Timing") { Text(TimingText.line(t)).foregroundStyle(.secondary).multilineTextAlignment(.trailing) }
                 }
+                if let astro = entry.wrappedValue.astro { SkyRow(astro: astro) }
                 LabeledContent("Logged") {
                     Text(entry.wrappedValue.mode == .quick ? "Quick" : "Reflective").foregroundStyle(.secondary)
                 }
@@ -389,5 +390,21 @@ extension Binding where Value == ZonedDate {
     /// Edits the instant; the time zone becomes the Mac's current zone.
     var date: Binding<Date> {
         Binding<Date>(get: { wrappedValue.instant }, set: { wrappedValue = ZonedDate($0, timeZone: TimeZone.current.identifier) })
+    }
+}
+
+/// The chart of the entry's moment from Uranika: a summary line and the three tightest hits.
+struct SkyRow: View {
+    let astro: AstroSnapshot
+
+    var body: some View {
+        LabeledContent("Sky") {
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(astro.summary)
+                ForEach(astro.tightestHits(3), id: \.self) { Text($0.label).monospacedDigit() }
+            }
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.trailing)
+        }
     }
 }

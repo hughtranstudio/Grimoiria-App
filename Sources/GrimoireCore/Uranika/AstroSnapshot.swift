@@ -46,6 +46,23 @@ public struct AstroSnapshot: Codable, Hashable, Sendable {
 }
 
 /// Where the chart is cast. Coordinates are rounded on arrival (see `UranikaSettings.coordinateDecimals`).
+extension AstroSnapshot {
+    /// One line for an entry's page: what was measured, or why the chart is still pending.
+    /// `Chart from Uranika · 19 points · 12 hits on Hugh Tran` / `Chart pending: Uranika was not open`
+    public var summary: String {
+        if status == .pending { return note ?? "Chart pending" }
+        var parts = ["Chart from Uranika", "\(points.count) points"]
+        if let natal { parts.append("\(hits.count) \(hits.count == 1 ? "hit" : "hits") on \(natal.name)") }
+        if let name = place?.name, !name.isEmpty { parts.append(name) }
+        return parts.joined(separator: " · ")
+    }
+
+    /// The tightest hits first, as Uranika writes them (`T-SA □ R-MC 0°24′`).
+    public func tightestHits(_ limit: Int = 5) -> [AstroHit] {
+        Array(hits.sorted { ($0.orb, $0.formula) < ($1.orb, $1.formula) }.prefix(limit))
+    }
+}
+
 public struct AstroPlace: Codable, Hashable, Sendable {
     public var name: String?
     public var latitude: Double

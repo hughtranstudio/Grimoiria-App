@@ -643,19 +643,11 @@ func run() async throws {
             let store = try openStore(args)
             let filled = await astro.fillPending(store.data.entries)
             for e in filled { store.save(e) }
-            var items = 0
-            for item in store.data.inbox where item.entry.astro?.status == .pending {
-                guard let e = await astro.fillPending([item.entry]).first else { continue }
-                var updated = item
-                updated.entry = e
-                updated.notes = updated.notes?.filter { !$0.hasPrefix("Chart pending") }
-                if updated.notes?.isEmpty == true { updated.notes = nil }
-                store.addToInbox(updated)
-                items += 1
-            }
+            let items = await astro.fillPendingInbox(store.data.inbox)
+            for item in items { store.addToInbox(item) }
             try store.flush()
             let left = store.data.entries.filter { $0.astro?.status == .pending }.count + store.data.inbox.filter { $0.entry.astro?.status == .pending }.count
-            print("\(filled.count) entries and \(items) Inbox items filled, \(left) still pending")
+            print("\(filled.count) entries and \(items.count) Inbox items filled, \(left) still pending")
         case "record":
             let store = try openStore(args)
             guard args.positional.count >= 2, let id = ULID(args.positional[1]), let e = store.entry(id) else { throw CLIError(description: "uranika record needs a filed entry id") }

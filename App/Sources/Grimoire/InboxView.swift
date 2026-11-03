@@ -382,6 +382,7 @@ extension AppModel {
         let result = try repository.confirm(itemId, corrected: corrected, entryType: entryType, library: library,
                                             reminder: settings.reminderDefault)
         ReminderScheduler.shared.refresh()
+        UranikaLink.shared.recordEvent(result.entry.id)
         if settings.exportAfterConfirm, !settings.vaultPath.isEmpty { exportNow(quiet: true) }
         show("Filed")
         return result.inquiry?.id ?? result.entry.id
