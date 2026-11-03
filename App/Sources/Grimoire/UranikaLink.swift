@@ -38,7 +38,7 @@ final class UranikaLink {
         guard settings.enabled else { return }
         Task { await fillPending() }
         timer = Timer.scheduledTimer(withTimeInterval: 600, repeats: true) { _ in
-            MainActor.assumeIsolated { Task { await UranikaLink.shared.fillPending() } }
+            MainActor.assumeIsolated { _ = Task { await UranikaLink.shared.fillPending() } }
         }
     }
 
