@@ -28,6 +28,10 @@ final class ReminderScheduler: NSObject, UNUserNotificationCenterDelegate {
             _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
             refresh()
         }
+        // At midnight check-ins fall due and the status file's day moves on, even with the app left open.
+        NotificationCenter.default.addObserver(forName: .NSCalendarDayChanged, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.refresh() }
+        }
     }
 
     /// Replaces every scheduled reminder with the current pending ones.
@@ -54,6 +58,7 @@ final class ReminderScheduler: NSObject, UNUserNotificationCenterDelegate {
             center.add(UNNotificationRequest(identifier: r.id.string, content: content, trigger: trigger))
         }
         notifyNudges()
+        model.writeStatus()
     }
 
     /// One notification per new run of a card, hexagram or symbol coming back.

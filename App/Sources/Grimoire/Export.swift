@@ -21,6 +21,8 @@ extension AppModel {
         do {
             var files = ObsidianExporter(library: library).files(for: filed)
             files["grimoire.jsonl"] = try JSONLExporter(library: library).export(filed)
+            // From all the data, Inbox included: Mission Control counts what waits to be confirmed.
+            files[StatusSummary.fileName] = try statusJSON()
             if settings.exportML { files.merge(try MLExporter(library: library).files(for: filed)) { a, _ in a } }
             var report = try ExportWriter.write(files, to: root, prune: true)
             report.written += try copyAttachments(of: filed, to: root.appending(path: "_attachments"))
@@ -34,6 +36,19 @@ extension AppModel {
             show("Export failed: \(error.localizedDescription)")
             return nil
         }
+    }
+
+    private func statusJSON() throws -> String {
+        String(decoding: try StatusSummary(data: data, today: today, library: library).json(), as: UTF8.self) + "\n"
+    }
+
+    /// Keeps grimoire-status.json in the vault folder current between exports, so Mission Control's
+    /// morning run sees today's counts. Writes only when the counts changed; quiet when no vault is set.
+    func writeStatus() {
+        guard !settings.vaultPath.isEmpty else { return }
+        let root = URL(fileURLWithPath: settings.vaultPath, isDirectory: true)
+        do { _ = try ExportWriter.write([StatusSummary.fileName: try statusJSON()], to: root) }
+        catch { print("grimoire-status.json: \(error.localizedDescription)") }
     }
 
     /// Copies attachment files that are missing or changed. Returns their vault paths.
