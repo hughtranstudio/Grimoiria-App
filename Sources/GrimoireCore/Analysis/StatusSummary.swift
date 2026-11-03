@@ -1,8 +1,13 @@
 import Foundation
 
 /// The few counts Mission Control shows about the Grimoire: what is due, what is open, what waits in the Inbox,
-/// and when practice last happened. Written as JSON for the vault's state file; nothing here is stored.
+/// what keeps coming back, and when practice last happened. Counts only, never questions or readings, because
+/// Mission Control's snapshot leaves the Mac. Written as `grimoire-status.json` beside the Obsidian export.
 public struct StatusSummary: Codable, Equatable, Sendable {
+    public static let fileName = "grimoire-status.json"
+    public static let formatVersion = 1
+
+    public var format: Int
     public var today: String
     /// Outcome check-ins due on or before today.
     public var checkInsDue: Int
@@ -14,8 +19,11 @@ public struct StatusSummary: Codable, Equatable, Sendable {
     public var lastPractice: String?
     /// Whether any practice is recorded for today.
     public var practicedToday: Bool
+    /// Cards, hexagrams and symbols coming back right now (see `Patterns.nudges`); nil without the definitions.
+    public var nudges: Int?
 
-    public init(data: GrimoireData, today: String) {
+    public init(data: GrimoireData, today: String, library: DefinitionLibrary? = nil) {
+        format = Self.formatVersion
         self.today = today
         checkInsDue = data.reminders.filter { $0.isDue(today: today) }.count
         openInquiries = data.inquiries.filter { $0.status == .open }.count
@@ -24,6 +32,7 @@ public struct StatusSummary: Codable, Equatable, Sendable {
         let days = data.entries.filter { practice.contains($0.type) }.map { $0.occurredAt.day }
         lastPractice = days.max()
         practicedToday = days.contains(today)
+        nudges = library.map { Patterns(data: data, library: $0).nudges(today: today).count }
     }
 
     /// Stable, sorted JSON: one object, for `grimoire status --json` and the vault.

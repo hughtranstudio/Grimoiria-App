@@ -50,7 +50,7 @@ usage: grimoire <command> [options]
                                           .ics file for Google or Apple Calendar: timing and a grimoire:// link only
   hours <planet> [--after ISO] [--its-day] [--limit 5] [--tz Zone] [--lat N --lon N]
                                           next planetary hours of a planet, e.g. hours mars --its-day
-  status [--today yyyy-MM-dd] [--json]    counts for Mission Control: check-ins due, open inquiries, Inbox waiting, last practice
+  status [--today yyyy-MM-dd] [--json]    counts for Mission Control: check-ins due, open inquiries, Inbox, nudges, last practice
   correspond [text] [--json]              look up planets, signs, elements, trigrams: correspond iron, correspond aries
   meaning <card or hexagram> [--deck ID] [--json]
                                           what it has meant in your readings: meaning "the tower", meaning yijing/29
@@ -449,10 +449,11 @@ func run() async throws {
 
     case "status":
         let store = try openStore(args)
-        let summary = StatusSummary(data: store.data, today: args.one("today") ?? today())
+        let summary = StatusSummary(data: store.data, today: args.one("today") ?? today(), library: try? loadLibrary(args))
         if args.has("json") { print(String(decoding: try summary.json(), as: UTF8.self)) } else {
             print("Today \(summary.today): \(summary.checkInsDue) check-in(s) due, \(summary.openInquiries) open inquiry(ies), \(summary.inboxWaiting) waiting in Inbox.")
             print("Last practice: \(summary.lastPractice ?? "none")\(summary.practicedToday ? " (today)" : "")")
+            if let n = summary.nudges { print("Keeps coming back: \(n)") }
         }
 
     case "outcome":

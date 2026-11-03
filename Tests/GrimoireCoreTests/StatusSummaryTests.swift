@@ -32,4 +32,18 @@ final class StatusSummaryTests: XCTestCase {
         let text = String(decoding: try s.json(), as: UTF8.self)
         XCTAssertTrue(text.contains("\"checkInsDue\" : 0"))
     }
+
+    func testNudgesNeedTheLibrary() {
+        let repo = MemoryRepository()
+        for d in ["2026-10-21", "2026-10-24", "2026-10-29"] {
+            let at = TestSupport.date("\(d)T09:00:00-07:00")
+            var i = Inquiry(question: "Q \(d)", askedAt: at)
+            i.divinations = [Divination(system: .cards, deckId: "rws-tarot", spreadId: "freeform", performedAt: at,
+                                        draws: [Draw(cardId: "maj-16", positionKey: "1")])]
+            repo.save(i)
+        }
+        XCTAssertNil(StatusSummary(data: repo.data, today: "2026-10-30").nudges)
+        XCTAssertEqual(StatusSummary(data: repo.data, today: "2026-10-30", library: TestSupport.library).nudges, 1)
+        XCTAssertEqual(StatusSummary(data: repo.data, today: "2026-10-30").openInquiries, 3)
+    }
 }
