@@ -111,6 +111,11 @@ enum SelfTest {
         check("Uranika settings saved beside the store", (try? UranikaSettings.load(from: UranikaLink.settingsURL))?.natalChartId == 7)
         link.settings.natalChartId = nil
 
+        // Agent: the read-only MCP server offers only tools that change nothing
+        let readTools = AgentMCP.commands(readOnly: true)
+        check("read-only MCP has no writing tools", !readTools.isEmpty && readTools.allSatisfy(\.readOnly)
+              && !readTools.contains { $0.name == "entries add" })
+
         // M5: volumes and page ranges
         let inRange = model.search("Volume III pp. 40–50")
         check("Volume III pp. 40–50 finds pages 40 to 50", inRange.count == 6, "found \(inRange.count)")

@@ -6,8 +6,16 @@ import Foundation
 ///   claude mcp add --scope user grimoire -- ~/Applications/Grimoire.app/Contents/MacOS/Grimoire mcp
 /// Optional: Claude Code drives the CLI fine without it. Use it for Claude
 /// Desktop and other clients that have no shell.
+/// For Swarm members (Horoscopos, Eubulus, Abathur's brief) register it with
+/// `mcp --read-only`: they can read the grimoire and never change it.
 enum AgentMCP {
-    static func serve() {
+    /// The tools this server offers: every command, or only those that change nothing.
+    static func commands(readOnly: Bool) -> [AgentCommand] {
+        readOnly ? AgentCommands.all.filter(\.readOnly) : AgentCommands.all
+    }
+
+    static func serve(readOnly: Bool = false) {
+        let offered = commands(readOnly: readOnly)
         while let line = readLine(strippingNewline: true) {
             guard let data = line.data(using: .utf8),
                   let message = try? JSONSerialization.jsonObject(with: data) as? JSONObject else { continue }
@@ -22,14 +30,16 @@ enum AgentMCP {
                     "protocolVersion": params["protocolVersion"] as? String ?? "2025-06-18",
                     "capabilities": ["tools": [:]],
                     "serverInfo": ["name": "grimoire", "version": "1.0"],
-                    "instructions": "Tools that drive the Grimoire app on this Mac. Destructive tools only report what they would change unless yes is true.",
+                    "instructions": readOnly
+                        ? "Read-only tools for the Grimoire app on this Mac: search and read records, inquiries and timing. Nothing here can change the grimoire."
+                        : "Tools that drive the Grimoire app on this Mac. Destructive tools only report what they would change unless yes is true.",
                 ]
             case "ping":
                 reply["result"] = [:] as JSONObject
             case "tools/list":
-                reply["result"] = ["tools": AgentCommands.all.map(tool)]
+                reply["result"] = ["tools": offered.map(tool)]
             case "tools/call":
-                reply["result"] = call(params)
+                reply["result"] = call(params, offered: offered)
             default:
                 reply["error"] = ["code": -32601, "message": "unknown method \(method)"]
             }
@@ -47,11 +57,11 @@ enum AgentMCP {
         return schema
     }
 
-    private static func call(_ params: JSONObject) -> JSONObject {
+    private static func call(_ params: JSONObject, offered: [AgentCommand]) -> JSONObject {
         let name = (params["name"] as? String ?? "").replacingOccurrences(of: "_", with: " ")
         let arguments = (params["arguments"] as? JSONObject ?? [:]).mapValues { "\($0)" }
         do {
-            guard AgentCommands.all.contains(where: { $0.name == name }) else { throw AgentError.usage("unknown tool \(name)") }
+            guard offered.contains(where: { $0.name == name }) else { throw AgentError.usage("unknown tool \(name)") }
             let reply = try AgentSocket.send(JSON.data(["command": name, "args": arguments]), launch: true)
             let object = (try? JSONSerialization.jsonObject(with: reply) as? JSONObject) ?? [:]
             let ok = object["ok"] as? Bool == true
