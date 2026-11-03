@@ -80,6 +80,11 @@ class Settings(context: Context) {
         get() = prefs.getString("lastKind", null) ?: "draw"
         set(v) = prefs.edit().putString("lastKind", v).apply()
 
+    /** The last ritual, meditation or vision started; the Practice tile starts this one. */
+    var lastPractice: String
+        get() = prefs.getString("lastPractice", null) ?: "meditation"
+        set(v) = prefs.edit().putString("lastPractice", v).apply()
+
     var speechLanguage: String
         get() = prefs.getString("speechLanguage", null) ?: "en-US"
         set(v) = prefs.edit().putString("speechLanguage", v).apply()

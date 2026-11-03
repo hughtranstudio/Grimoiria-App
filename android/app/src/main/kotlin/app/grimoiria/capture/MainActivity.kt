@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import app.grimoiria.capture.ui.GrimoireCaptureApp
+import app.grimoiria.core.CaptureKind
 
 class MainActivity : ComponentActivity() {
     private val vm: CaptureViewModel by viewModels()
@@ -66,6 +67,7 @@ class MainActivity : ComponentActivity() {
         when (intent?.action) {
             ACTION_RECORD -> { vm.go(Screen.Home); record() }
             ACTION_SESSION -> vm.go(Screen.Session)
+            ACTION_PRACTICE -> practice(intent.getStringExtra(EXTRA_TYPE))
             ACTION_TODAY -> vm.go(Screen.Today)
         }
     }
@@ -76,6 +78,18 @@ class MainActivity : ComponentActivity() {
         } else {
             sessionMic.launch(Manifest.permission.RECORD_AUDIO)
         }
+    }
+
+    /**
+     * One tap from the launcher or the Practice tile: straight into a running session, no setup.
+     * Intention and ratings are optional; the Mac's Inbox is where the rest gets filled in.
+     * A session already running is shown, never replaced.
+     */
+    private fun practice(type: String?) {
+        vm.go(Screen.Session)
+        if (session.draft != null) return
+        CaptureKind.fromHint(type ?: grimoire.settings.lastPractice).takeIf { it.isSessionType }?.let { session.type = it }
+        startSession()
     }
 
     private fun setCalendar(on: Boolean) {
@@ -100,5 +114,8 @@ class MainActivity : ComponentActivity() {
         const val ACTION_RECORD = "app.grimoiria.capture.RECORD"
         const val ACTION_SESSION = "app.grimoiria.capture.SESSION"
         const val ACTION_TODAY = "app.grimoiria.capture.TODAY"
+        const val ACTION_PRACTICE = "app.grimoiria.capture.PRACTICE"
+        /** ritual, meditation or vision; without it the last one started. */
+        const val EXTRA_TYPE = "type"
     }
 }

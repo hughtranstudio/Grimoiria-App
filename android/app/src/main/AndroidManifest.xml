@@ -37,6 +37,7 @@
                 <action android:name="app.grimoiria.capture.RECORD" />
                 <action android:name="app.grimoiria.capture.SESSION" />
                 <action android:name="app.grimoiria.capture.TODAY" />
+                <action android:name="app.grimoiria.capture.PRACTICE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <meta-data
@@ -54,6 +55,17 @@
             android:exported="true"
             android:icon="@drawable/ic_capture"
             android:label="@string/tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".PracticeTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_capture"
+            android:label="@string/tile_practice_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />

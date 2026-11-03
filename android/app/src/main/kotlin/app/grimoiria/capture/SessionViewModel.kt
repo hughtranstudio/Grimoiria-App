@@ -37,7 +37,7 @@ class SessionViewModel(app: Application) : AndroidViewModel(app) {
     var message by mutableStateOf<String?>(null)
 
     // Setup, before Start
-    var type by mutableStateOf(CaptureKind.MEDITATION)
+    var type by mutableStateOf(CaptureKind.fromHint(ctx.settings.lastPractice).takeIf { it.isSessionType } ?: CaptureKind.MEDITATION)
     var intention by mutableStateOf("")
     var technique by mutableStateOf("")
     var tags by mutableStateOf("")
@@ -105,6 +105,7 @@ class SessionViewModel(app: Application) : AndroidViewModel(app) {
             tags = tags.split(',', ' ').map { it.trim().trim('#') }.filter { it.isNotEmpty() },
             before = before.takeIf { !it.isEmpty }, audioFile = if (audio) "$id.wav" else null,
         ).setPhase(0.0, "preparation")
+        ctx.settings.lastPractice = type.hint
         val folder = store.draftFolder(id)
         save(d)
         pointer.writeText(id)
