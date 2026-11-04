@@ -31,11 +31,11 @@
   --ht-stamp: 0.18s cubic-bezier(0.7, 0, 0.84, 0);
 }
 [data-style="a"][data-mode="light"] {
-  --ground: #F8F8F8;
-  --surface: #FFFFFF;
+  --ground: #FFFFFF;
+  --surface: #F8F8F8;
   --ink: #000000;
   --muted: #6B6B6B;
-  --rule: rgb(0 0 0 / 0.14);
+  --rule: rgb(0 0 0 / 0.25);
   --rubric: #EB0303;
   --rubricText: #CC0000;
 }
