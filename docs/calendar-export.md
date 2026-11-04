@@ -18,6 +18,10 @@ Only timing crosses. Questions, bodies, intentions, cards and titles stay in Gri
 check-in carries a `grimoire://entry/<id>` or `grimoire://inquiry/<id>` link instead. Sky events, hours
 and check-ins are marked free (`TRANSP:TRANSPARENT`); rituals are marked busy.
 
+The Mac app registers the `grimoire` scheme, so clicking one of these links opens the entry or reading
+in Grimoire. `grimoire://inbox` opens the Inbox and `grimoire://today` opens Today; `GrimoireLink` in
+GrimoireCore lists every form.
+
 UIDs are stable (`ritual-<id>@grimoire`, `checkin-<id>@grimoire`, `sky-full-moon-2026-11-24@grimoire`),
 so a calendar can recognise events it already has when a newer file is imported.
 

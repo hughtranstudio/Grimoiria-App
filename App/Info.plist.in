@@ -14,5 +14,9 @@
 <key>LSApplicationCategoryType</key><string>public.app-category.productivity</string>
 <key>NSHighResolutionCapable</key><true/>
 <key>NSPrincipalClass</key><string>NSApplication</string>
+<key>CFBundleURLTypes</key><array><dict>
+  <key>CFBundleURLName</key><string>studio.htd.grimoire.link</string>
+  <key>CFBundleURLSchemes</key><array><string>grimoire</string></array>
+</dict></array>
 <key>NSMicrophoneUsageDescription</key><string>Grimoire records the audio of your rituals, meditations and visions so they can be transcribed on this Mac.</string>
 </dict></plist>
