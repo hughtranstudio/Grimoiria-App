@@ -23,21 +23,10 @@ import androidx.compose.ui.unit.sp
 import app.grimoiria.capture.R
 
 /**
- * HT Press house style, A · Codex (App/Design/tokens.json on the Mac branch): vellum page, ink type,
- * Garamond everywhere, square corners, rubric red only for marks. Dark mode is ink and linen.
+ * HT Press house style, A · Codex, on the Brand Codex. The palette (`Codex`) is generated into
+ * CodexTokens.kt by App/tools/gen-tokens.py; this file only maps it onto Material.
+ * Vellum page, ink type, Garamond everywhere, square corners, rubric red only for marks.
  */
-object Codex {
-    val ink = Color(0xFF000000)
-    val soot = Color(0xFF141414)
-    val paper = Color(0xFFFFFFFF)
-    val vellum = Color(0xFFF8F8F8)
-    val linen = Color(0xFFF4F4F4)
-    val muted = Color(0xFF6B6B6B)
-    val rubric = Color(0xFFEB0303)
-    /** Red text under 24 pt on light grounds. */
-    val rubricSmall = Color(0xFFCC0000)
-    val rubricOnDark = Color(0xFFFF3232)
-}
 
 @OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
 private fun weighted(res: Int, weight: Int, style: FontStyle = FontStyle.Normal) =
@@ -65,14 +54,14 @@ private val light = lightColorScheme(
     primary = Codex.ink, onPrimary = Codex.paper,
     primaryContainer = Codex.paper, onPrimaryContainer = Codex.ink,
     secondary = Codex.ink, onSecondary = Codex.paper,
-    secondaryContainer = Color(0xFFEDEDED), onSecondaryContainer = Codex.ink,
+    secondaryContainer = Codex.fogDay, onSecondaryContainer = Codex.ink,
     tertiary = Codex.rubricSmall, onTertiary = Codex.paper,
     error = Codex.rubricSmall, onError = Codex.paper,
     background = Codex.vellum, onBackground = Codex.ink,
     surface = Codex.vellum, onSurface = Codex.ink,
-    surfaceVariant = Color(0xFFEFEFEF), onSurfaceVariant = Codex.muted,
+    surfaceVariant = Codex.mistDay, onSurfaceVariant = Codex.muted,
     surfaceContainerLowest = Codex.paper, surfaceContainerLow = Codex.paper, surfaceContainer = Codex.paper,
-    surfaceContainerHigh = Color(0xFFF1F1F1), surfaceContainerHighest = Color(0xFFEAEAEA),
+    surfaceContainerHigh = Codex.haze1Day, surfaceContainerHighest = Codex.haze2Day,
     outline = Codex.ink.copy(alpha = 0.55f), outlineVariant = Codex.ink.copy(alpha = 0.14f),
 )
 
@@ -80,14 +69,14 @@ private val dark = darkColorScheme(
     primary = Codex.linen, onPrimary = Codex.ink,
     primaryContainer = Codex.soot, onPrimaryContainer = Codex.linen,
     secondary = Codex.linen, onSecondary = Codex.ink,
-    secondaryContainer = Color(0xFF242424), onSecondaryContainer = Codex.linen,
+    secondaryContainer = Codex.haze2Night, onSecondaryContainer = Codex.linen,
     tertiary = Codex.rubricOnDark, onTertiary = Codex.ink,
     error = Codex.rubricOnDark, onError = Codex.ink,
     background = Codex.ink, onBackground = Codex.linen,
     surface = Codex.ink, onSurface = Codex.linen,
     surfaceVariant = Codex.soot, onSurfaceVariant = Codex.linen.copy(alpha = 0.62f),
     surfaceContainerLowest = Codex.ink, surfaceContainerLow = Codex.soot, surfaceContainer = Codex.soot,
-    surfaceContainerHigh = Color(0xFF1C1C1C), surfaceContainerHighest = Color(0xFF242424),
+    surfaceContainerHigh = Codex.haze1Night, surfaceContainerHighest = Codex.haze2Night,
     outline = Codex.linen.copy(alpha = 0.5f), outlineVariant = Codex.linen.copy(alpha = 0.16f),
 )
 
