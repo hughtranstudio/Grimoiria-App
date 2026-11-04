@@ -243,6 +243,10 @@ enum SelfTest {
         check("transcript read", item?.entry.transcript?.contains("three of cups") == true)
         check("spoken RWS example gives 3 draft draws", item?.draft?.divinations.first?.draws.count == 3)
         check("nothing filed before Confirm", model.data.entries.count == filedBefore)
+        if let item {
+            model.open(GrimoireLink.inbox(item.id).url)
+            check("grimoire://inbox/<id> opens that capture", model.page == .inbox && model.selection == .inbox(item.id))
+        }
         drop()
         let again = await IngestCoordinator.shared.scanOnce()
         check("dropping it again makes no duplicate",

@@ -24,6 +24,7 @@ struct GrimoireApp: App {
                 .themed()
                 .overlay { if GridOverlay.enabled { GridOverlay() } }
                 .frame(minWidth: 900, minHeight: 560)
+                .onOpenURL { model.open($0) }
         }
         .modelContainer(model.container)
         .defaultSize(width: 1180, height: 760)

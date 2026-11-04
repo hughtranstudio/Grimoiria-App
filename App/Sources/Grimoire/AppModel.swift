@@ -207,6 +207,29 @@ final class AppModel {
         return entry
     }
 
+    /// Opens a `grimoire://` link from the calendar, the vault or the Chamber (GrimoireLink).
+    func open(_ url: URL) {
+        guard let link = GrimoireLink(url) else { show("Grimoire can’t open \(url.absoluteString)"); return }
+        NSApp.activate()
+        switch link {
+        case .today:
+            page = .today
+            selection = nil
+        case .inbox(let id):
+            page = .inbox
+            selection = (id ?? data.inbox.first?.id).flatMap { id in data.inbox.contains { $0.id == id } ? .inbox(id) : nil }
+            if id != nil, selection == nil { show("That capture is no longer in the Inbox") }
+        case .entry(let id):
+            guard entry(id) != nil else { show("That entry isn’t in this grimoire"); return }
+            if page != .timeline && page != .today { page = .timeline }
+            selection = .entry(id)
+        case .inquiry(let id):
+            guard inquiry(id) != nil else { show("That reading isn’t in this grimoire"); return }
+            page = .inquiries
+            selection = .inquiry(id)
+        }
+    }
+
     /// Stages an edit; it is written shortly after typing stops, or on quit.
     func stage(_ entry: Entry) {
         var e = entry

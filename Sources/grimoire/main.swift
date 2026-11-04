@@ -451,7 +451,7 @@ func run() async throws {
         let store = try openStore(args)
         let summary = StatusSummary(data: store.data, today: args.one("today") ?? today(), library: try? loadLibrary(args))
         if args.has("json") { print(String(decoding: try summary.json(), as: UTF8.self)) } else {
-            print("Today \(summary.today): \(summary.checkInsDue) check-in(s) due, \(summary.openInquiries) open inquiry(ies), \(summary.inboxWaiting) waiting in Inbox.")
+            print("Today \(summary.today): \(summary.checkInsDue) check-in(s) due, \(summary.openInquiries) open inquiry(ies), \(summary.inboxWaiting) waiting in Inbox\(summary.inboxOldestDays.map { ", oldest \($0) day(s)" } ?? "").")
             print("Last practice: \(summary.lastPractice ?? "none")\(summary.practicedToday ? " (today)" : "")")
             if let n = summary.nudges { print("Keeps coming back: \(n)") }
         }
