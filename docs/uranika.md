@@ -47,4 +47,9 @@ grimoire uranika record <entry id>                      # add a filed life event
 
 ## In the Mac app
 
-Set `InboxIngestor.astrologer = UranikaAstrologer(settings:)` and `tagVocabulary` from the store's tag tree; call `fillPending` when the app starts and on a slow timer; call `recordEvent` after confirming a life event when the setting is on. A Settings pane edits `UranikaSettings`.
+**Settings ▸ Uranika** switches it on (off by default), checks that Uranika is open, and picks your chart from Uranika's library. It writes `uranika-settings.json` beside the app's store (`~/Library/Application Support/Grimoire/`), the same format the CLI reads, so `GRIMOIRE_URANIKA=~/Library/Application\ Support/Grimoire/uranika-settings.json grimoire uranika check` sees the same settings.
+
+- Captures arriving in the Inbox get the chart of their moment (`InboxIngestor.astrologer`), cast for the home place in Settings ▸ General unless the phone's position is allowed.
+- "Chart pending" entries and Inbox items fill in at launch and every 10 minutes once Uranika is open, or at once with **Fill Pending Charts Now**.
+- With **Add life events to your chart in Uranika** on, confirming a life event adds it to your chart's case file, once.
+- An entry's page shows a **Sky** row: what was measured and the three tightest hits.

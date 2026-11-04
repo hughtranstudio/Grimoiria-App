@@ -145,6 +145,7 @@ final class AppModel {
         ReminderScheduler.shared.start()
         QuickLogController.shared.updateHotKey()
         IngestCoordinator.shared.start()
+        UranikaLink.shared.start()
         PhoneLibrarySync.shared.publishNow()
     }
 

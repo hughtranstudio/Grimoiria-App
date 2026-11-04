@@ -6,6 +6,7 @@ import Foundation
 ///   grimoire items add --title "Milk"     run one command
 ///   grimoire items list --json            one JSON object on stdout
 ///   grimoire mcp                          an MCP server on stdin and stdout
+///   grimoire mcp --read-only              the same with only the tools that change nothing
 /// Exit codes: 0 ok, 1 error, 2 usage, 3 not found, 4 app not running.
 enum AgentCLI {
     /// nil when the app should open normally.
@@ -27,7 +28,7 @@ enum AgentCLI {
                 print(json ? JSON.string(["version": version]) : "grimoire \(version)")
                 return 0
             case "mcp":
-                AgentMCP.serve()
+                AgentMCP.serve(readOnly: words.contains("--read-only"))
                 return 0
             default:
                 return try run(words, json: json)

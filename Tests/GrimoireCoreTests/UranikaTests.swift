@@ -147,6 +147,37 @@ final class UranikaTests: XCTestCase {
         XCTAssertEqual(filled.astro?.place, place)
     }
 
+    func testPendingInboxItemsFillAndLoseTheirNote() async throws {
+        let fake = FakeUranika()
+        fake.open = false
+        let a = astrologer(fake)
+        let snap = await a.snapshot(at: moment, place: a.place(captured: nil, fallback: nil))
+        let item = InboxItem(entry: Entry(type: .event, title: "Launched a website", occurredAt: moment, status: .inbox, astro: snap),
+                             draft: nil, source: "phone:pixel", notes: ["Chart pending: Uranika was not open", "Filed as a life event"])
+        let plain = InboxItem(entry: Entry(type: .journal, occurredAt: moment, status: .inbox), draft: nil, source: "phone:pixel")
+        let closed = await a.fillPendingInbox([item, plain])
+        XCTAssertTrue(closed.isEmpty)
+        fake.open = true
+        let filled = await a.fillPendingInbox([item, plain])
+        XCTAssertEqual(filled.count, 1)
+        let first = try XCTUnwrap(filled.first)
+        XCTAssertEqual(first.entry.astro?.status, .computed)
+        XCTAssertEqual(first.notes, ["Filed as a life event"])
+    }
+
+    func testSummaryAndTightestHits() async {
+        let fake = FakeUranika()
+        let a = astrologer(fake)
+        let snap = await a.snapshot(at: moment, place: a.place(captured: nil, fallback: nil))
+        XCTAssertTrue(snap.summary.hasPrefix("Chart from Uranika · 19 points · "), snap.summary)
+        XCTAssertTrue(snap.summary.hasSuffix("on Hugh Tran · Home"), snap.summary)
+        let top = snap.tightestHits(3)
+        XCTAssertEqual(top.count, min(3, snap.hits.count))
+        XCTAssertEqual(top.map(\.orb), top.map(\.orb).sorted())
+        let pending = AstroSnapshot.pending(place: nil, settings: HitSettings(), note: "Chart pending: Uranika was not open")
+        XCTAssertEqual(pending.summary, "Chart pending: Uranika was not open")
+    }
+
     func testPhonePositionOnlyWhenAllowedOrNoHome() {
         var a = astrologer(FakeUranika())
         let phone = GeoLocation(latitude: 40.712776, longitude: -74.005974)

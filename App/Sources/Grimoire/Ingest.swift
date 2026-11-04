@@ -87,6 +87,8 @@ final class IngestCoordinator {
             ingestor.location = model.settings.home
             ingestor.attachmentsFolder = Store.attachments
             ingestor.vocabulary = model.vocabulary
+            ingestor.astrologer = UranikaLink.shared.astrologer
+            ingestor.tagVocabulary = Array(model.tagTree.all)
             let known = KnownCaptures(model.data)
             let box = Delivered()
             let outcomes = await Self.run(ingestor, known: known, box: box)

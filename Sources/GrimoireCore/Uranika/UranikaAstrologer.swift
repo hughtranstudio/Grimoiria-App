@@ -137,6 +137,23 @@ public struct UranikaAstrologer: Sendable {
         return out
     }
 
+    /// Completes pending charts on Inbox items and drops their "Chart pending" note. Returns only
+    /// the items that changed; stops early while Uranika is closed.
+    public func fillPendingInbox(_ items: [InboxItem], now: Date = Date()) async -> [InboxItem] {
+        let pending = items.filter { $0.entry.astro?.status == .pending }
+        guard !pending.isEmpty, (try? await service.health()) != nil else { return [] }
+        var out: [InboxItem] = []
+        for item in pending {
+            guard let e = await fillPending([item.entry], now: now).first else { continue }
+            var updated = item
+            updated.entry = e
+            updated.notes = updated.notes?.filter { !$0.hasPrefix("Chart pending") }
+            if updated.notes?.isEmpty == true { updated.notes = nil }
+            out.append(updated)
+        }
+        return out
+    }
+
     /// Adds a filed life event to the natal chart's case file in Uranika, once. Returns the entry
     /// with `astro.uranikaEvent` set, or nil when nothing was sent.
     public func recordEvent(_ entry: Entry) async throws -> Entry? {
