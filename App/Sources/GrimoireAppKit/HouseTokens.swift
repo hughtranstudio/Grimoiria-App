@@ -7,22 +7,24 @@ public enum HouseTokens {
 
     public enum Palette {
         public static let ink: UInt32 = 0x000000
-        public static let soot: UInt32 = 0x141414
         public static let paper: UInt32 = 0xFFFFFF
         public static let vellum: UInt32 = 0xF8F8F8
-        public static let linen: UInt32 = 0xF4F4F4
         public static let muted: UInt32 = 0x6B6B6B
         public static let rubric: UInt32 = 0xEB0303
         public static let rubricSmall: UInt32 = 0xCC0000
-        public static let rubricOnDark: UInt32 = 0xFF3232
-        public static let beltane: UInt32 = 0x010742
-        public static let beltaneDeep: UInt32 = 0x00042C
+        public static let nightGround: UInt32 = 0x05120A
+        public static let nightDeep: UInt32 = 0x020904
+        public static let nightSurface: UInt32 = 0x0B1C13
+        public static let nightInk: UInt32 = 0xEBE8DB
+        public static let nightMuted: UInt32 = 0xA0B0A3
+        public static let nightRed: UInt32 = 0x489E64
+        public static let nightRubric: UInt32 = 0x56A66F
+        public static let nightPanel2: UInt32 = 0x112619
+        public static let nightLine: UInt32 = 0x1D3427
         public static let fogDay: UInt32 = 0xEDEDED
         public static let mistDay: UInt32 = 0xEFEFEF
         public static let haze1Day: UInt32 = 0xF1F1F1
         public static let haze2Day: UInt32 = 0xEAEAEA
-        public static let haze1Night: UInt32 = 0x1C1C1C
-        public static let haze2Night: UInt32 = 0x242424
     }
 
     public enum Size {
@@ -54,24 +56,10 @@ public enum HouseTokens {
             dark: .init(ground: nil, surface: nil, ink: nil, muted: nil, rule: nil, rubric: nil, rubricText: nil)),
         HouseStyleTokens(
             id: "a", name: "A · Codex",
-            summary: "Full press. Paper page, ink type, Garamond everywhere, square corners, red only for marks.",
+            summary: "Full press. Paper page by day, forest night after dark, Garamond everywhere, square corners, red only for marks (green at night).",
             titleFont: "Cormorant Garamond", textFont: "EB Garamond", labelFont: "EB Garamond",
             titleCaps: true, radius: 2, forceDark: false, accentIsRubric: true,
             light: .init(ground: .init(0xFFFFFF), surface: .init(0xF8F8F8), ink: .init(0x000000), muted: .init(0x6B6B6B), rule: .init(0x000000, 0.25), rubric: .init(0xEB0303), rubricText: .init(0xCC0000)),
-            dark: .init(ground: .init(0x000000), surface: .init(0x141414), ink: .init(0xF4F4F4), muted: .init(0xF4F4F4, 0.62), rule: .init(0xF4F4F4, 0.16), rubric: .init(0xFF3232), rubricText: .init(0xFF3232))),
-        HouseStyleTokens(
-            id: "b", name: "B · Marginalia",
-            summary: "Light touch. Apple's pages and labels, Garamond for titles and your writing, rubric accent.",
-            titleFont: "Cormorant Garamond", textFont: "EB Garamond", labelFont: nil,
-            titleCaps: false, radius: nil, forceDark: false, accentIsRubric: true,
-            light: .init(ground: nil, surface: nil, ink: nil, muted: nil, rule: nil, rubric: .init(0xEB0303), rubricText: .init(0xCC0000)),
-            dark: .init(ground: nil, surface: nil, ink: nil, muted: nil, rule: nil, rubric: .init(0xFF3232), rubricText: .init(0xFF3232))),
-        HouseStyleTokens(
-            id: "c", name: "C · Beltane Night",
-            summary: "Night ground in Beltane ultramarine, linen type, red that glows. Always dark.",
-            titleFont: "Cormorant Garamond", textFont: "EB Garamond", labelFont: "EB Garamond",
-            titleCaps: true, radius: 2, forceDark: true, accentIsRubric: true,
-            light: .init(ground: .init(0x010742), surface: .init(0x00042C), ink: .init(0xF4F4F4), muted: .init(0xF4F4F4, 0.66), rule: .init(0xF4F4F4, 0.18), rubric: .init(0xFF3232), rubricText: .init(0xFF3232)),
-            dark: .init(ground: .init(0x010742), surface: .init(0x00042C), ink: .init(0xF4F4F4), muted: .init(0xF4F4F4, 0.66), rule: .init(0xF4F4F4, 0.18), rubric: .init(0xFF3232), rubricText: .init(0xFF3232))),
+            dark: .init(ground: .init(0x05120A), surface: .init(0x0B1C13), ink: .init(0xEBE8DB), muted: .init(0xA0B0A3), rule: .init(0xEBE8DB, 0.28), rubric: .init(0x489E64), rubricText: .init(0x56A66F))),
     ]
 }

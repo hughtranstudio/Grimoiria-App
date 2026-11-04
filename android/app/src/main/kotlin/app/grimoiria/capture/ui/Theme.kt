@@ -25,7 +25,7 @@ import app.grimoiria.capture.R
 /**
  * HT Press house style, A · Codex, on the Brand Codex. The palette (`Codex`) is generated into
  * CodexTokens.kt by App/tools/gen-tokens.py; this file only maps it onto Material.
- * Paper page, ink type, Garamond everywhere, square corners, rubric red only for marks.
+ * Paper page by day, forest night after dark, Garamond everywhere, square corners; rubric red only for marks, green at night.
  */
 
 @OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
@@ -66,18 +66,19 @@ private val light = lightColorScheme(
 )
 
 private val dark = darkColorScheme(
-    primary = Codex.linen, onPrimary = Codex.ink,
-    primaryContainer = Codex.soot, onPrimaryContainer = Codex.linen,
-    secondary = Codex.linen, onSecondary = Codex.ink,
-    secondaryContainer = Codex.haze2Night, onSecondaryContainer = Codex.linen,
-    tertiary = Codex.rubricOnDark, onTertiary = Codex.ink,
-    error = Codex.rubricOnDark, onError = Codex.ink,
-    background = Codex.ink, onBackground = Codex.linen,
-    surface = Codex.ink, onSurface = Codex.linen,
-    surfaceVariant = Codex.soot, onSurfaceVariant = Codex.linen.copy(alpha = 0.62f),
-    surfaceContainerLowest = Codex.ink, surfaceContainerLow = Codex.soot, surfaceContainer = Codex.soot,
-    surfaceContainerHigh = Codex.haze1Night, surfaceContainerHighest = Codex.haze2Night,
-    outline = Codex.linen.copy(alpha = 0.5f), outlineVariant = Codex.linen.copy(alpha = 0.16f),
+    primary = Codex.nightInk, onPrimary = Codex.nightGround,
+    primaryContainer = Codex.nightSurface, onPrimaryContainer = Codex.nightInk,
+    secondary = Codex.nightInk, onSecondary = Codex.nightGround,
+    secondaryContainer = Codex.nightPanel2, onSecondaryContainer = Codex.nightInk,
+    // The Codex at night: every red becomes a green of the same value.
+    tertiary = Codex.nightRubric, onTertiary = Codex.nightGround,
+    error = Codex.nightRubric, onError = Codex.nightGround,
+    background = Codex.nightGround, onBackground = Codex.nightInk,
+    surface = Codex.nightGround, onSurface = Codex.nightInk,
+    surfaceVariant = Codex.nightSurface, onSurfaceVariant = Codex.nightMuted,
+    surfaceContainerLowest = Codex.nightDeep, surfaceContainerLow = Codex.nightSurface, surfaceContainer = Codex.nightSurface,
+    surfaceContainerHigh = Codex.nightPanel2, surfaceContainerHighest = Codex.nightLine,
+    outline = Codex.nightInk.copy(alpha = 0.5f), outlineVariant = Codex.nightInk.copy(alpha = 0.28f),
 )
 
 private fun typography(): Typography {
@@ -99,7 +100,7 @@ private fun typography(): Typography {
 @Composable
 fun CaptureTheme(content: @Composable () -> Unit) {
     val isDark = isSystemInDarkTheme()
-    val extras = if (isDark) CodexExtras(Codex.linen.copy(alpha = 0.16f), Codex.rubricOnDark, Codex.rubricOnDark, Codex.linen.copy(alpha = 0.62f))
+    val extras = if (isDark) CodexExtras(Codex.nightInk.copy(alpha = 0.28f), Codex.nightRed, Codex.nightRubric, Codex.nightMuted)
     else CodexExtras(Codex.ink.copy(alpha = 0.25f), Codex.rubric, Codex.rubricSmall, Codex.muted)
     val corner = RoundedCornerShape(2.dp)
     androidx.compose.runtime.CompositionLocalProvider(LocalCodex provides extras) {
