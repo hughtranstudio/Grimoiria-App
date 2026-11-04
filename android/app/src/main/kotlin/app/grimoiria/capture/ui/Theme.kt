@@ -25,7 +25,7 @@ import app.grimoiria.capture.R
 /**
  * HT Press house style, A · Codex, on the Brand Codex. The palette (`Codex`) is generated into
  * CodexTokens.kt by App/tools/gen-tokens.py; this file only maps it onto Material.
- * Vellum page, ink type, Garamond everywhere, square corners, rubric red only for marks.
+ * Paper page, ink type, Garamond everywhere, square corners, rubric red only for marks.
  */
 
 @OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
@@ -57,12 +57,12 @@ private val light = lightColorScheme(
     secondaryContainer = Codex.fogDay, onSecondaryContainer = Codex.ink,
     tertiary = Codex.rubricSmall, onTertiary = Codex.paper,
     error = Codex.rubricSmall, onError = Codex.paper,
-    background = Codex.vellum, onBackground = Codex.ink,
-    surface = Codex.vellum, onSurface = Codex.ink,
+    background = Codex.paper, onBackground = Codex.ink,
+    surface = Codex.paper, onSurface = Codex.ink,
     surfaceVariant = Codex.mistDay, onSurfaceVariant = Codex.muted,
-    surfaceContainerLowest = Codex.paper, surfaceContainerLow = Codex.paper, surfaceContainer = Codex.paper,
+    surfaceContainerLowest = Codex.paper, surfaceContainerLow = Codex.vellum, surfaceContainer = Codex.vellum,
     surfaceContainerHigh = Codex.haze1Day, surfaceContainerHighest = Codex.haze2Day,
-    outline = Codex.ink.copy(alpha = 0.55f), outlineVariant = Codex.ink.copy(alpha = 0.14f),
+    outline = Codex.ink.copy(alpha = 0.55f), outlineVariant = Codex.ink.copy(alpha = 0.25f),
 )
 
 private val dark = darkColorScheme(
@@ -100,7 +100,7 @@ private fun typography(): Typography {
 fun CaptureTheme(content: @Composable () -> Unit) {
     val isDark = isSystemInDarkTheme()
     val extras = if (isDark) CodexExtras(Codex.linen.copy(alpha = 0.16f), Codex.rubricOnDark, Codex.rubricOnDark, Codex.linen.copy(alpha = 0.62f))
-    else CodexExtras(Codex.ink.copy(alpha = 0.14f), Codex.rubric, Codex.rubricSmall, Codex.muted)
+    else CodexExtras(Codex.ink.copy(alpha = 0.25f), Codex.rubric, Codex.rubricSmall, Codex.muted)
     val corner = RoundedCornerShape(2.dp)
     androidx.compose.runtime.CompositionLocalProvider(LocalCodex provides extras) {
         MaterialTheme(

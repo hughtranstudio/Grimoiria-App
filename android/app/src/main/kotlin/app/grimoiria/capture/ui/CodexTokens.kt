@@ -9,9 +9,9 @@ object Codex {
     val ink = Color(0xFF000000)
     /** dark ground. legacy. */
     val soot = Color(0xFF141414)
-    /** light surface. Codex hughtran.color.paper (day). */
+    /** page ground by day. Codex hughtran.color.paper (day). */
     val paper = Color(0xFFFFFFFF)
-    /** light ground. Codex hughtran.color.surface (day). */
+    /** raised panels on the paper page (the Codex calls it surface). Codex hughtran.color.surface (day). */
     val vellum = Color(0xFFF8F8F8)
     /** text on dark and night grounds. legacy. */
     val linen = Color(0xFFF4F4F4)

@@ -54,10 +54,10 @@ public enum HouseTokens {
             dark: .init(ground: nil, surface: nil, ink: nil, muted: nil, rule: nil, rubric: nil, rubricText: nil)),
         HouseStyleTokens(
             id: "a", name: "A · Codex",
-            summary: "Full press. Vellum page, ink type, Garamond everywhere, square corners, red only for marks.",
+            summary: "Full press. Paper page, ink type, Garamond everywhere, square corners, red only for marks.",
             titleFont: "Cormorant Garamond", textFont: "EB Garamond", labelFont: "EB Garamond",
             titleCaps: true, radius: 2, forceDark: false, accentIsRubric: true,
-            light: .init(ground: .init(0xF8F8F8), surface: .init(0xFFFFFF), ink: .init(0x000000), muted: .init(0x6B6B6B), rule: .init(0x000000, 0.14), rubric: .init(0xEB0303), rubricText: .init(0xCC0000)),
+            light: .init(ground: .init(0xFFFFFF), surface: .init(0xF8F8F8), ink: .init(0x000000), muted: .init(0x6B6B6B), rule: .init(0x000000, 0.25), rubric: .init(0xEB0303), rubricText: .init(0xCC0000)),
             dark: .init(ground: .init(0x000000), surface: .init(0x141414), ink: .init(0xF4F4F4), muted: .init(0xF4F4F4, 0.62), rule: .init(0xF4F4F4, 0.16), rubric: .init(0xFF3232), rubricText: .init(0xFF3232))),
         HouseStyleTokens(
             id: "b", name: "B · Marginalia",
