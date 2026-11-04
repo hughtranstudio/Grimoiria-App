@@ -7,26 +7,16 @@ import androidx.compose.ui.graphics.Color
 object Codex {
     /** text and marks on light grounds. Codex hughtran.color.ink (day). */
     val ink = Color(0xFF000000)
-    /** dark ground (style C only now; retired in mutation 4). legacy. */
-    val soot = Color(0xFF141414)
     /** page ground by day. Codex hughtran.color.paper (day). */
     val paper = Color(0xFFFFFFFF)
     /** raised panels on the paper page (the Codex calls it surface). Codex hughtran.color.surface (day). */
     val vellum = Color(0xFFF8F8F8)
-    /** text on dark and night grounds. legacy. */
-    val linen = Color(0xFFF4F4F4)
     /** secondary text on light grounds. Codex hughtran.color.muted (day). */
     val muted = Color(0xFF6B6B6B)
     /** marks, rules, illustration. The only thing that glows.. Codex hughtran.color.red (day). */
     val rubric = Color(0xFFEB0303)
     /** red text under 24 pt on light grounds. Codex hughtran.color.rubric (day). */
     val rubricSmall = Color(0xFFCC0000)
-    /** red on dark and night grounds. legacy. */
-    val rubricOnDark = Color(0xFFFF3232)
-    /** Beltane ultramarine night ground. legacy. */
-    val beltane = Color(0xFF010742)
-    /** night surface, one step under the ground. legacy. */
-    val beltaneDeep = Color(0xFF00042C)
     /** page ground at night (forest night). Codex hughtran.color.paper (night). */
     val nightGround = Color(0xFF05120A)
     /** deepest panels at night. Codex hughtran.color.night (night). */

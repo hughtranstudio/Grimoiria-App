@@ -50,13 +50,13 @@ this Mac only, with a local SwiftData database and no server.
 
 ## House style (DRAFT)
 
-- The HT Press house style is on trial: options A, B and C in `Design/` (see `Design/README.md`). Hugh chose A · Codex (10-29-2026) and the app opens in it; it stays labelled DRAFT until Hugh says ship.
+- The house style is A · Codex on the Brand Codex (see `Design/README.md`); Settings also offers System. B and C were retired 11-04-2026. It stays labelled DRAFT until Hugh says ship.
 - The brand comes from the Brand Codex (my-website `brand/seed.json`). `Design/codex/tokens.json` is a pinned copy of its generated tokens; `Design/tokens.json` maps Codex roles onto the app. Change the brand in the Codex, never here. To change the map, edit `Design/tokens.json` and run `tools/gen-tokens.py`; it writes the Mac (`HouseTokens.swift`, `tokens.css`) and the Pixel (`CodexTokens.kt`, `codex_colors.xml`). Never edit those by hand, and never type a hex into a view or `Theme.kt`. `--check` (CI) fails on drift or on a text colour under 4.5:1. See `Design/codex/README.md`.
 - Views use `Typo.body`, `Typo.caption`, and friends instead of `.font(.body)`, and `House.ink` / `House.muted` / `Palette.accent` instead of fixed colours. Under the System style each token is Apple's own, so the rules above still hold.
 - On the Mac a List ignores fonts set on a whole row or column: set `Typo.body` on each row's title Text and `Typo.caption` on section header Text (`Section(header:)`). Sidebar Labels take `Typo.label`.
 - Content columns and sheets get `.pressPage()`. A record page's first Section gets a `PressHeading` header.
 - Settings and window chrome stay Apple's in every style.
-- Compare styles: `APP_STYLE=a tools/snap.sh` (and `b`, `c`).
+- Compare with Apple's look: `APP_STYLE=a tools/snap.sh` and `APP_STYLE=system tools/snap.sh`.
 
 ## Skills
 

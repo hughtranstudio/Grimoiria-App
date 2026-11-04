@@ -4,11 +4,11 @@ import GrimoireAppKit
 import Observation
 import SwiftUI
 
-/// DRAFT: the HT Press house style, in three options for Hugh to compare.
-/// The values live in Design/tokens.json (tools/gen-tokens.py makes
-/// GrimoireAppKit/HouseTokens.swift). This file turns them into SwiftUI.
+/// The HT Press house style on the Brand Codex: A · Codex, or Apple's System look.
+/// The values live in Design/tokens.json and the pinned Codex (tools/gen-tokens.py
+/// makes GrimoireAppKit/HouseTokens.swift). This file turns them into SwiftUI.
 /// People pick the style in Settings > Appearance.
-///   APP_STYLE=a Grimoire     run with style a, b or c, to compare (also tools/snap.sh)
+///   APP_STYLE=system Grimoire     run with Apple's look, to compare (also tools/snap.sh)
 @Observable
 final class HouseStyleStore {
     static let shared = HouseStyleStore()
@@ -24,8 +24,10 @@ final class HouseStyleStore {
 
     private init() {
         HouseFonts.register()
-        styleID = ProcessInfo.processInfo.environment["APP_STYLE"]
+        let wanted = ProcessInfo.processInfo.environment["APP_STYLE"]
             ?? UserDefaults.standard.string(forKey: "appearance.style") ?? Self.defaultID
+        // A retired style (B Marginalia, C Beltane Night) opens in the default.
+        styleID = HouseTokens.styles.contains { $0.id == wanted } ? wanted : Self.defaultID
     }
 }
 

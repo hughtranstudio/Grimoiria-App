@@ -172,7 +172,7 @@ func sessionClock(_ seconds: Double, expected: String) {
     #expect(counts.first?.count == 2)
 }
 
-// MARK: House style (DRAFT)
+// MARK: House style
 
 @Test("Every house style reads", arguments: HouseTokens.styles)
 func houseStyleContrast(_ style: HouseStyleTokens) {
@@ -191,17 +191,19 @@ func houseStyleContrast(_ style: HouseStyleTokens) {
     }
 }
 
-@Test func houseStyleRedIsTheOnlyColour() {
-    // Rubric red is the only hue: every other colour is a gray or the night ground.
-    let reds: Set<UInt32> = [HouseTokens.Palette.rubric, HouseTokens.Palette.rubricSmall, HouseTokens.Palette.rubricOnDark]
-    let night: Set<UInt32> = [HouseTokens.Palette.beltane, HouseTokens.Palette.beltaneDeep]
+@Test func houseStyleColoursComeFromTheCodex() {
+    // By day the page is greys and rubric red. At night the Codex's forest palette
+    // takes over and every red turns green. Nothing else may sneak in.
+    let P = HouseTokens.Palette.self
+    let marks: Set<UInt32> = [P.rubric, P.rubricSmall, P.nightRed, P.nightRubric]
+    let night: Set<UInt32> = [P.nightGround, P.nightDeep, P.nightSurface, P.nightInk, P.nightMuted]
     for style in HouseTokens.styles {
         for mode in [style.light, style.dark] {
             for ink in [mode.ground, mode.surface, mode.ink, mode.muted, mode.rule].compactMap({ $0 }) {
                 let c = ink.rgb()
                 #expect(night.contains(ink.hex) || (c.r == c.g && c.g == c.b), "\(style.id) \(ink.hex)")
             }
-            for ink in [mode.rubric, mode.rubricText].compactMap({ $0 }) { #expect(reds.contains(ink.hex)) }
+            for ink in [mode.rubric, mode.rubricText].compactMap({ $0 }) { #expect(marks.contains(ink.hex)) }
         }
     }
 }
@@ -209,5 +211,5 @@ func houseStyleContrast(_ style: HouseStyleTokens) {
 @Test func houseStyleDefaultsToSystem() {
     #expect(HouseStyleTokens.style("missing").isSystem)
     #expect(HouseStyleTokens.style("system").accentIsRubric == false)
-    #expect(HouseTokens.styles.map(\.id) == ["system", "a", "b", "c"])
+    #expect(HouseTokens.styles.map(\.id) == ["system", "a"])
 }
