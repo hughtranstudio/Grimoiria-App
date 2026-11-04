@@ -1,0 +1,30 @@
+name: Brand tokens
+
+# The Mac and Pixel token files must match Design/tokens.json and the pinned Brand Codex,
+# and every text colour must read at 4.5:1.
+on:
+  pull_request:
+    paths:
+      - "App/Design/**"
+      - "App/tools/gen-tokens.py"
+      - "App/Sources/GrimoireAppKit/HouseTokens.swift"
+      - "android/app/src/main/kotlin/app/grimoiria/capture/ui/**"
+      - "android/app/src/main/res/values*/codex_colors.xml"
+      - ".github/workflows/tokens.yml"
+  push:
+    branches: [main]
+    paths:
+      - "App/Design/**"
+      - "App/tools/gen-tokens.py"
+      - ".github/workflows/tokens.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 App/tools/gen-tokens.py --check
