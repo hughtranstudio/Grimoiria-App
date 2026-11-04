@@ -162,3 +162,6 @@ android/local.properties
 android/.idea/
 android/.kotlin/
 *.apk
+
+# Python
+__pycache__/

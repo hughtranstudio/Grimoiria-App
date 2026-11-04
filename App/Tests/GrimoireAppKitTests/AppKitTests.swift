@@ -213,3 +213,37 @@ func houseStyleContrast(_ style: HouseStyleTokens) {
     #expect(HouseStyleTokens.style("system").accentIsRubric == false)
     #expect(HouseTokens.styles.map(\.id) == ["system", "a"])
 }
+
+@Test func codexIconsAreTheSitesSet() {
+    let names = CodexIcons.allIcons.map(\.name)
+    #expect(names.count == 19)
+    #expect(Set(names).count == names.count)
+    for name in ["readings", "journal", "search", "life"] { #expect(names.contains(name)) }
+    for icon in CodexIcons.allIcons {
+        #expect(!icon.parts.isEmpty, "\(icon.name) has no parts")
+        for part in icon.parts {
+            guard case .move = part.ops.first else { Issue.record("\(icon.name) part does not start with a move"); continue }
+            // Every point sits on the 24-unit grid (a little slack for round caps).
+            for op in part.ops {
+                let xs: [Double]
+                switch op {
+                case .move(let x, let y), .line(let x, let y): xs = [x, y]
+                case .curve(let a, let b, let c, let d, let e, let f): xs = [a, b, c, d, e, f]
+                case .close: xs = []
+                }
+                #expect(xs.allSatisfy { $0 >= -1 && $0 <= 25 }, "\(icon.name) leaves the grid")
+            }
+        }
+    }
+}
+
+@Test func codexIconCutsFollowTheScale() {
+    #expect(CodexIconCut.at(CodexIcons.Scale.sm).kind == .caption)
+    #expect(CodexIconCut.at(CodexIcons.Scale.lg).kind == .text)
+    #expect(CodexIconCut.at(CodexIcons.Scale.xxl).kind == .display)
+    #expect(CodexIconCut.at(CodexIcons.Scale.sm).stroke == 1.5)
+    // The caption cut drops fine detail; larger cuts keep it.
+    let withDetail = CodexIcons.allIcons.first { $0.parts.contains(where: \.detail) }!
+    #expect(CodexIconCut.at(14).parts(of: withDetail).count < withDetail.parts.count)
+    #expect(CodexIconCut.at(24).parts(of: withDetail).count == withDetail.parts.count)
+}

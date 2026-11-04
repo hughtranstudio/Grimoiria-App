@@ -44,7 +44,7 @@ this Mac only, with a local SwiftData database and no server.
 - Window chrome (title bar, toolbar, sidebar, menus, sheets) stays system. Buttons use system styles, like `.borderedProminent`.
 - Colors: `.primary`, `.secondary`, `.tint`, and system colors. Never fixed grays or white for text.
 - Every action has a menu bar item and a keyboard shortcut.
-- `Label` for icon and text pairs. SF Symbols for icons.
+- `Label` for icon and text pairs. SF Symbols for icons, except where a Codex icon has the same meaning: then `HouseLabel` with `CodexIcons.<name>` (see `Design/codex/README.md`).
 - `ContentUnavailableView` for empty states.
 - Liquid Glass belongs to floating controls only, never to content.
 

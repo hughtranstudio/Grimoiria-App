@@ -57,7 +57,7 @@ struct ContentView: View {
         @Bindable var model = model
         return List(selection: $model.page) {
             ForEach(SidebarPage.allCases) { page in
-                Label(page.title, systemImage: page.symbol)
+                HouseLabel(title: page.title, symbol: page.symbol, icon: page.codexIcon)
                     .font(Typo.label)
                     .badge(badge(for: page))
                     .tag(page)

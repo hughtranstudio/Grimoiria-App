@@ -3,13 +3,14 @@
 
 The Brand Codex (hughtranstudio/my-website, brand/seed.json) is Hugh's Master
 Brand Style. This copies its generated brand/tokens.json over the pinned copy
-in Design/codex/, records the version and commit, regenerates every Mac and
-Pixel token file, runs the contrast check, and prints what changed on screen,
+in Design/codex/, with the engraved icon set (src/data/icons.ts) beside it,
+records the version and commit, regenerates every Mac and Pixel token and icon
+file, runs the contrast check, and prints what changed on screen,
 ready to paste into the pull request.
 
 Usage:
   App/tools/sync-codex.py --from ~/Desktop/my-website        a local my-website checkout (its HEAD)
-  App/tools/sync-codex.py --from path/to/tokens.json --commit <sha>
+  App/tools/sync-codex.py --from path/to/tokens.json --commit <sha>   (keeps the pinned icons)
   App/tools/sync-codex.py --ref main                         fetch with the GitHub CLI (gh)
 Then open one pull request named "Codex <old> -> <new>" with Mac and Pixel
 screenshots, day and night.
@@ -24,6 +25,7 @@ from pathlib import Path
 
 here = Path(__file__).resolve().parent.parent
 pinned = here / "Design/codex/tokens.json"
+pinned_icons = here / "Design/codex/icons.ts"
 app_map = here / "Design/tokens.json"
 generator = here / "tools/gen-tokens.py"
 REPO = "hughtranstudio/my-website"
@@ -36,20 +38,29 @@ def version_of(text):
     return m.group(1)
 
 
+def gh_file(path, sha):
+    out = subprocess.run(["gh", "api", f"repos/{REPO}/contents/{path}?ref={sha}"],
+                         capture_output=True, text=True, check=True).stdout
+    return base64.b64decode(json.loads(out)["content"]).decode()
+
+
 def fetch(args):
+    """Returns (tokens.json text, icons.ts text or None, commit)."""
     if args.ref:
-        out = subprocess.run(["gh", "api", f"repos/{REPO}/contents/brand/tokens.json?ref={args.ref}"],
-                             capture_output=True, text=True, check=True).stdout
         sha = subprocess.run(["gh", "api", f"repos/{REPO}/commits/{args.ref}", "--jq", ".sha"],
                              capture_output=True, text=True, check=True).stdout.strip()
-        return base64.b64decode(json.loads(out)["content"]).decode(), sha
+        return gh_file("brand/tokens.json", sha), gh_file("src/data/icons.ts", sha), sha
     src = Path(args.source).expanduser()
     if src.is_dir():
         sha = subprocess.run(["git", "-C", str(src), "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
-        return (src / "brand/tokens.json").read_text(), sha
+        return (src / "brand/tokens.json").read_text(), (src / "src/data/icons.ts").read_text(), sha
     if not args.commit:
         sys.exit("--commit is needed with a bare tokens.json")
-    return src.read_text(), args.commit
+    return src.read_text(), None, args.commit
+
+
+def icon_names(text):
+    return set(re.findall(r"^\s{2}(\w+): \{", text, re.M))
 
 
 def resolved():
@@ -65,12 +76,15 @@ def main():
     ap.add_argument("--commit")
     args = ap.parse_args()
 
-    text, sha = fetch(args)
+    text, icons, sha = fetch(args)
     new = version_of(text)
     old = version_of(pinned.read_text())
     before = resolved()
 
     pinned.write_text(text)
+    old_icons = pinned_icons.read_text()
+    if icons is not None:
+        pinned_icons.write_text(icons)
     raw = app_map.read_text()
     raw = re.sub(r'("version": )"[^"]*"', rf'\1"{new}"', raw, count=1)
     raw = re.sub(r'("commit": )"[^"]*"', rf'\1"{sha}"', raw, count=1)
@@ -88,6 +102,10 @@ def main():
             print(f"| {k} | {a or 'new'} | {b} |")
     else:
         print("No app colour changed: this Codex version touches other packs or roles Grimoiria doesn't use.")
+    if icons is not None and icons != old_icons:
+        a, b = icon_names(old_icons), icon_names(icons)
+        added, gone = sorted(b - a), sorted(a - b)
+        print("\nIcons changed" + (f"; new: {', '.join(added)}" if added else "") + (f"; removed: {', '.join(gone)}" if gone else "") + ".")
     if gen.returncode:
         print(gen.stderr, end="")
         sys.exit("\nA text colour fails 4.5:1 after this change. Fix the app map before opening the pull request.")
