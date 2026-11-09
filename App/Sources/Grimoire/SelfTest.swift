@@ -114,7 +114,8 @@ enum SelfTest {
         // Agent: the read-only MCP server offers only tools that change nothing
         let readTools = AgentMCP.commands(readOnly: true)
         check("read-only MCP has no writing tools", !readTools.isEmpty && readTools.allSatisfy(\.readOnly)
-              && !readTools.contains { $0.name == "entries add" })
+              && !readTools.contains { $0.name == "entries add" }
+              && ["patterns", "meaning", "nudges"].allSatisfy { n in readTools.contains { $0.name == n } })
 
         // M5: volumes and page ranges
         let inRange = model.search("Volume III pp. 40–50")
