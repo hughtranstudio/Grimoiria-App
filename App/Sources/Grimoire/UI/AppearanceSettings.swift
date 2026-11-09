@@ -1,8 +1,8 @@
 import GrimoireAppKit
 import SwiftUI
 
-/// Settings > Appearance: the house style (DRAFT) and the accent color.
-/// Light and dark mode follow the Mac, except style C, which is always dark.
+/// Settings > Appearance: the house style and the accent color.
+/// Light and dark mode follow the Mac.
 struct AppearanceSettings: View {
     @Bindable private var store = ThemeStore.shared
     @Bindable private var house = HouseStyleStore.shared

@@ -11,6 +11,8 @@ Outputs:
   Design/tokens.css                                             proofs
   android/app/src/main/kotlin/.../capture/ui/CodexTokens.kt     Pixel
   android/app/src/main/res/values[-night]/codex_colors.xml      Pixel window ground
+  Sources/GrimoireAppKit/CodexIcons.swift                       Mac icons (from Design/codex/icons.ts)
+  android/app/src/main/kotlin/.../capture/ui/CodexIcons.kt      Pixel icons
 
 Usage: tools/gen-tokens.py           write every file
        tools/gen-tokens.py --check   exit 1 when a file is out of date or a text colour fails 4.5:1
@@ -19,6 +21,9 @@ import json
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import codex_icons  # noqa: E402
 
 here = Path(__file__).resolve().parent.parent
 repo = here.parent
@@ -233,12 +238,92 @@ def contrast_failures():
     return failed
 
 
+icons = codex_icons.read_icons(here / "Design/codex/icons.ts")
+
+
+def icon_scale():
+    """The Codex icon sizes and optical cuts, in points (Mac) or dp (Pixel): one CSS px each."""
+    t = codex["hughtran"]["icon"]
+    return {k: float(v["$value"]["value"]) for k, v in t.items()}
+
+
+def camel(key):
+    head, *rest = key.split("-")
+    return head + "".join(w.title() for w in rest)
+
+
+def num(v):
+    return f"{v:.4f}".rstrip("0").rstrip(".") if v != int(v) else f"{int(v)}"
+
+
+def swift_icons():
+    sc = icon_scale()
+    out = [
+        "// " + GENERATED,
+        "// Icons from Design/codex/icons.ts (the site's engraved set). Paths are flattened to",
+        "// move, line, curve and close on the 24-unit grid; see tools/codex_icons.py.",
+        "",
+        "public enum CodexIcons {",
+        "    /// Sizes and optical cuts, in points. Strokes are real points at any size.",
+        "    public enum Scale {",
+    ]
+    for k, v in sc.items():
+        name = camel(k) if not k[0].isdigit() else "xxl"
+        out.append(f"        public static let {name}: Double = {num(v)}")
+    out += ["    }", ""]
+    for icon in icons:
+        out.append(f"    /// {icon['why']}")
+        out.append(f"    public static let {icon['name']} = CodexIconDef(name: {json.dumps(icon['name'])}, title: {json.dumps(icon['title'], ensure_ascii=False)}, parts: [")
+        for part in icon["parts"]:
+            ops = []
+            for c in codex_icons.flatten(part["d"]):
+                if c[0] == "M":
+                    ops.append(f".move({num(c[1])}, {num(c[2])})")
+                elif c[0] == "L":
+                    ops.append(f".line({num(c[1])}, {num(c[2])})")
+                elif c[0] == "C":
+                    ops.append(".curve(" + ", ".join(num(v) for v in c[1:]) + ")")
+                else:
+                    ops.append(".close")
+            out.append(f"        CodexIconPart(weight: .{part['w']}, detail: {str(part['detail']).lower()}, ops: [{', '.join(ops)}]),")
+        out.append("    ])")
+    out += ["", "    public static let allIcons: [CodexIconDef] = [" + ", ".join(i["name"] for i in icons) + "]", "}", ""]
+    return "\n".join(out)
+
+
+def kotlin_icons():
+    sc = icon_scale()
+    out = [
+        "// " + GENERATED,
+        "package app.grimoiria.capture.ui",
+        "",
+        "/** The Codex icon set (Design/codex/icons.ts): engraved line icons on a 24-unit grid. Drawn by CodexIcon.kt. */",
+        "object CodexIcons {",
+        "    /** Sizes and optical cuts, in dp. Strokes are real dp at any size. */",
+        "    object Scale {",
+    ]
+    for k, v in sc.items():
+        name = camel(k) if not k[0].isdigit() else "xxl"
+        out.append(f"        const val {name} = {num(v)}f")
+    out += ["    }", ""]
+    for icon in icons:
+        out.append(f"    /** {icon['why']} */")
+        out.append(f"    val {icon['name']} = CodexIconDef({json.dumps(icon['name'])}, {json.dumps(icon['title'], ensure_ascii=False)}, listOf(")
+        for part in icon["parts"]:
+            out.append(f"        CodexIconPart(CodexIconWeight.{part['w'].upper()}, {str(part['detail']).lower()}, {json.dumps(part['d'])}),")
+        out.append("    ))")
+    out += ["", "    val allIcons = listOf(" + ", ".join(i["name"] for i in icons) + ")", "}", ""]
+    return "\n".join(out)
+
+
 outputs = {
     here / "Sources/GrimoireAppKit/HouseTokens.swift": swift(),
     here / "Design/tokens.css": css(),
     android_ui / "CodexTokens.kt": kotlin(),
     android_res / "values/codex_colors.xml": window_xml("light"),
     android_res / "values-night/codex_colors.xml": window_xml("dark"),
+    here / "Sources/GrimoireAppKit/CodexIcons.swift": swift_icons(),
+    android_ui / "CodexIcons.kt": kotlin_icons(),
 }
 failures = contrast_failures()
 for f in failures:
