@@ -61,3 +61,6 @@ if [[ -f "$PIN" && -f "$SITE/brand/seed.json" ]]; then
     echo "$theirs" > "$STATE/codex-told"
   fi
 fi
+
+# The locked GitHub backup, once a day (backup.sh); a failure is logged, never stops the update.
+bash "$REPO/App/tools/backup.sh" || say "Locked backup failed; see above."
