@@ -42,6 +42,18 @@ enum SidebarPage: String, CaseIterable, Identifiable {
         }
     }
 
+    /// The Codex icon for this page, where the site's set has one with the same meaning.
+    /// The rest keep their SF Symbol until Graphis draws them.
+    var codexIcon: CodexIconDef? {
+        switch self {
+        case .today: CodexIcons.life
+        case .inquiries: CodexIcons.readings
+        case .search: CodexIcons.search
+        case .volumes: CodexIcons.journal
+        default: nil
+        }
+    }
+
     /// Command-1 … Command-9, then Command-0.
     var shortcut: KeyEquivalent? {
         let i = Self.allCases.firstIndex(of: self) ?? 0

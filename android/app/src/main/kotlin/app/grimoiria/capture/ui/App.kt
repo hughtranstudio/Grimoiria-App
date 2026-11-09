@@ -93,7 +93,8 @@ fun GrimoireCaptureApp(
                                 onClick = { vm.go(t.root) },
                                 icon = {
                                     BadgedBox(badge = { if (t == Tab.TODAY && lib.due.isNotEmpty()) Badge { Text("${lib.due.size}") } }) {
-                                        Icon(icon(t), contentDescription = null)
+                                        val codex = codexIcon(t)
+                                        if (codex != null) CodexIcon(codex) else Icon(icon(t), contentDescription = null)
                                     }
                                 },
                                 label = { Text(t.label) },
@@ -122,6 +123,13 @@ fun GrimoireCaptureApp(
             }
         }
     }
+}
+
+/** Tabs with a clear Codex meaning use the engraved icon; the rest keep Material until Graphis draws them. */
+private fun codexIcon(t: Tab): CodexIconDef? = when (t) {
+    Tab.LIBRARY -> CodexIcons.journal
+    Tab.TODAY -> CodexIcons.life
+    else -> null
 }
 
 private fun icon(t: Tab): ImageVector = when (t) {

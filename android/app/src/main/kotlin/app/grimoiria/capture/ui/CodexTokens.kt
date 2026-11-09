@@ -7,26 +7,34 @@ import androidx.compose.ui.graphics.Color
 object Codex {
     /** text and marks on light grounds. Codex hughtran.color.ink (day). */
     val ink = Color(0xFF000000)
-    /** dark ground. legacy. */
-    val soot = Color(0xFF141414)
     /** page ground by day. Codex hughtran.color.paper (day). */
     val paper = Color(0xFFFFFFFF)
     /** raised panels on the paper page (the Codex calls it surface). Codex hughtran.color.surface (day). */
     val vellum = Color(0xFFF8F8F8)
-    /** text on dark and night grounds. legacy. */
-    val linen = Color(0xFFF4F4F4)
     /** secondary text on light grounds. Codex hughtran.color.muted (day). */
     val muted = Color(0xFF6B6B6B)
     /** marks, rules, illustration. The only thing that glows.. Codex hughtran.color.red (day). */
     val rubric = Color(0xFFEB0303)
     /** red text under 24 pt on light grounds. Codex hughtran.color.rubric (day). */
     val rubricSmall = Color(0xFFCC0000)
-    /** red on dark and night grounds. legacy. */
-    val rubricOnDark = Color(0xFFFF3232)
-    /** Beltane ultramarine night ground. legacy. */
-    val beltane = Color(0xFF010742)
-    /** night surface, one step under the ground. legacy. */
-    val beltaneDeep = Color(0xFF00042C)
+    /** page ground at night (forest night). Codex hughtran.color.paper (night). */
+    val nightGround = Color(0xFF05120A)
+    /** deepest panels at night. Codex hughtran.color.night (night). */
+    val nightDeep = Color(0xFF020904)
+    /** raised panels at night. Codex hughtran.color.surface (night). */
+    val nightSurface = Color(0xFF0B1C13)
+    /** text and lines at night (warm paper white). Codex hughtran.color.ink (night). */
+    val nightInk = Color(0xFFEBE8DB)
+    /** quiet text at night. Codex hughtran.color.muted (night). */
+    val nightMuted = Color(0xFFA0B0A3)
+    /** marks and glow at night: the red turns green. Codex hughtran.color.red (night). */
+    val nightRed = Color(0xFF489E64)
+    /** red text at night: the rubric turns green. Codex hughtran.color.rubric (night). */
+    val nightRubric = Color(0xFF56A66F)
+    /** Pixel: surface container high at night (the Codex's raised forest panel). Codex palace.color.panel2 (day). */
+    val nightPanel2 = Color(0xFF112619)
+    /** Pixel: surface container highest at night (the Codex's forest hairline tone). Codex palace.color.line (day). */
+    val nightLine = Color(0xFF1D3427)
     /** Pixel: secondary container, day. app-only. */
     val fogDay = Color(0xFFEDEDED)
     /** Pixel: surface variant, day. app-only. */
@@ -35,8 +43,4 @@ object Codex {
     val haze1Day = Color(0xFFF1F1F1)
     /** Pixel: surface container highest, day. app-only. */
     val haze2Day = Color(0xFFEAEAEA)
-    /** Pixel: surface container high, night. app-only. */
-    val haze1Night = Color(0xFF1C1C1C)
-    /** Pixel: secondary and highest containers, night. app-only. */
-    val haze2Night = Color(0xFF242424)
 }
