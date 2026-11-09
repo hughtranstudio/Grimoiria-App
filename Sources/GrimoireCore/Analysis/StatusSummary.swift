@@ -21,6 +21,19 @@ public struct StatusSummary: Codable, Equatable, Sendable {
     public var inboxOldestDays: Int?
     /// Where a click on the Inbox line goes: `grimoire://inbox`, which opens the Mac app's Inbox.
     public var inboxLink: String
+
+    // The ecosystem's status card (my-website ecosystem/README.md): the same shape every app writes,
+    // `{ app, format, written, ok, headline, needs_you, counts{}, links{} }`. Counts and links only.
+    public var app: String
+    /// The day these counts were taken (yyyy-MM-dd), so a reader can tell a stale card.
+    public var written: String
+    public var ok: Bool
+    /// One plain line for the Chamber and the Back office.
+    public var headline: String
+    /// What waits on you: captures to confirm plus check-ins due.
+    public var needs_you: Int
+    public var counts: [String: Int]
+    public var links: [String: String]
     /// The newest practice day (ritual, meditation or vision), yyyy-MM-dd, if any.
     public var lastPractice: String?
     /// Whether any practice is recorded for today.
@@ -42,6 +55,28 @@ public struct StatusSummary: Codable, Equatable, Sendable {
         lastPractice = days.max()
         practicedToday = days.contains(today)
         nudges = library.map { Patterns(data: data, library: $0).nudges(today: today).count }
+        app = "grimoiria"
+        written = today
+        ok = true
+        needs_you = inboxWaiting + checkInsDue
+        var counts = ["inbox": inboxWaiting, "checkInsDue": checkInsDue, "openInquiries": openInquiries]
+        if let nudges { counts["nudges"] = nudges }
+        self.counts = counts
+        links = ["open": GrimoireLink.today.url.absoluteString, "inbox": GrimoireLink.inbox(nil).url.absoluteString]
+        headline = Self.headline(inbox: inboxWaiting, oldestDays: inboxOldestDays, due: checkInsDue,
+                                 practicedToday: practicedToday, lastPractice: lastPractice)
+    }
+
+    /// "9 in the Inbox (oldest 6 days), 1 check-in due, last practice 2026-10-29".
+    static func headline(inbox: Int, oldestDays: Int?, due: Int, practicedToday: Bool, lastPractice: String?) -> String {
+        var bits: [String] = []
+        if inbox > 0 {
+            let age = oldestDays.map { $0 == 0 ? " (from today)" : " (oldest \($0) day\($0 == 1 ? "" : "s"))" } ?? ""
+            bits.append("\(inbox) in the Inbox\(age)")
+        }
+        if due > 0 { bits.append("\(due) check-in\(due == 1 ? "" : "s") due") }
+        bits.append(practicedToday ? "practised today" : lastPractice.map { "last practice \($0)" } ?? "no practice recorded yet")
+        return bits.joined(separator: ", ")
     }
 
     /// Whole days between two yyyy-MM-dd days; never negative.
