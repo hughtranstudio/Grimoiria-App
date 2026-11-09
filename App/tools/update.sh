@@ -51,16 +51,19 @@ if (( NOW )) || [[ "$BUILT" != "$HEAD_MAIN" ]]; then
   fi
 fi
 
-# The Brand Codex: report a newer version on the site, never apply it here (brand changes wait for your yes).
-PIN="$REPO/App/Design/codex/tokens.json"
-if [[ -f "$PIN" && -f "$SITE/brand/seed.json" ]]; then
-  ours=$(sed -nE 's/.*Brand Codex ([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' "$PIN" | head -1)
-  theirs=$(sed -nE 's/^  "version": "([0-9.]+)".*/\1/p' "$SITE/brand/seed.json" | head -1)
-  if [[ -n "$ours" && -n "$theirs" && "$ours" != "$theirs" ]] && [[ "$(cat "$STATE/codex-told" 2>/dev/null)" != "$theirs" ]]; then
-    say "Brand Codex $theirs is on the site; Grimoire uses $ours. Ask Claude to take it (App/tools/sync-codex.py)."
-    echo "$theirs" > "$STATE/codex-told"
-  fi
-fi
-
 # The locked GitHub backup, once a day (backup.sh); a failure is logged, never stops the update.
 bash "$REPO/App/tools/backup.sh" || say "Locked backup failed; see above."
+
+# The Brand Codex: report a newer version on the site, never apply it here (brand changes wait for your yes).
+# Best effort only: macOS can refuse a background job access to the Desktop, and that must never stop the run.
+codex_note() {
+  local pin="$REPO/App/Design/codex/tokens.json" ours theirs
+  [[ -f "$pin" ]] || return 0
+  theirs=$(sed -nE 's/^  "version": "([0-9.]+)".*/\1/p' "$SITE/brand/seed.json" 2>/dev/null | head -1) || return 0
+  ours=$(sed -nE 's/.*Brand Codex ([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' "$pin" | head -1)
+  if [[ -n "$ours" && -n "$theirs" && "$ours" != "$theirs" && "$(cat "$STATE/codex-told" 2>/dev/null)" != "$theirs" ]]; then
+    say "Brand Codex $theirs is in $SITE; Grimoire uses $ours. Ask Claude to take it (App/tools/sync-codex.py)."
+    echo "$theirs" > "$STATE/codex-told"
+  fi
+}
+codex_note || true
