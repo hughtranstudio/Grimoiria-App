@@ -51,7 +51,7 @@ if (( NOW )) || [[ "$BUILT" != "$HEAD_MAIN" ]]; then
   fi
 fi
 
-# The locked GitHub backup, once a day (backup.sh); a failure is logged, never stops the update.
+# The locked backup, once a day, pushed to its private GitHub repo (backup.sh); a failure is logged, never stops the update.
 bash "$REPO/App/tools/backup.sh" || say "Locked backup failed; see above."
 
 # The Brand Codex: report a newer version on the site, never apply it here (brand changes wait for your yes).

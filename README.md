@@ -41,9 +41,10 @@ at login, so captures, Uranika charts and the Chamber's Grimoire line stay curre
 read-only access to the grimoire (search, show, patterns, what a card has meant to you, what keeps coming back). It tells you, without applying it, when the site has a newer Brand Codex.
 
 It also keeps a **locked GitHub backup**: once a day `App/tools/backup.sh` writes an encrypted copy of everything
-(database, settings, Definitions, the open-format export, every attachment) to `HT-Press-Vault/Grimoire Backup/`,
-and the vault's own GitHub backup carries it off the Mac. Only locked [age](https://age-encryption.org) files reach
-GitHub. The key lives in `~/.config/grimoire/backup-key.txt` and, from the first run, in your password manager.
+(database, settings, Definitions, the open-format export, every attachment) to `~/Grimoire Backup/` and pushes it
+to the private repo `hughtranstudio/grimoire-backup`. Set that up once with
+`bash ~/grimoiria-app-main/App/tools/setup-github-backup.sh` (GitHub sign-in in the browser, makes the repo, moves
+the folder out of the vault). Only locked [age](https://age-encryption.org) files reach GitHub. The key lives in `~/.config/grimoire/backup-key.txt` and, from the first run, in your password manager.
 `App/tools/restore-backup.sh` opens a backup into a new Desktop folder without touching Grimoire.
 Log: `~/Library/Logs/grimoire-update.log`. Undo lines are at the top of `App/tools/install-update.sh`.
 
