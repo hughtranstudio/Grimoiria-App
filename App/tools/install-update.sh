@@ -7,8 +7,8 @@
 #   3. opens Grimoire in the background when you log in, so captures, charts and the Chamber's
 #      Grimoire line stay current without you opening it,
 #   4. gives Claude Code on this Mac read-only access to the grimoire (grimoire mcp --read-only),
-#   5. sets up the locked GitHub backup: an encrypted copy in "HT-Press-Vault/Grimoire Backup" every day,
-#      carried to GitHub by the vault's own backup. The first run makes the key and copies it to your
+#   5. sets up the locked backup: an encrypted copy every day. setup-github-backup.sh (run once) puts it
+#      in its own private GitHub repo. The first run makes the key and copies it to your
 #      clipboard: paste it into your password manager, because without it the backup can't be opened.
 # Undo:
 #   for l in com.hughtran.grimoire-update com.hughtran.grimoire-open; do launchctl bootout gui/$(id -u)/$l; rm ~/Library/LaunchAgents/$l.plist; done
@@ -56,7 +56,7 @@ if command -v age >/dev/null 2>&1; then
     grep '^AGE-SECRET-KEY' "$KEYFILE" | pbcopy
     newkey=1
   fi
-  bash "$HERE/backup.sh" --now | tee -a "$HOME/Library/Logs/grimoire-update.log" >/dev/null && backup="on (daily, in HT-Press-Vault/Grimoire Backup)"
+  bash "$HERE/backup.sh" --now | tee -a "$HOME/Library/Logs/grimoire-update.log" >/dev/null && backup="on (daily; to send it to GitHub run: bash $HERE/setup-github-backup.sh)"
 fi
 
 mcp="skipped (Claude Code not found)"

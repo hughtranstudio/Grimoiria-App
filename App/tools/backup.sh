@@ -1,7 +1,7 @@
 #!/bin/bash
 # The locked GitHub backup (Hugh, 9 Nov 2026: "Locked backup (encrypted)").
-# Writes an encrypted copy of the whole grimoire into "<vault>/Grimoire Backup/". The vault's own GitHub
-# backup (Obsidian Git) carries it off the Mac, so GitHub only ever holds locked files.
+# Writes an encrypted copy of the whole grimoire into a backup folder and pushes it to a private GitHub repo
+# (Hugh, 9 Nov: "Its own private repo"; set up once by setup-github-backup.sh). GitHub only ever holds locked files.
 #   App/tools/backup.sh            once a day (update.sh calls it); does nothing when nothing changed
 #   App/tools/backup.sh --now      write it now
 # What is inside: the database (a consistent snapshot), Definitions, your settings files, the open-format
@@ -17,15 +17,31 @@ NOW=0; [[ "${1:-}" == "--now" ]] && NOW=1
 say() { printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M')" "$*"; }
 mkdir -p "$STATE"
 
-# Where: beside the Obsidian export folder chosen in Grimoire's Settings (…/HT-Press-Vault/Grimoire).
+# Where: the folder setup-github-backup.sh chose (~/Grimoire Backup, its own git repo), else the old place
+# beside the Obsidian export folder (…/HT-Press-Vault/Grimoire Backup).
 EXPORT="${GRIMOIRE_EXPORT:-$(defaults read studio.htd.grimoire vault.path 2>/dev/null || true)}"
 [[ -n "$EXPORT" ]] || EXPORT="$HOME/HT-Press-Vault/Grimoire"
-OUT="${GRIMOIRE_BACKUP_DIR:-$(dirname "$EXPORT")/Grimoire Backup}"
+OUT="${GRIMOIRE_BACKUP_DIR:-$(cat "$STATE/backup-dir" 2>/dev/null || true)}"
+[[ -n "$OUT" ]] || OUT="$(dirname "$EXPORT")/Grimoire Backup"
+
+# Off the Mac: commit and push the locked files when the folder is a git repo. Never asks for a password
+# (GIT_TERMINAL_PROMPT=0) and never stops the backup; a failed push is tried again on the next run.
+push() {
+  [[ -d "$OUT/.git" ]] || return 0
+  ( cd "$OUT" && export GIT_TERMINAL_PROMPT=0
+    git add -A
+    git diff --cached --quiet || git commit -q -m "Backup $(date '+%Y-%m-%d %H:%M')"
+    git remote get-url origin >/dev/null 2>&1 || exit 0
+    [[ -z "$(git rev-list '@{u}..HEAD' 2>/dev/null || echo unpushed)" ]] && exit 0
+    if git push -q -u origin HEAD:main 2>"$STATE/backup-push.log"; then say "Locked backup pushed to GitHub."
+    else say "Locked backup not pushed yet (see $STATE/backup-push.log); will try again."; fi
+  ) || say "Locked backup push skipped: git error."
+}
 
 command -v age >/dev/null || { say "Backup skipped: age is not installed (brew install age)."; exit 0; }
 [[ -f "$KEY" ]] || { say "Backup skipped: no key at $KEY (run install-update.sh)."; exit 0; }
 [[ -d "$DATA" ]] || { say "Backup skipped: no Grimoire data at $DATA."; exit 0; }
-(( NOW )) || [[ "$(cat "$STATE/backup-day" 2>/dev/null)" != "$(date +%F)" ]] || exit 0
+(( NOW )) || [[ "$(cat "$STATE/backup-day" 2>/dev/null)" != "$(date +%F)" ]] || { push; exit 0; }
 
 RECIPIENT=$(age-keygen -y "$KEY")
 umask 077
@@ -84,3 +100,4 @@ changes nothing in Grimoire).
 MD
 date +%F > "$STATE/backup-day"
 say "Locked backup written to $OUT: $changed, $new new attachment(s)$( (( big )) && echo ", $big too big for GitHub")."
+push

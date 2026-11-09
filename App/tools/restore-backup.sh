@@ -1,12 +1,15 @@
 #!/bin/bash
 # Opens the locked backup into a new folder on the Desktop. Changes nothing in Grimoire or the vault.
-#   bash App/tools/restore-backup.sh ["<vault>/Grimoire Backup"] [key file]
+#   bash App/tools/restore-backup.sh ["~/Grimoire Backup"] [key file]
+# On a new Mac, first: git clone https://github.com/hughtranstudio/grimoire-backup.git "$HOME/Grimoire Backup"
 # Then, to use it: quit Grimoire and copy the restored Grimoire.store, Definitions, settings and Attachments
 # into ~/Library/Application Support/Grimoire/ (keep the old folder until you have checked it).
 set -euo pipefail
 export PATH="${GRIMOIRE_PATH:-/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin}"
 EXPORT="$(defaults read studio.htd.grimoire vault.path 2>/dev/null || echo "$HOME/HT-Press-Vault/Grimoire")"
-SRC="${1:-$(dirname "$EXPORT")/Grimoire Backup}"
+SRC="${1:-$(cat "$HOME/.grimoire-update/backup-dir" 2>/dev/null || true)}"
+[[ -n "$SRC" ]] || SRC="$HOME/Grimoire Backup"
+[[ -f "$SRC/grimoire.tar.age" ]] || SRC="$(dirname "$EXPORT")/Grimoire Backup"
 KEY="${2:-$HOME/.config/grimoire/backup-key.txt}"
 DEST="${GRIMOIRE_RESTORE_TO:-$HOME/Desktop/Grimoire restored $(date +%Y-%m-%d-%H%M)}"
 command -v age >/dev/null || { echo "Install age first: brew install age"; exit 1; }
