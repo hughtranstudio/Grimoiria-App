@@ -272,6 +272,34 @@ enum AgentCommands {
             let report = p.report(top: try args.int("top", default: 10), recurrenceDays: try args.int("within", default: 30))
             return ["summary": report.text, "report": try encoded(report)]
         },
+        AgentCommand(name: "meaning", summary: "What a card or hexagram has meant in your own readings: times, outcomes, notes.",
+                     params: [.init(name: "symbol", required: true, positional: true, help: "a card or hexagram, like \"the tower\" or yijing/29"),
+                              .init(name: "deck", help: "deck id when the card name is in more than one deck")],
+                     example: "grimoire meaning \"the tower\" --json", readOnly: true) { args, model in
+            let text = try args.required("symbol")
+            guard let symbol = model.library.symbol(named: text, deckId: args.string("deck")) else {
+                throw AgentError.invalid("no card or hexagram called \(text)")
+            }
+            let p = Patterns(data: model.data, library: model.library)
+            let meaning: PersonalMeaning?
+            switch symbol {
+            case let .card(deckId, cardId): meaning = p.meaning(card: cardId, deckId: deckId)
+            case let .hexagram(n): meaning = p.meaning(hexagram: n)
+            }
+            guard let meaning else { return ["symbol": text, "summary": "\(text): not in any reading yet."] }
+            return ["symbol": text, "summary": meaning.text, "report": try encoded(meaning.report)]
+        },
+        AgentCommand(name: "nudges", summary: "Cards, hexagrams and symbols that keep coming back lately.",
+                     params: [.init(name: "within", kind: .integer, help: "counted within this many days (default 14)"),
+                              .init(name: "min", kind: .integer, help: "at least this many times (default 3)")],
+                     example: "grimoire nudges --json", readOnly: true) { args, model in
+            let p = Patterns(data: model.data, library: model.library)
+            let nudges = p.nudges(today: model.today, withinDays: try args.int("within", default: 14), minTimes: try args.int("min", default: 3))
+            return ["nudges": nudges.map { n -> JSONObject in
+                ["key": n.key, "name": n.name, "message": n.message, "from": n.from, "to": n.to,
+                 "times": n.times, "days": n.days, "records": n.recordIds.map(\.string)]
+            }]
+        },
         AgentCommand(name: "calendar", summary: "Days ahead: planetary ruler, Moon, lunations and ingresses, and optionally planetary hours.",
                      params: [.init(name: "from", help: "yyyy-mm-dd (default today)"),
                               .init(name: "days", kind: .integer, help: "how many days (default 7)"),

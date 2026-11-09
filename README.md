@@ -38,7 +38,7 @@ bash ~/grimoiria-app-main/App/tools/install-update.sh
 Builds and installs Grimoire from GitHub main now, then checks main every 30 minutes and rebuilds when it changed
 (never quitting a running Grimoire; a notification says when the new build is ready). It also opens Grimoire quietly
 at login, so captures, Uranika charts and the Chamber's Grimoire line stay current, and gives Claude Code on the Mac
-read-only access to the grimoire. It tells you, without applying it, when the site has a newer Brand Codex.
+read-only access to the grimoire (search, show, patterns, what a card has meant to you, what keeps coming back). It tells you, without applying it, when the site has a newer Brand Codex.
 
 It also keeps a **locked GitHub backup**: once a day `App/tools/backup.sh` writes an encrypted copy of everything
 (database, settings, Definitions, the open-format export, every attachment) to `HT-Press-Vault/Grimoire Backup/`,
