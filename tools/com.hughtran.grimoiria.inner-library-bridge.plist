@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Runs the Inner Library courier every 15 minutes (docs/inner-library-bridge.md). install.sh-style setup:
+     sed "s|HOME_DIR|$HOME|g" tools/com.hughtran.grimoiria.inner-library-bridge.plist > ~/Library/LaunchAgents/com.hughtran.grimoiria.inner-library-bridge.plist -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.hughtran.grimoiria.inner-library-bridge</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>HOME_DIR/grimoiria-app/tools/inner-library-bridge.sh</string>
+  </array>
+  <key>StartInterval</key><integer>900</integer>
+  <key>RunAtLoad</key><true/>
+  <key>StandardOutPath</key><string>HOME_DIR/Library/Logs/grimoiria-inner-library.log</string>
+  <key>StandardErrorPath</key><string>HOME_DIR/Library/Logs/grimoiria-inner-library.log</string>
+</dict>
+</plist>
