@@ -102,3 +102,37 @@ final class InboxAgeAndLinkTests: XCTestCase {
         XCTAssertNotNil(GrimoireLink(string: "grimoire://inquiry/\(id)"))
     }
 }
+
+final class StatusCardTests: XCTestCase {
+    func testTheEcosystemCardShape() throws {
+        let repo = MemoryRepository()
+        let at = TestSupport.date("2026-11-01T09:00:00-07:00")
+        repo.addToInbox(InboxItem(entry: Entry(type: .journal, occurredAt: at, createdAt: at.instant, status: .inbox), draft: nil, source: "phone:pixel"))
+        let s = StatusSummary(data: repo.data, today: "2026-11-09")
+        XCTAssertEqual(s.app, "grimoiria")
+        XCTAssertEqual(s.written, "2026-11-09")
+        XCTAssertTrue(s.ok)
+        XCTAssertEqual(s.needs_you, 1)
+        XCTAssertEqual(s.counts["inbox"], 1)
+        XCTAssertNil(s.counts["nudges"])
+        XCTAssertEqual(s.links["inbox"], "grimoire://inbox")
+        XCTAssertEqual(s.links["open"], "grimoire://today")
+        XCTAssertTrue(s.headline.hasPrefix("1 in the Inbox (oldest"), s.headline)
+        let json = try JSONSerialization.jsonObject(with: s.json()) as? [String: Any]
+        for key in ["app", "format", "written", "ok", "headline", "needs_you", "counts", "links"] {
+            XCTAssertNotNil(json?[key], key)
+        }
+        // The keys Mission Control already reads stay.
+        for key in ["today", "inboxWaiting", "checkInsDue", "openInquiries", "lastPractice", "practicedToday"] where key != "lastPractice" {
+            XCTAssertNotNil(json?[key], key)
+        }
+    }
+
+    func testHeadlineWording() {
+        XCTAssertEqual(StatusSummary.headline(inbox: 0, oldestDays: nil, due: 0, practicedToday: true, lastPractice: "2026-11-09"), "practised today")
+        XCTAssertEqual(StatusSummary.headline(inbox: 9, oldestDays: 6, due: 1, practicedToday: false, lastPractice: "2026-10-29"),
+                       "9 in the Inbox (oldest 6 days), 1 check-in due, last practice 2026-10-29")
+        XCTAssertEqual(StatusSummary.headline(inbox: 1, oldestDays: 0, due: 2, practicedToday: false, lastPractice: nil),
+                       "1 in the Inbox (from today), 2 check-ins due, no practice recorded yet")
+    }
+}

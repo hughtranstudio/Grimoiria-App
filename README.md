@@ -29,13 +29,25 @@ This repository holds **GrimoireCore**, the platform-neutral Swift package the M
 | `schemas/` | JSON Schemas: phone sidecar v1, deck, spread, JSONL export record. |
 | `tools/` | Definition generator, schema validator, import fixture generator, end-to-end demo script. |
 
+## Keep the Mac app up to date (one line)
+
+```bash
+bash ~/grimoiria-app-main/App/tools/install-update.sh
+```
+
+Builds and installs Grimoire from GitHub main now, then checks main every 30 minutes and rebuilds when it changed
+(never quitting a running Grimoire; a notification says when the new build is ready). It also opens Grimoire quietly
+at login, so captures, Uranika charts and the Chamber's Grimoire line stay current, and gives Claude Code on the Mac
+read-only access to the grimoire. It tells you, without applying it, when the site has a newer Brand Codex.
+Log: `~/Library/Logs/grimoire-update.log`. Undo lines are at the top of `App/tools/install-update.sh`.
+
 ## Build and test
 
 Mac (Xcode 26 / Swift 6.2) or Linux (Swift 6.1+):
 
 ```bash
 swift build
-swift test                      # 182 tests
+swift test                      # 184 tests
 (cd android && ./gradlew -PcoreOnly :core:test)   # Kotlin parser parity + capture outbox
 tools/e2e-demo.sh               # capture → Inbox → confirm → export, through the CLI
 pip install jsonschema && python3 tools/validate_schemas.py

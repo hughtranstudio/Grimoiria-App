@@ -136,6 +136,7 @@ final class AppModel {
             guard let self else { return }
             data = repository.data
             PhoneLibrarySync.shared.schedule()
+            scheduleStatus()
         }
     }
 
@@ -147,6 +148,20 @@ final class AppModel {
         IngestCoordinator.shared.start()
         UranikaLink.shared.start()
         PhoneLibrarySync.shared.publishNow()
+        writeStatus()
+    }
+
+    /// A capture landing or a Confirm changes what the Chamber should show; write the status card
+    /// a moment after the last change (it is rewritten only when its contents differ).
+    @ObservationIgnored private var statusTask: Task<Void, Never>?
+    private func scheduleStatus() {
+        guard !SelfTest.requested else { return }
+        statusTask?.cancel()
+        statusTask = Task {
+            try? await Task.sleep(for: .seconds(3))
+            guard !Task.isCancelled else { return }
+            writeStatus()
+        }
     }
 
     // MARK: Definitions

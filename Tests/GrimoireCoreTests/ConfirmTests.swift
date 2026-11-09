@@ -19,7 +19,8 @@ final class ConfirmTests: XCTestCase {
         XCTAssertTrue(repo.search(SearchQuery(text: "rain")).isEmpty) // inbox items are not in normal search
         XCTAssertTrue(repo.knowsCapture("cap-1"))
 
-        let result = try repo.confirm(item.id, corrected: item.draft, library: lib, reminder: .oneWeek)
+        let result = try repo.confirm(item.id, corrected: item.draft, library: lib, reminder: .oneWeek,
+                                      now: TestSupport.date("2026-10-28T09:00:00-07:00").instant)
         XCTAssertEqual(repo.data.inbox.count, 0)
         XCTAssertEqual(repo.data.entries.first?.status, .filed)
         let inq = try XCTUnwrap(result.inquiry)
