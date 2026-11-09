@@ -50,6 +50,10 @@ usage: grimoire <command> [options]
                                           .ics file for Google or Apple Calendar: timing and a grimoire:// link only
   hours <planet> [--after ISO] [--its-day] [--limit 5] [--tz Zone] [--lat N --lon N]
                                           next planetary hours of a planet, e.g. hours mars --its-day
+  bridge [hello|sync] [--site URL] [--inbox DIR] [--status-file FILE]
+                                          the Inner Library courier: collect captures sent from
+                                          hughtranstudio.com/intima into DIR/incoming, then send the
+                                          status counts (token from $INTIMA_BRIDGE_TOKEN; docs/inner-library-bridge.md)
   status [--today yyyy-MM-dd] [--json]    counts for Mission Control: check-ins due, open inquiries, Inbox, nudges, last practice
   correspond [text] [--json]              look up planets, signs, elements, trigrams: correspond iron, correspond aries
   meaning <card or hexagram> [--deck ID] [--json]
@@ -455,6 +459,29 @@ func run() async throws {
             print("Last practice: \(summary.lastPractice ?? "none")\(summary.practicedToday ? " (today)" : "")")
             if let n = summary.nudges { print("Keeps coming back: \(n)") }
         }
+
+    case "bridge":
+        // The Inner Library courier (docs/inner-library-bridge.md). The token comes from the environment
+        // (the launchd script reads it from the Keychain), never from an argument that `ps` could show.
+        let mode = args.positional.first ?? "sync"
+        guard ["hello", "sync"].contains(mode) else { throw CLIError(description: "bridge takes hello or sync") }
+        let env = ProcessInfo.processInfo.environment
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let transport = try HTTPBridgeTransport(site: args.one("site") ?? env["INTIMA_SITE"] ?? "https://hughtranstudio.com",
+                                                token: env["INTIMA_BRIDGE_TOKEN"] ?? "")
+        let inbox = URL(fileURLWithPath: args.one("inbox") ?? env["GRIMOIRE_INBOX"] ?? "\(home)/GrimoireInbox")
+        let bridge = InnerLibraryBridge(inbox: inbox, transport: transport)
+        if mode == "hello" {
+            let waiting = try await bridge.hello()
+            print("Inner Library bridge ok: \(waiting) capture(s) waiting")
+            break
+        }
+        let statusPath = args.one("status-file") ?? env["GRIMOIRE_STATUS"] ?? "\(home)/HT-Press-Vault/Grimoire/\(StatusSummary.fileName)"
+        let status = FileManager.default.fileExists(atPath: statusPath) ? try Data(contentsOf: URL(fileURLWithPath: statusPath)) : nil
+        let r = try await bridge.sync(status: status)
+        print("Inner Library: \(r.delivered.count) new capture(s) into \(bridge.incoming.path), \(r.alreadyHere.count) already here, \(r.collected) cleared on the site" + (r.statusSent ? ", status sent" : ", no status file"))
+        for (id, why) in r.refused.sorted(by: { $0.key < $1.key }) { print("refused \(id): \(why)") }
+        if !r.refused.isEmpty { exit(2) }
 
     case "outcome":
         let store = try openStore(args)
