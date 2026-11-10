@@ -1,0 +1,51 @@
+name: Mac app build
+
+# core.yml runs on Ubuntu, which cannot see the SwiftUI app target at all.
+# This job compiles the whole Mac app (App/) on macOS 26 with Xcode 26, so a
+# change that breaks the app is caught on the pull request, not on Hugh's Mac.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "App/**"
+      - "Sources/**"
+      - "Package.swift"
+      - ".github/workflows/app.yml"
+  pull_request:
+    paths:
+      - "App/**"
+      - "Sources/**"
+      - "Package.swift"
+      - ".github/workflows/app.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use the newest Xcode 26
+        run: |
+          xcode=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)
+          echo "Using $xcode"
+          sudo xcode-select -s "$xcode/Contents/Developer"
+          swift --version
+      - uses: actions/cache@v4
+        with:
+          path: App/.build
+          key: app-${{ runner.os }}-${{ hashFiles('App/Package.swift', 'Package.swift') }}
+          restore-keys: app-${{ runner.os }}-
+      - name: Compile the Mac app (every target, warnings shown)
+        run: swift build --package-path App
+      - name: App rules tests (GrimoireAppKit)
+        run: swift test --package-path App
+      - name: Core tests on macOS
+        run: swift test
