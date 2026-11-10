@@ -47,9 +47,6 @@ jobs:
           if [[ -n "${pick:-}" ]]; then sudo xcode-select -s "$pick/Contents/Developer"; fi
           xcode-select -p
           swift --version
-      # Only the app product: the core package's command-line tool is also called "grimoire", and on
-      # a Mac's case-insensitive disk its build folder is the app's ("Grimoire.build"), so building
-      # both at once overwrites the app's file list and the link fails.
       - name: Compile the Mac app (release, as build.sh does)
         run: swift build -c release --package-path App --scratch-path "$SCRATCH" --product Grimoire
       - name: Show where the app's object files went
