@@ -43,9 +43,12 @@ jobs:
           path: App/.build
           key: app-${{ runner.os }}-${{ hashFiles('App/Package.swift', 'Package.swift') }}
           restore-keys: app-${{ runner.os }}-
-      - name: Compile the Mac app (every target, warnings shown)
-        run: swift build --package-path App
+      # Release, as App/build.sh builds it. The debug batch build of the app target fails to
+      # write its object files on this toolchain ("malformed dependencies file"), so CI builds
+      # what Hugh actually installs.
+      - name: Compile the Mac app (every target, release, as build.sh does)
+        run: swift build -c release --package-path App
       - name: App rules tests (GrimoireAppKit)
-        run: swift test --package-path App
+        run: swift test -c release -Xswiftc -enable-testing --package-path App
       - name: Core tests on macOS
         run: swift test
