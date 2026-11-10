@@ -21,14 +21,14 @@ if [[ -z "$identity" ]]; then
 fi
 [[ -n "$identity" ]] || identity=-
 
-swift build -c $config --package-path "$here" --scratch-path "$scratch" 2>&1 | grep -E "error|warning|Build complete" | grep -v "^\[" || true
+swift build -c $config --package-path "$here" --scratch-path "$scratch" --product Grimoire 2>&1 | grep -E "error|warning|Build complete" | grep -v "^\[" || true
 bin="$scratch/$config/$name"
 [[ -x "$bin" ]] || { echo "build failed"; exit 1; }
 # swift build can report success while an edited file failed to compile. Catch that.
 stale=$(find "$here/Sources" -name '*.swift' -newer "$bin" | head -1)
 if [[ -n "$stale" ]]; then
   echo "build failed: binary is older than $stale"
-  swift build -c $config --package-path "$here" --scratch-path "$scratch" 2>&1 | grep -E "error" | head -20
+  swift build -c $config --package-path "$here" --scratch-path "$scratch" --product Grimoire 2>&1 | grep -E "error" | head -20
   exit 1
 fi
 

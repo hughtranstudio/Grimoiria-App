@@ -35,9 +35,8 @@ jobs:
       # Build products outside the repository, as App/build.sh does: the app package depends on
       # the repository root as a package, so a .build folder inside it confuses the build.
       - run: echo "SCRATCH=$RUNNER_TEMP/grimoire-build" >> "$GITHUB_ENV"
-      # Swift 6.3 (Xcode 26.6 on the runner) writes the app target's object files to the wrong place
-      # ("-o AgentCLI.o" relative, link fails). Use the newest Xcode 26 whose Swift is 6.2, the
-      # toolchain the app is written for (swift-tools-version 6.2); fall back to the default.
+      # Use the newest Xcode 26 whose Swift is 6.2, the toolchain the app is written for
+      # (swift-tools-version 6.2); fall back to the default.
       - name: Xcode with Swift 6.2
         run: |
           for x in $(ls -d /Applications/Xcode_26*.app | sort -V); do
@@ -48,8 +47,11 @@ jobs:
           if [[ -n "${pick:-}" ]]; then sudo xcode-select -s "$pick/Contents/Developer"; fi
           xcode-select -p
           swift --version
-      - name: Compile the Mac app (every target, release, as build.sh does)
-        run: swift build -c release --package-path App --scratch-path "$SCRATCH"
+      # Only the app product: the core package's command-line tool is also called "grimoire", and on
+      # a Mac's case-insensitive disk its build folder is the app's ("Grimoire.build"), so building
+      # both at once overwrites the app's file list and the link fails.
+      - name: Compile the Mac app (release, as build.sh does)
+        run: swift build -c release --package-path App --scratch-path "$SCRATCH" --product Grimoire
       - name: Show where the app's object files went
         if: failure()
         run: |
@@ -57,7 +59,7 @@ jobs:
           echo "--- output-file-map.json (start)"; head -c 1500 "$b/output-file-map.json"; echo
           echo "--- sources (start)"; head -5 "$b/sources"
           echo "--- Grimoire.build"; ls "$b" | head -40
-          echo "--- AgentCLI objects anywhere"; find "$GITHUB_WORKSPACE" "$SCRATCH" /private/var/folders "$HOME" -name 'AgentCLI*.o' 2>/dev/null | head
+          echo "--- AgentCLI objects anywhere"; find "$GITHUB_WORKSPACE" "$SCRATCH" -name 'AgentCLI*.o' 2>/dev/null | head
       - name: App rules tests (GrimoireAppKit)
         run: swift test -c release -Xswiftc -enable-testing --package-path App --scratch-path "$SCRATCH-test"
       - name: Core tests on macOS
