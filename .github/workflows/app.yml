@@ -30,25 +30,25 @@ jobs:
   build:
     runs-on: macos-26
     timeout-minutes: 40
+    env:
+      # Build products outside the repository, as App/build.sh does: the app package depends on
+      # the repository root as a package, so a .build folder inside it confuses the build.
+      SCRATCH: ${{ runner.temp }}/grimoire-build
     steps:
       - uses: actions/checkout@v4
-      - name: Use the newest Xcode 26
+      - name: Xcode
         run: |
-          xcode=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)
-          echo "Using $xcode"
-          sudo xcode-select -s "$xcode/Contents/Developer"
+          ls -d /Applications/Xcode_26*.app
+          xcode-select -p
           swift --version
-      - uses: actions/cache@v4
-        with:
-          path: App/.build
-          key: app-${{ runner.os }}-${{ hashFiles('App/Package.swift', 'Package.swift') }}
-          restore-keys: app-${{ runner.os }}-
-      # Release, as App/build.sh builds it. The debug batch build of the app target fails to
-      # write its object files on this toolchain ("malformed dependencies file"), so CI builds
-      # what Hugh actually installs.
       - name: Compile the Mac app (every target, release, as build.sh does)
-        run: swift build -c release --package-path App
+        run: swift build -c release --package-path App --scratch-path "$SCRATCH"
+      - name: Show the compiler's own errors
+        if: failure()
+        run: |
+          swift build -c release --package-path App --scratch-path "$SCRATCH" -v 2>&1 \
+            | grep -v '^\s*$' | grep -iE 'error|fatal|crash|signal|Stack dump|frontend' | head -80
       - name: App rules tests (GrimoireAppKit)
-        run: swift test -c release -Xswiftc -enable-testing --package-path App
+        run: swift test -c release -Xswiftc -enable-testing --package-path App --scratch-path "$SCRATCH-test"
       - name: Core tests on macOS
         run: swift test
