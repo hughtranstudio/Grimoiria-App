@@ -30,12 +30,11 @@ jobs:
   build:
     runs-on: macos-26
     timeout-minutes: 40
-    env:
-      # Build products outside the repository, as App/build.sh does: the app package depends on
-      # the repository root as a package, so a .build folder inside it confuses the build.
-      SCRATCH: ${{ runner.temp }}/grimoire-build
     steps:
       - uses: actions/checkout@v4
+      # Build products outside the repository, as App/build.sh does: the app package depends on
+      # the repository root as a package, so a .build folder inside it confuses the build.
+      - run: echo "SCRATCH=$RUNNER_TEMP/grimoire-build" >> "$GITHUB_ENV"
       - name: Xcode
         run: |
           ls -d /Applications/Xcode_26*.app
