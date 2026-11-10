@@ -35,9 +35,17 @@ jobs:
       # Build products outside the repository, as App/build.sh does: the app package depends on
       # the repository root as a package, so a .build folder inside it confuses the build.
       - run: echo "SCRATCH=$RUNNER_TEMP/grimoire-build" >> "$GITHUB_ENV"
-      - name: Xcode
+      # Swift 6.3 (Xcode 26.6 on the runner) writes the app target's object files to the wrong place
+      # ("-o AgentCLI.o" relative, link fails). Use the newest Xcode 26 whose Swift is 6.2, the
+      # toolchain the app is written for (swift-tools-version 6.2); fall back to the default.
+      - name: Xcode with Swift 6.2
         run: |
-          ls -d /Applications/Xcode_26*.app
+          for x in $(ls -d /Applications/Xcode_26*.app | sort -V); do
+            v=$("$x/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift" --version 2>&1 | head -1)
+            echo "$x: $v"
+            [[ "$v" == *"Swift version 6.2"* ]] && pick="$x"
+          done
+          if [[ -n "${pick:-}" ]]; then sudo xcode-select -s "$pick/Contents/Developer"; fi
           xcode-select -p
           swift --version
       - name: Compile the Mac app (every target, release, as build.sh does)
