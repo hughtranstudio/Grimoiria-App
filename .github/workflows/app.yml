@@ -1,0 +1,63 @@
+name: Mac app build
+
+# core.yml runs on Ubuntu, which cannot see the SwiftUI app target at all.
+# This job compiles the whole Mac app (App/) on macOS 26 with Xcode 26, so a
+# change that breaks the app is caught on the pull request, not on Hugh's Mac.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "App/**"
+      - "Sources/**"
+      - "Package.swift"
+      - ".github/workflows/app.yml"
+  pull_request:
+    paths:
+      - "App/**"
+      - "Sources/**"
+      - "Package.swift"
+      - ".github/workflows/app.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      # Build products outside the repository, as App/build.sh does: the app package depends on
+      # the repository root as a package, so a .build folder inside it confuses the build.
+      - run: echo "SCRATCH=$RUNNER_TEMP/grimoire-build" >> "$GITHUB_ENV"
+      # Use the newest Xcode 26 whose Swift is 6.2, the toolchain the app is written for
+      # (swift-tools-version 6.2); fall back to the default.
+      - name: Xcode with Swift 6.2
+        run: |
+          for x in $(ls -d /Applications/Xcode_26*.app | sort -V); do
+            v=$("$x/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift" --version 2>&1 | head -1)
+            echo "$x: $v"
+            [[ "$v" == *"Swift version 6.2"* ]] && pick="$x"
+          done
+          if [[ -n "${pick:-}" ]]; then sudo xcode-select -s "$pick/Contents/Developer"; fi
+          xcode-select -p
+          swift --version
+      - name: Compile the Mac app (release, as build.sh does)
+        run: swift build -c release --package-path App --scratch-path "$SCRATCH" --product Grimoire
+      - name: Show where the app's object files went
+        if: failure()
+        run: |
+          b="$SCRATCH/arm64-apple-macosx/release/Grimoire.build"
+          echo "--- output-file-map.json (start)"; head -c 1500 "$b/output-file-map.json"; echo
+          echo "--- sources (start)"; head -5 "$b/sources"
+          echo "--- Grimoire.build"; ls "$b" | head -40
+          echo "--- AgentCLI objects anywhere"; find "$GITHUB_WORKSPACE" "$SCRATCH" -name 'AgentCLI*.o' 2>/dev/null | head
+      - name: App rules tests (GrimoireAppKit)
+        run: swift test -c release -Xswiftc -enable-testing --package-path App --scratch-path "$SCRATCH-test"
+      - name: Core tests on macOS
+        run: swift test
