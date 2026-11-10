@@ -122,3 +122,52 @@ public struct Outcome: Codable, Hashable, Sendable, Identifiable {
         self.id = id; self.recordedAt = recordedAt; self.body = body; self.fulfilled = fulfilled
     }
 }
+
+// Older payloads decode: only identity fields are required, later fields take their defaults.
+extension Inquiry {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(ULID.self, forKey: .id)
+        askedAt = try c.decode(ZonedDate.self, forKey: .askedAt)
+        question = try c.decodeIfPresent(String.self, forKey: .question) ?? ""
+        context = try c.decodeIfPresent(String.self, forKey: .context) ?? ""
+        category = try c.decodeIfPresent(TagPath.self, forKey: .category)
+        status = try c.decodeIfPresent(Status.self, forKey: .status) ?? .open
+        tags = try c.decodeIfPresent([TagPath].self, forKey: .tags) ?? []
+        divinations = try c.decodeIfPresent([Divination].self, forKey: .divinations) ?? []
+        synthesis = try c.decodeIfPresent(Synthesis.self, forKey: .synthesis)
+        outcomes = try c.decodeIfPresent([Outcome].self, forKey: .outcomes) ?? []
+        physicalRef = try c.decodeIfPresent(PhysicalRef.self, forKey: .physicalRef)
+        timing = try c.decodeIfPresent(TimingContext.self, forKey: .timing)
+        createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt) ?? askedAt.instant
+        updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
+    }
+}
+
+extension Divination {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(ULID.self, forKey: .id)
+        system = try c.decode(System.self, forKey: .system)
+        performedAt = try c.decode(ZonedDate.self, forKey: .performedAt)
+        deckId = try c.decodeIfPresent(String.self, forKey: .deckId)
+        spreadId = try c.decodeIfPresent(String.self, forKey: .spreadId)
+        method = try c.decodeIfPresent(String.self, forKey: .method)
+        notes = try c.decodeIfPresent(String.self, forKey: .notes)
+        order = try c.decodeIfPresent(Int.self, forKey: .order) ?? 0
+        draws = try c.decodeIfPresent([Draw].self, forKey: .draws) ?? []
+        cast = try c.decodeIfPresent(YiJingCast.self, forKey: .cast)
+    }
+}
+
+extension Draw {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(ULID.self, forKey: .id)
+        cardId = try c.decode(String.self, forKey: .cardId)
+        positionKey = try c.decodeIfPresent(String.self, forKey: .positionKey) ?? ""
+        orientation = try c.decodeIfPresent(Orientation.self, forKey: .orientation) ?? .upright
+        notes = try c.decodeIfPresent(String.self, forKey: .notes)
+        tags = try c.decodeIfPresent([TagPath].self, forKey: .tags) ?? []
+    }
+}

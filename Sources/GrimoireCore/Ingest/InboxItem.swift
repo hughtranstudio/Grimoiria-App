@@ -141,3 +141,15 @@ public enum Confirmation {
         return ConfirmResult(entry: entry, inquiry: inquiry, corrections: corrections)
     }
 }
+
+// Older payloads decode: no precondition here (a stored item is trusted), and `source` defaults.
+extension InboxItem {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        entry = try c.decode(Entry.self, forKey: .entry)
+        draft = try c.decodeIfPresent(DraftReading.self, forKey: .draft)
+        source = try c.decodeIfPresent(String.self, forKey: .source) ?? "unknown"
+        notes = try c.decodeIfPresent([String].self, forKey: .notes)
+        outcome = try c.decodeIfPresent(Outcome.self, forKey: .outcome)
+    }
+}

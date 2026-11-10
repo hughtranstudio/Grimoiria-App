@@ -167,3 +167,33 @@ public struct Attachment: Codable, Hashable, Sendable {
         self.kind = kind; self.path = path; self.originalName = originalName
     }
 }
+
+// Stored records outlive the code that wrote them. Only the identity fields are required;
+// every field added later decodes with its default, so an old payload never fails to load
+// (Tests/GrimoireCoreTests/Fixtures/payloads hold real older shapes).
+extension Entry {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(ULID.self, forKey: .id)
+        type = try c.decode(EntryType.self, forKey: .type)
+        occurredAt = try c.decode(ZonedDate.self, forKey: .occurredAt)
+        title = try c.decodeIfPresent(String.self, forKey: .title)
+        createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt) ?? occurredAt.instant
+        updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
+        body = try c.decodeIfPresent(String.self, forKey: .body) ?? ""
+        tags = try c.decodeIfPresent([TagPath].self, forKey: .tags) ?? []
+        links = try c.decodeIfPresent([Link].self, forKey: .links) ?? []
+        inquiryId = try c.decodeIfPresent(ULID.self, forKey: .inquiryId)
+        physicalRef = try c.decodeIfPresent(PhysicalRef.self, forKey: .physicalRef)
+        attachments = try c.decodeIfPresent([Attachment].self, forKey: .attachments) ?? []
+        timing = try c.decodeIfPresent(TimingContext.self, forKey: .timing)
+        mode = try c.decodeIfPresent(EntryMode.self, forKey: .mode) ?? .reflective
+        status = try c.decodeIfPresent(EntryStatus.self, forKey: .status) ?? .filed
+        fields = try c.decodeIfPresent(TypeFields.self, forKey: .fields) ?? TypeFields()
+        extraNotes = try c.decodeIfPresent(String.self, forKey: .extraNotes)
+        captureId = try c.decodeIfPresent(String.self, forKey: .captureId)
+        transcript = try c.decodeIfPresent(String.self, forKey: .transcript)
+        session = try c.decodeIfPresent(PracticeSession.self, forKey: .session)
+        astro = try c.decodeIfPresent(AstroSnapshot.self, forKey: .astro)
+    }
+}

@@ -1,5 +1,6 @@
 import AppKit
 import Foundation
+import GrimoireAppKit
 import GrimoireCore
 import UniformTypeIdentifiers
 
@@ -24,11 +25,15 @@ extension AppModel {
             // From all the data, Inbox included: Mission Control counts what waits to be confirmed.
             files[StatusSummary.fileName] = try statusJSON()
             if settings.exportML { files.merge(try MLExporter(library: library).files(for: filed)) { a, _ in a } }
-            var report = try ExportWriter.write(files, to: root, prune: true)
+            // A record that would not decode is missing from `filed`; pruning would delete its
+            // note from the vault. Write, but remove nothing, until every record reads.
+            let canPrune = repository.health.canPrune
+            var report = try ExportWriter.write(files, to: root, prune: canPrune)
             report.written += try copyAttachments(of: filed, to: root.appending(path: "_attachments"))
             if !quiet {
                 var parts = [report.written.isEmpty ? "Export is up to date" : "Exported \(report.written.count) file\(report.written.count == 1 ? "" : "s")"]
                 if !report.removed.isEmpty { parts.append("removed \(report.removed.count) for deleted records") }
+                if !canPrune { parts.append("nothing removed while some records cannot be read") }
                 show(parts.joined(separator: ", "))
             }
             return report
