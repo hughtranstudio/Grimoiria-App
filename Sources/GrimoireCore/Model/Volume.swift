@@ -38,3 +38,26 @@ public struct PhysicalRef: Codable, Hashable, Sendable {
 
     public func overlaps(_ range: ClosedRange<Int>) -> Bool { pageRange?.overlaps(range) ?? false }
 }
+
+// Older payloads decode: fields added later take their defaults.
+extension Volume {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(ULID.self, forKey: .id)
+        name = try c.decodeIfPresent(String.self, forKey: .name) ?? ""
+        startedOn = try c.decodeIfPresent(String.self, forKey: .startedOn)
+        endedOn = try c.decodeIfPresent(String.self, forKey: .endedOn)
+        notes = try c.decodeIfPresent(String.self, forKey: .notes)
+        pagination = try c.decodeIfPresent(Pagination.self, forKey: .pagination) ?? .page
+    }
+}
+
+extension PhysicalRef {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        volumeId = try c.decode(ULID.self, forKey: .volumeId)
+        page = try c.decodeIfPresent(String.self, forKey: .page) ?? ""
+        photo = try c.decodeIfPresent(Attachment.self, forKey: .photo)
+        physicalOnly = try c.decodeIfPresent(Bool.self, forKey: .physicalOnly) ?? false
+    }
+}

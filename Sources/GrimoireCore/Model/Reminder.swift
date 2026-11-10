@@ -102,3 +102,18 @@ public extension Calendar {
         return c
     }
 }
+
+// Older payloads decode: fields added later (repeat, the ladder) take their defaults.
+extension Reminder {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(ULID.self, forKey: .id)
+        targetId = try c.decode(ULID.self, forKey: .targetId)
+        dueOn = try c.decode(String.self, forKey: .dueOn)
+        prompt = try c.decodeIfPresent(String.self, forKey: .prompt)
+        status = try c.decodeIfPresent(Status.self, forKey: .status) ?? .pending
+        `repeat` = try c.decodeIfPresent(Repeat.self, forKey: .repeat) ?? .none
+        anchorOn = try c.decodeIfPresent(String.self, forKey: .anchorOn)
+        step = try c.decodeIfPresent(Int.self, forKey: .step)
+    }
+}

@@ -32,6 +32,18 @@ struct ContentView: View {
             .pressPage()
             .modifier(HouseStyled())
         }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if let banner = model.storeBanner {
+                Label(banner, systemImage: "exclamationmark.triangle.fill")
+                    .symbolRenderingMode(.multicolor)
+                    .font(Typo.callout)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, Space.lg)
+                    .padding(.vertical, Space.sm)
+                    .background(.bar)
+            }
+        }
         .overlay(alignment: .bottom) {
             if let notice = model.notice {
                 Text(notice)

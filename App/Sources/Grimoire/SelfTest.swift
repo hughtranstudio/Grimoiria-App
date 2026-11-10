@@ -1,5 +1,6 @@
 import AppKit
 import Foundation
+import SwiftData
 import GrimoireAppKit
 import GrimoireCore
 
@@ -155,6 +156,27 @@ enum SelfTest {
         let pruned = model.exportNow(to: vault, quiet: true)
         check("export removes the note of a deleted record", pruned?.removed.count == 1, "\(pruned?.removed ?? [])")
         check("export keeps your own notes", FileManager.default.fileExists(atPath: ownNote.path))
+
+        // Loud failures: a row that will not decode is listed, shown, and blocks pruning
+        let kept = model.newEntry(.dream, body: "Self-test: unreadable later", select: false)
+        model.exportNow(to: vault, quiet: true)
+        let keptId = kept.id.string
+        let context = model.container.mainContext
+        if let row = try? context.fetch(FetchDescriptor<EntryRecord>(predicate: #Predicate { $0.id == keptId })).first {
+            row.payload = Data("{\"broken\":true}".utf8)
+            try? model.repository.write {}
+        }
+        check("an unreadable record is reported", model.repository.health.unreadable.contains { $0.id == keptId })
+        check("an unreadable record shows the banner", model.storeBanner != nil)
+        let blocked = model.exportNow(to: vault, quiet: true)
+        check("export removes nothing while a record is unreadable", blocked?.removed.isEmpty == true, "\(blocked?.removed ?? [])")
+        if let row = try? context.fetch(FetchDescriptor<EntryRecord>(predicate: #Predicate { $0.id == keptId })).first {
+            context.delete(row)
+            try? model.repository.write {}
+        }
+        check("the banner clears once every record reads", model.storeBanner == nil)
+        check("a schema stamp sits beside the store",
+              FileManager.default.fileExists(atPath: StoreSchema.stampURL(in: Store.folder).path))
 
         // M7: ingest, no duplicates, nothing filed before Confirm
         await ingestChecks(model)

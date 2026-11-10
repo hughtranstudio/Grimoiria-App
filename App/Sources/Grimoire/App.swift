@@ -1,4 +1,5 @@
 import AppKit
+import GrimoireAppKit
 import SwiftData
 import SwiftUI
 
@@ -108,11 +109,78 @@ enum Store {
         Bundle.main.url(forResource: "Definitions", withExtension: nil)
     }
 
+    /// The build that writes the schema stamp (Info.plist's CFBundleVersion).
+    static var build: String? { Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String }
+
+    /// Read before the store opens, since opening creates it.
+    static func checkSchema() -> StoreSchema.Check {
+        StoreSchema.check(storeExists: FileManager.default.fileExists(atPath: url.path), folder: folder)
+    }
+
+    /// Opens the database. When it will not open, its files are first copied aside untouched, then
+    /// a dialog offers to quit, try again, or start a new database (the old files move into the
+    /// copy's folder, never deleted). The app never crashes on a store it cannot open.
     static func makeContainer() -> ModelContainer {
-        do {
-            return try ModelContainer(for: Schema(Records.all), configurations: ModelConfiguration(url: url))
-        } catch {
-            fatalError("Could not open the database at \(url.path): \(error)")
+        var rescued: URL?
+        while true {
+            do {
+                return try ModelContainer(for: Schema(Records.all), configurations: ModelConfiguration(url: url))
+            } catch {
+                print("Grimoire: could not open the database at \(url.path): \(error)")
+                if rescued == nil, FileManager.default.fileExists(atPath: url.path) {
+                    rescued = try? StoreRescue.copyAside(url)
+                }
+                // The self-test, snapshots and seed runs have no one to answer a dialog.
+                if SelfTest.requested || ProcessInfo.processInfo.environment["APP_SNAPSHOT"] != nil { exit(1) }
+                switch StoreOpenAlert.ask(error: error, store: url, copy: rescued) {
+                case .quit: exit(1)
+                case .tryAgain: continue
+                case .startNew:
+                    let shelf = (rescued ?? folder).appending(path: "moved aside", directoryHint: .isDirectory)
+                    try? FileManager.default.createDirectory(at: shelf, withIntermediateDirectories: true)
+                    for file in StoreRescue.companions(of: url) where FileManager.default.fileExists(atPath: file.path) {
+                        do { try FileManager.default.moveItem(at: file, to: shelf.appending(path: file.lastPathComponent)) }
+                        catch { print("Grimoire: could not move \(file.path) aside: \(error)"); exit(1) }
+                    }
+                }
+            }
         }
+    }
+}
+
+/// The dialog for a database that will not open.
+enum StoreOpenAlert {
+    enum Choice { case quit, tryAgain, startNew }
+
+    static func ask(error: Error, store: URL, copy: URL?) -> Choice {
+        _ = NSApplication.shared
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate()
+        let alert = NSAlert()
+        alert.alertStyle = .critical
+        alert.messageText = "Grimoire could not open its database"
+        var info = "\(error.localizedDescription)\n\n"
+        if let copy {
+            info += "A copy of the database, exactly as it was, is in “\(copy.lastPathComponent)” beside it:\n\(copy.path)\n\n"
+        }
+        info += "Quit leaves everything as it is. Start New Database moves the old files into that folder and opens an empty one; nothing is deleted."
+        alert.informativeText = info
+        alert.addButton(withTitle: "Quit")
+        alert.addButton(withTitle: "Try Again")
+        alert.addButton(withTitle: "Start New Database…")
+        switch alert.runModal() {
+        case .alertSecondButtonReturn: return .tryAgain
+        case .alertThirdButtonReturn: return confirmStartNew() ? .startNew : .quit
+        default: return .quit
+        }
+    }
+
+    private static func confirmStartNew() -> Bool {
+        let alert = NSAlert()
+        alert.messageText = "Start with an empty database?"
+        alert.informativeText = "Your records stay in the copied folder and can be restored from there or from a backup. Grimoire will look empty until then."
+        alert.addButton(withTitle: "Cancel")
+        alert.addButton(withTitle: "Start New Database")
+        return alert.runModal() == .alertSecondButtonReturn
     }
 }

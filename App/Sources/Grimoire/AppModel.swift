@@ -125,6 +125,9 @@ final class AppModel {
     var calendarMonth = Date.now
     /// A short line shown at the bottom of the window, like "Exported 12 files".
     var notice: String?
+    /// What is wrong with the database (unreadable records, a failed save), shown as a banner
+    /// over every page until it is fixed. Nil when all is well.
+    var storeBanner: String?
     /// Files the last import couldn't read, shown on the Inbox page.
     var importProblems: [String] = []
     /// Settings reopens on the last tab. Test and snapshot runs leave it alone.
@@ -138,15 +141,24 @@ final class AppModel {
     @ObservationIgnored private var flushTask: Task<Void, Never>?
 
     init() {
+        let schema = Store.checkSchema()
         container = Store.makeContainer()
         repository = SwiftDataRepository(context: container.mainContext)
+        if case .newer(let version) = schema {
+            repository.blockWrites("This database was written by a newer Grimoire (schema \(version); this app knows \(StoreSchema.current)). Nothing is saved until the newer app is installed again.")
+        } else {
+            do { try StoreSchema.stamp(folder: Store.folder, build: Store.build) }
+            catch { print("Grimoire: could not write \(StoreSchema.fileName): \(error)") }
+        }
         library = DefinitionLibrary(decks: [], spreads: [], yijing: YiJingDefinition.empty)
         loadDefinitions()
         loadVocabulary()
         data = repository.data
+        storeBanner = repository.health.banner
         repository.didChange = { [weak self] in
             guard let self else { return }
             data = repository.data
+            storeBanner = repository.health.banner
             PhoneLibrarySync.shared.schedule()
             scheduleStatus()
         }

@@ -1,4 +1,5 @@
 import Foundation
+import GrimoireAppKit
 import GrimoireCore
 
 /// Keeps `library/` in each phone ingest folder up to date (docs/phone-library.md), a few seconds
@@ -27,6 +28,12 @@ final class PhoneLibrarySync {
         let model = AppModel.shared
         let folders = Self.folders(model.settings)
         guard !folders.isEmpty, !Store.isOverridden else { return }
+        // The phone replaces its library with what is written here, so a record that would not
+        // decode would vanish from the phone too. Keep the last good library until all records read.
+        guard model.repository.health.canPrune else {
+            print("Grimoire: phone library not updated: some records cannot be read")
+            return
+        }
         var filed = model.data
         filed.inbox = []
         let writer = PhoneLibrary(library: model.library, vocabulary: model.vocabulary)
