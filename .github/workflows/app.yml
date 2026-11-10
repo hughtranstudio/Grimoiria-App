@@ -50,11 +50,14 @@ jobs:
           swift --version
       - name: Compile the Mac app (every target, release, as build.sh does)
         run: swift build -c release --package-path App --scratch-path "$SCRATCH"
-      - name: Show the compiler's own errors
+      - name: Show where the app's object files went
         if: failure()
         run: |
-          swift build -c release --package-path App --scratch-path "$SCRATCH" -v 2>&1 \
-            | grep -v '^\s*$' | grep -iE 'error|fatal|crash|signal|Stack dump|frontend' | head -80
+          b="$SCRATCH/arm64-apple-macosx/release/Grimoire.build"
+          echo "--- output-file-map.json (start)"; head -c 1500 "$b/output-file-map.json"; echo
+          echo "--- sources (start)"; head -5 "$b/sources"
+          echo "--- Grimoire.build"; ls "$b" | head -40
+          echo "--- AgentCLI objects anywhere"; find "$GITHUB_WORKSPACE" "$SCRATCH" /private/var/folders "$HOME" -name 'AgentCLI*.o' 2>/dev/null | head
       - name: App rules tests (GrimoireAppKit)
         run: swift test -c release -Xswiftc -enable-testing --package-path App --scratch-path "$SCRATCH-test"
       - name: Core tests on macOS
