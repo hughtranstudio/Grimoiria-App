@@ -19,8 +19,13 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: core-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    timeout-minutes: 15
     # GitHub's Ubuntu image ships a Swift toolchain; GrimoireCore and the CLI build on Linux.
     runs-on: ubuntu-24.04
     steps:

@@ -1,7 +1,10 @@
 name: Android capture app
 
+# Phone builds are published from main only (plus by hand: Actions > Android capture app > Run workflow,
+# pick a branch). Feature-branch pushes no longer build twice (push and pull request) or make a release.
 on:
   push:
+    branches: [main]
     paths:
       - "android/**"
       - "Sources/GrimoireCore/Resources/**"
@@ -18,9 +21,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: android
@@ -37,7 +45,7 @@ jobs:
         run: ./gradlew :app:assembleDebug
       # Every push becomes a GitHub release, so Obtainium on the Pixel can offer it as a one-tap update.
       - name: Publish release for the phone
-        if: github.event_name == 'push'
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

@@ -42,7 +42,7 @@ jobs:
       (github.event.action == 'labeled' && github.event.label.name == 'mac-build') ||
       (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'mac-build'))
     runs-on: macos-26
-    timeout-minutes: 40
+    timeout-minutes: 25 # a normal build takes about 5; a stuck one now stops at 250 billed minutes instead of 400
     steps:
       - uses: actions/checkout@v4
       # Build products outside the repository, as App/build.sh does: the app package depends on
